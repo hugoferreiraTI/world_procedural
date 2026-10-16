@@ -18,8 +18,8 @@ class Geography:
             self.adjacent[route.origin].append(route.id)
             self.adjacent[route.destination].append(route.id)
 
-    def emit(self, kind, p, target=None, **context):
-        return self.e.recorder.emit(kind, f'{p.name}: {kind}.', p.id, target,
+    def emit(self, event_kind, p, target=None, **context):
+        return self.e.recorder.emit(event_kind, f'{p.name}: {event_kind}.', p.id, target,
                                    p.position, historical=True, context=context)
 
     def place(self, id):
