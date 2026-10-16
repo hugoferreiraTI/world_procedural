@@ -1,0 +1,187 @@
+{
+  "natural": true,
+  "source_event": {
+    "id": 27515,
+    "kind": "WantedIssued",
+    "turn": 6,
+    "description": "Elena Corven registrou procura por Nora Vale.",
+    "actor_id": 718,
+    "target_id": 706,
+    "location": {
+      "map_id": 706,
+      "x": 3,
+      "y": 5
+    },
+    "witnesses": [
+      715,
+      718,
+      4141,
+      4150
+    ],
+    "historical": false,
+    "context": {
+      "record_id": 27514,
+      "suspect_id": 4141,
+      "source_fact": 27513,
+      "severity": 1,
+      "confidence": 100,
+      "last_known_location": {
+        "map_id": 706,
+        "x": 3,
+        "y": 5
+      }
+    },
+    "schema_version": 1,
+    "parent_event_ids": [
+      27513
+    ],
+    "decision_id": "d5070",
+    "action_attempt_id": "a5071",
+    "related_decision_ids": []
+  },
+  "source_learning_receipt": {
+    "receiver_id": 4141,
+    "event_id": 27515,
+    "turn": 6,
+    "channel": "direct",
+    "source_id": null,
+    "confidence_before": 0,
+    "confidence_after": 100
+  },
+  "need_episode_id": "n27516:1",
+  "decision": {
+    "id": "d34171",
+    "actor_id": 4141,
+    "turn": 35,
+    "lod": 1,
+    "need_episode_id": "n27516:1",
+    "need_kind": "response",
+    "need_priority": 59.35,
+    "source_fact_ids": [
+      27515
+    ],
+    "generated_actions": [
+      {
+        "need_episode_id": "n27516:1",
+        "action": "route_travel",
+        "target_id": 706,
+        "resource_kind": null
+      }
+    ],
+    "blocked_actions": [],
+    "evaluated_scores": [
+      {
+        "need_episode_id": "n27516:1",
+        "action": "route_travel",
+        "target_id": 706,
+        "resource_kind": null,
+        "score": 74.4
+      }
+    ],
+    "selected_action": "route_travel",
+    "selected_score": 74.4,
+    "selected_target_id": 706,
+    "selected_resource_kind": null,
+    "goal_id": 71009,
+    "action_attempt_id": "a34172",
+    "success": true,
+    "outcome": "Etapa física da migração executada.",
+    "emitted_event_ids": [
+      71010
+    ],
+    "important": true,
+    "truncated": {},
+    "schema_version": 1,
+    "related_event_ids": []
+  },
+  "goal_id": 71009,
+  "action_attempt": {
+    "id": "a34172",
+    "actor_id": 4141,
+    "turn": 35,
+    "goal_id": 71009,
+    "action": "route_travel",
+    "target_id": 706,
+    "success": true,
+    "outcome": "Etapa física da migração executada.",
+    "emitted_event_ids": [
+      71010
+    ]
+  },
+  "result_event": {
+    "id": 71010,
+    "kind": "MigrationArrived",
+    "turn": 35,
+    "description": "Nora Vale chegou como visitante a Karmar.",
+    "actor_id": 4141,
+    "target_id": 677,
+    "location": {
+      "map_id": 677,
+      "x": 5,
+      "y": 9
+    },
+    "witnesses": [
+      686,
+      689,
+      698,
+      718,
+      3977,
+      3980,
+      3983,
+      3986,
+      3989,
+      3991,
+      3994,
+      3997,
+      4000,
+      4003,
+      4009,
+      4012,
+      4014,
+      4020,
+      4023,
+      4032,
+      4035,
+      4037,
+      4043,
+      4046,
+      4049,
+      4052,
+      4055,
+      4058,
+      4069,
+      4072,
+      4075,
+      4081,
+      4089,
+      4092,
+      4095,
+      4098,
+      4101,
+      4112,
+      4141
+    ],
+    "historical": true,
+    "context": {
+      "origin": 706,
+      "reason": "threat",
+      "travel_hours": 12
+    },
+    "schema_version": 1,
+    "parent_event_ids": [
+      27515
+    ],
+    "decision_id": "d34171",
+    "action_attempt_id": "a34172",
+    "related_decision_ids": []
+  },
+  "result_learning_receipt": {
+    "receiver_id": 686,
+    "event_id": 71010,
+    "turn": 35,
+    "channel": "direct",
+    "source_id": null,
+    "confidence_before": 0,
+    "confidence_after": 100
+  }
+}

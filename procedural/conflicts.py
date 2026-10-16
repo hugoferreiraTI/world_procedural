@@ -403,12 +403,14 @@ class ConflictSystem:
                 self.engine.finish_death(target,'combat',person,weapon.id if weapon else None,context)
                 self.end(target,'death',person)
             else:
-                self.engine.recorder.emit('CharacterAttacked',f'{person.name} feriu {target.name} em {damage} HP.',
-                    person.id,target.id,person.position,historical=True,context=context)
+                parent=self.engine.observability.index.reference('LethalDecision',actor_id=person.id,context={'target_id':target.id}) if intent=='kill' else None
+                attack_event=self.engine.recorder.emit('CharacterAttacked',f'{person.name} feriu {target.name} em {damage} HP.',
+                    person.id,target.id,person.position,historical=True,context=context,
+                    parent_event_ids=[parent] if parent else [])
                 if target.health<=INTERACTION.incapacity_health:
                     target.combat.surrendered_until=self.world.turn+6
-                    self.engine.recorder.emit('CharacterIncapacitated',f'{target.name} ficou incapacitado.',
-                        person.id,target.id,person.position,historical=True,context=context)
+                    incapacity=self.engine.recorder.emit('CharacterIncapacitated',f'{target.name} ficou incapacitado.',
+                        person.id,target.id,person.position,historical=True,context=context,parent_event_ids=[attack_event.id])
                     if intent=='kill':
                         d=self.engine.lethal_decisions.active(person,target.id)
                         if d:d.context['terminal_episode']=target.combat.last_active
@@ -416,7 +418,8 @@ class ConflictSystem:
                         person.combat.pending_judgments[target.id]=self.world.turn+6
                         self.engine.recorder.emit('ExecutionOpportunity',f'{person.name} pode decidir o desfecho diante de {target.name}.',
                             person.id,target.id,person.position,historical=True,
-                            context={'expires_at':self.world.turn+6,'violence_intent':'kill','source_fact':context.get('source_fact')})
+                            context={'expires_at':self.world.turn+6,'violence_intent':'kill','source_fact':context.get('source_fact')},
+                            parent_event_ids=[incapacity.id])
                         if need:need.context['pending_judgment']=True
                     else:self.end(target,'incapacity',person)
             return True,f'Ataque causou {damage} de dano real.'

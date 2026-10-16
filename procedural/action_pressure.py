@@ -1,4 +1,5 @@
 """Causa, disposição e capacidade separadas; consultas não alteram o mundo."""
+from .organization_context import organization_id, bind_organization
 from .models import ActionPressure
 from .needs import FINISHED
 
@@ -15,7 +16,12 @@ def band(value):return 'low' if value<25 else 'medium' if value<55 else 'high' i
 class ActionPressureSystem:
     def __init__(self,e):self.e,self.w=e,e.world
     @staticmethod
-    def key(n):return f"{n.kind}:{n.context.get('group_id',n.context.get('faction_id',n.target_id))}"
+    def key(n):
+        kind=n.context.get('organization_type')
+        if kind:return f"{n.kind}:{kind}:{organization_id(n.context,kind)}"
+        group=organization_id(n.context,'group');faction=organization_id(n.context,'faction')
+        ref='group:'+str(group) if group is not None else 'faction:'+str(faction) if faction is not None else n.target_id
+        return f"{n.kind}:{ref}"
     def record(self,p,n):return p.action_pressures.get(self.key(n),ActionPressure())
     def known_harm(self,p,target):
         d=self.e.lethal_decisions.active(p,target)
@@ -49,7 +55,7 @@ class ActionPressureSystem:
             target=n.context.get('threat',n.target_id) if n.kind=='protection' else n.target_id
             return self.known_harm(p,target)
         if n.kind=='organizational_survival':
-            g=self.w.groups.get(n.context.get('group_id'));f=self.w.factions.get(n.context.get('faction_id'))
+            g=self.w.groups.get(organization_id(n.context,'group'));f=self.w.factions.get(organization_id(n.context,'faction'))
             owner=g or f
             if owner:return {'grave':owner.action_pressure.world>=80,'severity':owner.action_pressure.world,
                              'causes':[owner.action_pressure.reason],'facts':owner.action_pressure.source_facts}
@@ -151,7 +157,7 @@ class ActionPressureSystem:
         if not record:return
         if not success and self.w.turn-record.last_failure>=12:
             record.failures=min(6,record.failures+1);record.last_failure=self.w.turn
-            faction=self.w.factions.get(n.context.get('faction_id'))
+            faction=self.w.factions.get(organization_id(n.context,'faction'))
             if faction and action in ('faction_prepare','perform_assignment','faction_raid') and faction.knowledge:
                 faction.action_pressure.failures=min(6,faction.action_pressure.failures+1)
         if success and action in FORWARD:

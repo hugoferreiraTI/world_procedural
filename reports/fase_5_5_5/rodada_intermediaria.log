@@ -1,0 +1,254 @@
+======================================================================
+ERROR: test_long_income_chain_is_rejected_when_biologically_impossible (test_feeding.FeedingTests.test_long_income_chain_is_rejected_when_biologically_impossible)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_feeding.py", line 131, in test_long_income_chain_is_rejected_when_biologically_impossible
+    rejected = next(s for s in self.engine.goals.rejected_food[self.person.id] if s.action == 'work')
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+KeyError: 9
+
+======================================================================
+ERROR: test_12_lethal_incapacity_requires_new_moral_decision (test_phase45.Phase45Tests.test_12_lethal_incapacity_requires_new_moral_decision)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase45.py", line 165, in test_12_lethal_incapacity_requires_new_moral_decision
+    self.assertEqual('kill',self.p.combat.violence_intents[self.q.id])
+                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+KeyError: 12
+
+======================================================================
+ERROR: test_02_extreme_convergence_and_evidence_trace (test_phase46.Phase46Tests.test_02_extreme_convergence_and_evidence_trace)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase46.py", line 56, in test_02_extreme_convergence_and_evidence_trace
+    self.assertTrue(r['available']);self.assertEqual(100,r['loss_importance'])
+                                                         ~^^^^^^^^^^^^^^^^^^^
+KeyError: 'loss_importance'
+
+======================================================================
+ERROR: test_05_approved_food_is_transferred_not_created (test_phase5.Phase5Tests.test_05_approved_food_is_transferred_not_created)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase5.py", line 88, in test_05_approved_food_is_transferred_not_created
+    result=self.e.society.material(self.m,prop)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'SocietySystem' object has no attribute 'material'
+
+======================================================================
+ERROR: test_10_promotion_not_xp_or_money_only (test_phase5.Phase5Tests.test_10_promotion_not_xp_or_money_only)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase5.py", line 135, in test_10_promotion_not_xp_or_money_only
+    f.assignments[self.q.id]['deeds']=2;f.assignments[self.q.id]['joined_at']=0
+    ~~~~~~~~~~~~~^^^^^^^^^^^
+KeyError: 12
+
+======================================================================
+FAIL: test_invalid_public_meal_does_not_mutate_or_advance_time (test_feeding.FeedingTests.test_invalid_public_meal_does_not_mutate_or_advance_time)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_feeding.py", line 179, in test_invalid_public_meal_does_not_mutate_or_advance_time
+    self.assertEqual(dumps(self.world), before)
+AssertionError: '{"fo[2165071 chars]ct":[["a2",{"$type":"ActionAttempt","fields":{[262415 chars]1}}}' != '{"fo[2165071 chars]ct":[]},"counters":{"$dict":[["events",279],["[261755 chars]1}}}'
+
+======================================================================
+FAIL: test_meal_at_normal_threshold_uses_most_nutrition (test_feeding.FeedingTests.test_meal_at_normal_threshold_uses_most_nutrition)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_feeding.py", line 71, in test_meal_at_normal_threshold_uses_most_nutrition
+    self.assertEqual(self.person.goal.action, 'eat')
+AssertionError: 'spread_faith' != 'eat'
+- spread_faith
++ eat
+
+
+======================================================================
+FAIL: test_same_seed_and_actions_continue_deterministically (test_feeding.FeedingTests.test_same_seed_and_actions_continue_deterministically)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_feeding.py", line 250, in test_same_seed_and_actions_continue_deterministically
+    self.assertEqual(dumps(self.world), dumps(other.world))
+AssertionError: '{"fo[4106446 chars]OWN",136],["blocked:NO_KNOWN_ROUTE",209]]},"de[1113536 chars]1}}}' != '{"fo[4106446 chars]OWN",97],["blocked:NO_KNOWN_ROUTE",182]]},"dec[961041 chars]1}}}'
+
+======================================================================
+FAIL: test_debug_does_not_change_seeded_choices (test_hardening.HardeningTests.test_debug_does_not_change_seeded_choices)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_hardening.py", line 284, in test_debug_does_not_change_seeded_choices
+    self.assertEqual(dumps(self.world), dumps(restored))
+AssertionError: '{"fo[4431555 chars]WN",148],["blocked:NO_KNOWN_ROUTE",234],["bloc[1004812 chars]1}}}' != '{"fo[4431555 chars]WN",101],["blocked:NO_KNOWN_ROUTE",200],["bloc[851992 chars]1}}}'
+
+======================================================================
+FAIL: test_same_seed_produces_same_decisions_with_personal_state (test_phase2.Phase2BehaviorTests.test_same_seed_produces_same_decisions_with_personal_state)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase2.py", line 282, in test_same_seed_produces_same_decisions_with_personal_state
+    self.assertEqual(dumps(self.world), dumps(other))
+AssertionError: '{"fo[4593968 chars]WN",178],["blocked:NO_KNOWN_ROUTE",200],["bloc[1153383 chars]1}}}' != '{"fo[4593968 chars]WN",132],["blocked:NO_KNOWN_ROUTE",186],["bloc[963958 chars]1}}}'
+
+======================================================================
+FAIL: test_invalid_action_has_no_persistent_effect (test_phase2.Phase2BugTests.test_invalid_action_has_no_persistent_effect)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase2.py", line 57, in test_invalid_action_has_no_persistent_effect
+    self.assertEqual(dumps(self.world), before, command)
+AssertionError: '{"fo[2260894 chars]ct":[["a2",{"$type":"ActionAttempt","fields":{[278413 chars]1}}}' != '{"fo[2260894 chars]ct":[]},"counters":{"$dict":[["events",299],["[277737 chars]1}}}' : coletar
+
+======================================================================
+FAIL: test_15_population_balance_geography_identity (test_phase4.Phase4Tests.test_15_population_balance_geography_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase4.py", line 216, in test_15_population_balance_geography_identity
+    self.assertEqual(1728,len(b.characters));self.assertEqual(73,len(b.towns))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1728 != 1826
+
+======================================================================
+FAIL: test_16_save_load_and_short_deterministic_continuation (test_phase4.Phase4Tests.test_16_save_load_and_short_deterministic_continuation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase4.py", line 229, in test_16_save_load_and_short_deterministic_continuation
+    self.assertEqual(dumps(self.world),dumps(copy))
+AssertionError: '{"fo[13132452 chars]el":"rumor","confidence_after":30,"confidence_[439399 chars]1}}}' != '{"fo[13132452 chars]el":"direct","confidence_after":100,"confidenc[439240 chars]1}}}'
+
+======================================================================
+FAIL: test_06_recovery_ends_and_material_despair_falls_gradually (test_phase41.Phase41Tests.test_06_recovery_ends_and_material_despair_falls_gradually)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase41.py", line 89, in test_06_recovery_ends_and_material_despair_falls_gradually
+    self.assertGreaterEqual(self.p.health,80)
+AssertionError: 76 not greater than or equal to 80
+
+======================================================================
+FAIL: test_09_save_load_preserves_recovery_and_continuation (test_phase41.Phase41Tests.test_09_save_load_preserves_recovery_and_continuation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase41.py", line 121, in test_09_save_load_preserves_recovery_and_continuation
+    self.assertEqual(dumps(self.world),dumps(restored.world));assert_valid(self.world)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '{"fo[2901549 chars].1]]},{"$dict":[["need_episode_id","n645:1"],[[576764 chars]1}}}' != '{"fo[2901549 chars].1]]}],"generated_actions":[{"$dict":[["need_e[493199 chars]1}}}'
+
+======================================================================
+FAIL: test_16_interlocal_following_uses_only_known_lead (test_phase45.Phase45Tests.test_16_interlocal_following_uses_only_known_lead)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase45.py", line 225, in test_16_interlocal_following_uses_only_known_lead
+    self.assertIn('follow_lead',[a for a,d,t in self.e.agency.travel_candidates(self.p,n)])
+AssertionError: 'follow_lead' not found in []
+
+======================================================================
+FAIL: test_03_low_confidence_and_unknown_author (test_phase46.Phase46Tests.test_03_low_confidence_and_unknown_author)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase46.py", line 62, in test_03_low_confidence_and_unknown_author
+    self.assertFalse(mixed['available']);self.assertEqual(30,mixed['confidence'])
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 30 != 0
+
+======================================================================
+FAIL: test_08_faction_maturation_needs_resources_continuity (test_phase5.Phase5Tests.test_08_faction_maturation_needs_resources_continuity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase5.py", line 115, in test_08_faction_maturation_needs_resources_continuity
+    f=self.e.society.found_faction(leader,g,[self.p,self.q,self.r]);self.assertIsNotNone(f)
+                                                                    ^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_21_divine_death_is_separate_and_not_automatic_apotheosis (test_phase5.Phase5Tests.test_21_divine_death_is_separate_and_not_automatic_apotheosis)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase5.py", line 208, in test_21_divine_death_is_separate_and_not_automatic_apotheosis
+    self.assertTrue(self.e.faith.divine_death(self.p,god,'controlled'));self.assertFalse(god.alive)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_22_claimed_essence_transforms_domain (test_phase5.Phase5Tests.test_22_claimed_essence_transforms_domain)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase5.py", line 218, in test_22_claimed_essence_transforms_domain
+    self.assertTrue(self.e.faith.apotheosis(self.p,god));new=self.w.divinities[self.p.social_state['actual_divinity']]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_26_situational_lethality_requires_immediate_extreme_threat (test_phase5.Phase5Tests.test_26_situational_lethality_requires_immediate_extreme_threat)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase5.py", line 257, in test_26_situational_lethality_requires_immediate_extreme_threat
+    r=self.e.terminal_combat.situational(self.p,self.q,None);self.assertTrue(r['available']);self.assertEqual('situational',r['mode'])
+                                                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'situational' != 'reactive_threat'
+- situational
++ reactive_threat
+
+
+======================================================================
+FAIL: test_29_office_contact_and_known_physical_faction_route (test_phase5.Phase5Tests.test_29_office_contact_and_known_physical_faction_route)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase5.py", line 294, in test_29_office_contact_and_known_physical_faction_route
+    self.assertTrue(self.action(leader,n,'report_to_faction',f.id)[0])
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_30_public_reply_is_physical_and_remote_status_is_not_knowledge (test_phase5.Phase5Tests.test_30_public_reply_is_physical_and_remote_status_is_not_knowledge)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase5.py", line 313, in test_30_public_reply_is_physical_and_remote_status_is_not_knowledge
+    self.assertEqual('submitted',g.proposal_knowledge[prop.id]['status']);self.assertEqual(0,g.failures)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'submitted' != 'rejected'
+- submitted
++ rejected
+
+
+======================================================================
+FAIL: test_02_grave_known_loss_enables_intention_execution (test_phase51.Phase51Tests.test_02_grave_known_loss_enables_intention_execution)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase51.py", line 75, in test_02_grave_known_loss_enables_intention_execution
+    self.assertFalse(self.e.goals._evaluate(self.p,n,[Solution('attack',0,target_id=self.q.id)]))
+AssertionError: [Solution(action='attack', score=73.03039215686276, destination=None, target_id=12, considerations={'base': 0.14, 'anger': 0.225, 'resentment': 0.15, 'vengefulness': 0.1425, 'courage': 0.11875, 'risk': -0.1617647058823529, 'compassion': -0.0, 'authority': -0.0625, 'low_health': -0.05833333333333333, 'defensive': 0.0, 'bond': -0.1225, 'critical_depletion': 0.0, 'travel': -0.0, 'no_progress': 0.0, 'pressure_risk_tolerance': 0.0, 'known_reputation': -0.006000000000000001}, feeding=None, action_audit={'eligible': True, 'world_pressure': 90, 'action_pressure': 74.81, 'eligibility_causes': ['known_close_loss'], 'source_facts': [658], 'capacity': 1.33, 'perceived_capacity': 1.81, 'major_barriers': [], 'selected_alternative': 'attack'}, resource_kind=None, amount=1)] is not false
+
+======================================================================
+FAIL: test_03_many_weak_factors_do_not_become_grave_world_pressure (test_phase51.Phase51Tests.test_03_many_weak_factors_do_not_become_grave_world_pressure)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase51.py", line 106, in test_03_many_weak_factors_do_not_become_grave_world_pressure
+    self.assertTrue(self.e.lethality.evaluate(self.p,self.q,n)['available'])
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_07_capable_faction_acts_with_cost_and_ideology_filter (test_phase51.Phase51Tests.test_07_capable_faction_acts_with_cost_and_ideology_filter)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase51.py", line 156, in test_07_capable_faction_acts_with_cost_and_ideology_filter
+    self.assertIn('perform_assignment',[a for a,d,t in self.e.society.candidates(self.p,n)])
+AssertionError: 'perform_assignment' not found in ['institutional_supply']
+
+======================================================================
+FAIL: test_10_village_representation_travels_and_response_returns (test_phase51.Phase51Tests.test_10_village_representation_travels_and_response_returns)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase51.py", line 202, in test_10_village_representation_travels_and_response_returns
+    self.assertGreater(visit(prop.town_id),1);leader.hunger=70
+                       ^^^^^^^^^^^^^^^^^^^
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase51.py", line 197, in visit
+    old=leader.position;self.assertTrue(self.act(leader,n,'represent_travel',target)[0]);steps+=1;self.w.turn+=1
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_07_existing_group_can_formalize_without_new_money (test_phase54.GeographyAccessTests.test_07_existing_group_can_formalize_without_new_money)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase54.py", line 133, in test_07_existing_group_can_formalize_without_new_money
+    self.assertIsNotNone(f)
+AssertionError: unexpectedly None
+
+----------------------------------------------------------------------
+Ran 326 tests in 206.604s
+
+FAILED (failures=23, errors=5)

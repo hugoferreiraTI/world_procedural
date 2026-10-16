@@ -83,11 +83,15 @@ class Phase5Tests(unittest.TestCase):
         b=self.e.society.decision_scores(self.m,prop)
         self.assertNotEqual(a,b);self.assertGreater(b['reject'],a['reject'])
     def test_05_approved_food_is_transferred_not_created(self):
-        g,prop=self.proposal();before=self.e.items.count(self.t.id,'food')
-        for id in g.member_ids:self.w.characters[id].hunger=60
-        result=self.e.society.material(self.m,prop)
-        self.assertEqual(result['food'],before-self.e.items.count(self.t.id,'food'))
-        self.assertGreater(result['food'],0)
+        g,prop=self.proposal();prop.sector='FOOD';prop.desired_effect='produce'
+        before=self.e.items.count(self.t.id,'food');grain=self.e.items.count(self.t.id,'grain')
+        policy=self.e.institutions.create_policy(self.m,prop)
+        self.assertEqual(before,self.e.items.count(self.t.id,'food'))
+        self.p.profession='cozinheiro';self.p.known_policies[policy.id]={'source':'received_policy'}
+        self.assertTrue(self.e.institutions.policy_work(self.p,policy)[0])
+        produced=self.e.items.count(self.t.id,'food')-before
+        self.assertGreater(produced,0);self.assertLess(self.e.items.count(self.t.id,'grain'),grain)
+        self.assertEqual(produced,policy.effects['food_produced'])
     def test_06_group_response_requires_received_decision(self):
         g,prop=self.proposal();prop.status='rejected';self.assertEqual(0,g.failures)
         leader=self.w.characters[g.leader_id]
@@ -108,9 +112,12 @@ class Phase5Tests(unittest.TestCase):
         g=self.group();g.member_ids.append(self.r.id);self.r.group_ids.append(g.id)
         leader=self.w.characters[g.leader_id]
         self.assertIsNone(self.e.society.found_faction(leader,g,[self.p,self.q,self.r]))
-        for p in (self.p,self.q,self.r):p.money=30
+        for p in (self.p,self.q,self.r):
+            p.money=30;self.e.navigation.relocate(p,leader.position)
         self.assertIsNone(self.e.society.found_faction(leader,g,[self.p,self.q,self.r]))
         g.investment=4;g.created_at=self.w.turn-168
+        self.assertFalse(self.e.institutions.can_formalize(leader,g,[self.p,self.q,self.r])['eligible'])
+        self.w.turn+=32  # Idade 200: score atual 66, acima de 65.
         before=sum(p.money for p in (self.p,self.q,self.r))
         f=self.e.society.found_faction(leader,g,[self.p,self.q,self.r]);self.assertIsNotNone(f)
         self.assertEqual(before,sum(p.money for p in (self.p,self.q,self.r))+f.money)
@@ -129,7 +136,11 @@ class Phase5Tests(unittest.TestCase):
         f=next(iter(self.w.factions.values()));leader=self.w.characters[f.leader_id]
         self.e.navigation.relocate(leader,self.t.market);self.e.graph.set(self.q.id,leader.id,'confiança',80)
         n=self.e.needs.ensure(leader,'organizational_survival',50,'test','recrutar');n.context['faction_id']=f.id
-        self.q.personality.courage=90;self.assertTrue(self.action(leader,n,'recruit_member',self.q.id)[0])
+        self.q.personality.courage=90;self.q.personality.independence=0
+        self.assertTrue(self.action(leader,n,'recruit_member',self.q.id)[0])
+        self.assertNotIn(self.q.id,f.member_ids)
+        self.e.access.know_faction(self.q,f,'personal_contact')
+        self.assertTrue(self.e.access.membership(self.q,f,True)[0]);self.assertIn(self.q.id,f.member_ids)
         self.e.graph.set(leader.id,self.q.id,'confiança',80)
         self.assertFalse(self.e.society.promote(leader,f,self.q))
         f.assignments[self.q.id]['deeds']=2;f.assignments[self.q.id]['joined_at']=0
@@ -205,12 +216,14 @@ class Phase5Tests(unittest.TestCase):
         self.assertGreater(self.e.faith.modifier(self.p,'denounce'),0)
     def test_21_divine_death_is_separate_and_not_automatic_apotheosis(self):
         god=next(iter(self.w.divinities.values()));self.e.navigation.relocate(self.p,god.location)
+        god.essence.update(manifested_until=self.w.turn+12,physical_location=vars(self.p.position))
         self.assertTrue(self.e.faith.divine_death(self.p,god,'controlled'));self.assertFalse(god.alive)
         self.assertNotIn('actual_divinity',self.p.social_state);self.assertFalse(self.e.faith.apotheosis(self.p,god))
     def test_22_claimed_essence_transforms_domain(self):
         god=next(iter(self.w.divinities.values()));god.domain='love'
         self.e.navigation.relocate(self.p,god.location);self.p.mythic_trait='Justice';self.p.mythic_development=80
         self.e.navigation.relocate(self.q,god.location)
+        god.essence.update(manifested_until=self.w.turn+12,physical_location=vars(self.p.position))
         self.q.beliefs[god.id]={'confidence':50,'interpretation':'cultural_tradition',
             'known_divinity':False,'believed_divine':True,'source_fact':None}
         previous_religion=self.q.religion
@@ -254,8 +267,11 @@ class Phase5Tests(unittest.TestCase):
         f=Fact(self.w.allocate_id(),'CharacterAttacked',self.q.id,self.p.id,self.t.market,self.w.turn,'Agressão',source_kind='direct',context={'damage':20})
         self.e.knowledge.learn(self.p,f,True)
         self.e.recovery.damage(self.p,20,'combat')
-        r=self.e.terminal_combat.situational(self.p,self.q,None);self.assertTrue(r['available']);self.assertEqual('situational',r['mode'])
-        self.w.turn+=4;self.assertFalse(self.e.terminal_combat.situational(self.p,self.q,None)['available'])
+        r=self.e.terminal_combat.situational(self.p,self.q,None);self.assertTrue(r['available']);self.assertEqual('reactive_threat',r['mode'])
+        self.w.turn+=4
+        later=self.e.terminal_combat.situational(self.p,self.q,None)
+        self.assertEqual('unresolved_attributed_injury',later['grave_basis'])
+        self.assertEqual('retributive',later['mode'])
     def test_27_item_history_not_magical_property_and_transfer_keeps_history(self):
         weapon=self.e.items.create(self.p.id,'weapon');self.r.category='importante'
         self.e.finish_death(self.r,'combat',self.p,weapon.id)
@@ -291,6 +307,10 @@ class Phase5Tests(unittest.TestCase):
         self.e.navigation.relocate(leader,grid.exit_to)
         t=self.w.towns[leader.town_id];self.e.navigation.relocate(leader,t.position)
         self.e.society.refresh(leader);n=leader.needs['organizational_survival']
+        # Um relatório não concede rota nem teleporta a liderança para a cidade.
+        self.assertFalse(self.action(leader,n,'report_to_faction',f.id)[0])
+        self.assertEqual(t.position,leader.position)
+        self.e.navigation.relocate(leader,t.market)
         self.assertTrue(self.action(leader,n,'report_to_faction',f.id)[0])
         self.assertEqual(t.id,leader.position.map_id);self.assertEqual(t.id,leader.town_id)
         self.assertEqual([],validate_world(self.w))
@@ -307,7 +327,7 @@ class Phase5Tests(unittest.TestCase):
         self.assertEqual([],validate_world(self.w))
     def test_30_public_reply_is_physical_and_remote_status_is_not_knowledge(self):
         g,prop=self.proposal();leader=self.w.characters[g.leader_id]
-        self.e.navigation.relocate(leader,leader.home)
+        for id in g.member_ids:self.e.navigation.relocate(self.w.characters[id],self.w.characters[id].home)
         self.m.personality.compassion=0;self.m.personality.greed=100;prop.opposition=100
         self.assertTrue(self.e.society.resolve(self.m,prop)[0]);self.assertEqual('rejected',prop.status)
         self.assertEqual('submitted',g.proposal_knowledge[prop.id]['status']);self.assertEqual(0,g.failures)

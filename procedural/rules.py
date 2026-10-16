@@ -104,10 +104,8 @@ SOURCE_RELIABILITY = {"direct": 1., "trusted": .8, "known": .6,
 @dataclass(frozen=True)
 class AgencyRules:
     maximum_commitments: int = 4
-    maximum_aspirations: int = 2
     adoption_pressure: float = 52
     priority_bonus: float = 12
-    no_progress_hours: int = 168
     maximum_duration: int = 720
     institutional_latency: int = 6
     maximum_case_guards: int = 3

@@ -47,11 +47,10 @@ class AftermathSystem:
              'justified_by_actor':bool(justified),'victim_vulnerable':bool(vulnerable),'bond':bond,
              'decision_id':d.id if d else None}
         history=s.setdefault('appraisals',[]);history.append(row);del history[:-4]
-        event.context['post_kill_appraisal']=row
         self.w.death_records[victim.id]['death_context']=event.context.get('death_context','unintended_combat_death')
         self.w.death_records[victim.id]['post_kill_appraisal']=row
         self.e.recorder.emit('PostKillAppraisal',f'{p.name} avaliou a morte que causou.',p.id,
-            location=p.position,witnesses=[p.id],historical=True,context=row)
+            location=p.position,witnesses=[p.id],historical=True,context=row,parent_event_ids=[event.id])
         if p.death_affinity>old:
             self.e.recorder.emit('DeathAffinityIncrease',f'{p.name} consolidou afinidade com a morte.',p.id,
                 location=p.position,witnesses=[p.id],historical=True,context={'before':old,'value':p.death_affinity,'source_fact':event.id})

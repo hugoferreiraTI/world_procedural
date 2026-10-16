@@ -1,4 +1,5 @@
 """Ações espaciais acopladas a Need/Goal, Sociedade, Fé, itens e conhecimento existentes."""
+from .organization_context import organization_id, bind_organization
 from dataclasses import asdict
 
 from .models import DivineContract, Group, Location
@@ -191,9 +192,9 @@ class AccessActions:
             if contract and contract.status=='active':return [('abandon_contract',None,n.target_id)]
             return [('accept_contract',None,n.target_id),('refuse_contract',None,n.target_id)]
         if n.kind=='organizational_survival':
-            g=self.w.groups.get(n.context.get('group_id'))
-            if g and g.cause!='expedition' and g.investment>=4 and self.w.turn-g.created_at>=168 and len(g.member_ids)>=3 and p.id==g.leader_id:
-                return [('formalize_organization',self.w.towns[g.town_id].market,g.id)]
+            g=self.w.groups.get(organization_id(n.context,'group'))
+            if g and self.e.institutions.can_formalize(p,g,[self.w.characters[i] for i in self.e.spatial.at(p.position)])['eligible']:
+                return [('formalize_organization',None,g.id)]
         return []
 
     def invite(self,p,f):
@@ -341,10 +342,10 @@ class AccessActions:
             guide=self.w.characters.get(target)
             return self.e.geography.begin(p,n.target_id,'expedition',mode='follow_person',guide=guide)
         if a=='explore_poi':return self.explore(p,point)
-        if a=='claim_location':return self.claim(p,point,self.w.factions.get(n.context.get('faction_id')) if n else None)
+        if a=='claim_location':return self.claim(p,point,self.w.factions.get(organization_id(n.context,'faction')) if n else None)
         if a=='formalize_organization':
             g=self.w.groups.get(target);present=[self.w.characters[i] for i in self.e.spatial.at(p.position)]
-            f=self.e.society.found_faction(p,g,present) if g else None
+            f=self.e.institutions.formalization(p,g,present,True) if g else None
             if f:self.emit('GroupFormalized',p,f.id,group_id=g.id,members=list(f.member_ids));self.know_faction(p,f,'founder')
             return bool(f),'Formalização custeada por membros presentes.'
         if a=='seek_divine_contact':

@@ -53,13 +53,15 @@ class Phase46Tests(unittest.TestCase):
         self.e.navigation.relocate(self.guard,self.guard.home)
         self.e.conflicts.observe(self.p)
         r=self.e.lethality.evaluate(self.p,self.q,n)
-        self.assertTrue(r['available']);self.assertEqual(100,r['loss_importance'])
+        self.assertTrue(r['available']);self.assertEqual('known_close_loss',r['grave_basis'])
+        self.assertGreaterEqual(r['world_pressure'],80);self.assertTrue(r['known_facts'])
     def test_03_low_confidence_and_unknown_author(self):
         n,c=self.extreme()
         for f in self.p.knowledge.values():
             if f.kind=='CharacterKilled':f.confidence=30
         mixed=self.e.lethality.evaluate(self.p,self.q,n)
-        self.assertFalse(mixed['available']);self.assertEqual(30,mixed['confidence'])
+        self.assertFalse(mixed['available']);self.assertEqual(0,mixed['confidence'])
+        self.assertIn('low_confidence',mixed['blocking'])
         for f in self.p.knowledge.values():
             if f.actor_id==self.q.id:f.confidence=30
         r=self.e.lethality.evaluate(self.p,self.q,n)

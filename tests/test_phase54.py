@@ -123,11 +123,12 @@ class GeographyAccessTests(unittest.TestCase):
     def test_07_existing_group_can_formalize_without_new_money(self):
         third=next(c for c in self.w.characters.values() if c.id not in (self.p.id,self.q.id) and not c.organization_ids)
         self.e.navigation.relocate(third,self.p.position)
-        self.w.turn=180
+        self.w.turn=200
         need=self.e.needs.ensure(self.p,'organizational_survival',60,'test','Grupo duradouro')
         g=Group(self.w.allocate_id(),'Associação de ensaio',self.origin,'security',None,self.p.id,[self.p.id,self.q.id,third.id],0,need.id,investment=4,last_relevant=180)
         self.w.groups[g.id]=g
-        for c in (self.p,self.q,third):c.money=25;c.group_ids.append(g.id)
+        for c in (self.p,self.q,third):
+            c.money=25;c.group_ids.append(g.id);self.e.navigation.relocate(c,self.p.position)
         total=sum(c.money for c in self.w.characters.values())+sum(f.money for f in self.w.factions.values())
         f=self.e.society.found_faction(self.p,g,[self.p,self.q,third])
         self.assertIsNotNone(f)

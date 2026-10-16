@@ -1,4 +1,5 @@
 """Continuidade presencial de grupos e um conjunto pequeno de ações de facção."""
+from .organization_context import organization_id, bind_organization
 from .models import Location,Goal
 from .navigation import distance
 from .action_pressure import clamp
@@ -73,7 +74,7 @@ class CollectiveActionSystem:
             if g and g.status=='active' and g.cause!='expedition':self.group_pressure(g,p)
         n=p.needs.get('organizational_survival')
         if not n:return
-        g=self.w.groups.get(n.context.get('group_id'))
+        g=self.w.groups.get(organization_id(n.context,'group'))
         if g and g.status=='active':
             n.base_urgency=min(82,35+g.action_pressure.value*.55)
             pending=any(g.proposal_knowledge.get(i,{}).get('status') in ('draft','submitted','deferred') for i in g.proposal_ids)
@@ -81,7 +82,7 @@ class CollectiveActionSystem:
             if destination:n.context['known_location']=vars(destination.market)
             # Plano de encontro é comunicado na formação/adesão, não posição remota.
             if (self.w.turn-g.created_at)%24<6:n.base_urgency=min(85,n.base_urgency+10)
-        f=self.w.factions.get(n.context.get('faction_id'))
+        f=self.w.factions.get(organization_id(n.context,'faction'))
         if f and f.action_pressure.updated_at!=self.w.turn:
             a=self.faction_assessment(f,p)
             value=self.e.action_pressure.disposition(a['world_pressure'],p.personality.persistence,a['perceived_capacity'],
@@ -89,15 +90,27 @@ class CollectiveActionSystem:
             self.e.action_pressure.update(f,f.action_pressure,value,a['world_pressure'],a['eligibility_causes'][0],a['source_facts'],'faction')
             n.base_urgency=min(75,40+value*.4)
     def responses(self,p,g):
-        return [f for f in p.knowledge.values() if f.kind=='PolicyDecided' and f.context.get('group_id')==g.id
+        delivered=g.plan.get('relayed_responses',())
+        return [f for f in p.knowledge.values() if f.kind=='PolicyDecided' and
+                (f.context.get('group_id')==g.id or g.id in f.context.get('supporting_groups',()))
                 and f.target_id in g.proposal_ids and f.confidence>=30
-                and f.event_id>g.proposal_knowledge.get(f.target_id,{}).get('response_fact',-1)]
+                and f.event_id>=g.proposal_knowledge.get(f.target_id,{}).get('response_fact',-1)
+                and f.event_id not in delivered]
     def travel(self,p,target,n):
         return self.e.geography.candidates(p,target,n.kind,n)
 
+    def local_group_candidates(self,p,g,home):
+        if p.id==g.leader_id:
+            result=[('meet_group',home.market,g.id)] if self.w.turn-g.last_meeting>=24 else []
+            if g.failures and self.w.turn-p.social_state.get('last_protest',-1000)>=48:result.append(('protest',home.market,g.id))
+            if home.kind=='cidade' and g.responsibility_id and g.pressure>=85 and g.failures>=3:
+                result.append(('assume_local_office',home.market,g.id))
+            return result
+        return [('attend_group',home.market,g.id)] if (self.w.turn-g.created_at)%24<6 else []
+
     def candidates(self,p,n):
         if n.kind!='organizational_survival':return None
-        g=self.w.groups.get(n.context.get('group_id'))
+        g=self.w.groups.get(organization_id(n.context,'group'))
         if g and g.status=='active':
             town=self.authority(g);home=self.w.towns[g.town_id]
             delivery=g.plan.get('proposal_delivery_needed')
@@ -107,7 +120,7 @@ class CollectiveActionSystem:
             replies=self.responses(p,g)
             if replies:
                 if p.position.map_id!=home.id:return self.travel(p,home.id,n)
-                return [('relay_response',home.market,g.id)]
+                return [('relay_response',home.market,g.id)]+self.local_group_candidates(p,g,home)
             pending=[self.w.proposals[i] for i in g.proposal_ids if i in self.w.proposals and
                 g.proposal_knowledge.get(i,{}).get('status') in ('draft','submitted','deferred')]
             if p.id==g.leader_id and pending and town:
@@ -116,15 +129,8 @@ class CollectiveActionSystem:
                 if self.w.turn-p.social_state.get('last_policy_read',-1000)>=12:return [('read_response',town.market,g.id)]
                 return [('attend_group',town.market,g.id)]
             if p.position.map_id!=home.id:return self.travel(p,home.id,n)
-            if p.id==g.leader_id:
-                result=[('meet_group',home.market,g.id)] if self.w.turn-g.last_meeting>=24 else []
-                if g.failures and self.w.turn-p.social_state.get('last_protest',-1000)>=48:result.append(('protest',home.market,g.id))
-                if home.kind=='cidade' and g.responsibility_id and g.pressure>=85 and g.failures>=3:
-                    result.append(('assume_local_office',home.market,g.id))
-                return result
-            if (self.w.turn-g.created_at)%24<6:return [('attend_group',home.market,g.id)]
-            return []
-        f=self.w.factions.get(n.context.get('faction_id'))
+            return self.local_group_candidates(p,g,home)
+        f=self.w.factions.get(organization_id(n.context,'faction'))
         if f:
             order=f.assignments.get(p.id,{}).get('order',{})
             if order.get('action')=='raid' and self.w.turn-order['issued_at']<=240:
@@ -155,10 +161,12 @@ class CollectiveActionSystem:
     def execute(self,p,goal,n):
         if goal.action=='represent_travel':
             before=p.position;result=self.e.agency.follow_lead(p,goal.target_id,n)
-            g=self.w.groups.get(n.context.get('group_id')) if n else None
+            g=self.w.groups.get(organization_id(n.context,'group')) if n else None
             if g and g.status=='active' and before!=p.position:g.last_relevant=self.w.turn
             return result
         g=self.w.groups.get(goal.target_id)
+        if goal.action in ('attend_group','relay_response') and n and n.context.get('organization_type'):
+            if organization_id(n.context,'group')!=goal.target_id:return False,'Intenção pertence a outra organização.'
         if goal.action=='attend_group':
             if not g or p.id not in g.member_ids:return False,'Grupo conhecido indisponível.'
             p.social_state['group_attendance_until']=self.w.turn+4
@@ -173,11 +181,16 @@ class CollectiveActionSystem:
                 for q in present:
                     if q.id!=p.id:self.e.knowledge.learn(q,self.e.knowledge.transmitted(fact,p,q),False)
                 self.e.society.react(self.w.characters[g.leader_id],fact)
+                delivered=g.plan.setdefault('relayed_responses',[])
+                if fact.event_id not in delivered:delivered.append(fact.event_id)
+                del delivered[:-12]
             self.e.recorder.emit('ResponseRelayed','Uma resposta recebida voltou ao grupo.',p.id,g.id,p.position,
                 historical=True,context={'source_facts':[x.event_id for x in replies],'recipients':[q.id for q in present]})
             self.e.action_pressure.count('consequences:group');return True,'Resposta conhecida transmitida presencialmente.'
         f=self.w.factions.get(goal.target_id)
         if not f or p.id not in f.member_ids:return False,'Função organizacional indisponível.'
+        if n and n.context.get('organization_type') and organization_id(n.context,'faction')!=f.id:
+            return False,'Intenção pertence a outra organização.'
         if goal.action=='attend_faction':return True,'Membro presente para ação institucional conhecida; nenhuma agressão automática.'
         if goal.action=='plan_incursion':
             a=self.faction_assessment(f,p)

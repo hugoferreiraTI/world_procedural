@@ -45,11 +45,13 @@ class SpatialIndex:
 class EventRecorder:
     def __init__(self, world: WorldState, bus: EventBus, spatial: SpatialIndex):
         self.world, self.bus, self.spatial = world, bus, spatial
+        from .observability import HistoricalObserver
+        self.observer=HistoricalObserver(world)
 
     def emit(self, kind: str, description: str, actor_id: int | None = None,
              target_id: int | None = None, location: Location | None = None,
              historical: bool = False, witnesses: list[int] | None = None,
-             context: dict | None = None) -> Event:
+             context: dict | None = None, parent_event_ids=()) -> Event:
         observers = set(witnesses if witnesses is not None else
                         self.spatial.at(location) if location else ())
         # Participantes conhecem a própria ação. A posse de uma facção não
@@ -64,5 +66,6 @@ class EventRecorder:
         if historical:
             self.world.history.append(event)
         self.world.metrics[kind] = self.world.metrics.get(kind, 0) + 1
+        self.observer.on_event(event,parent_event_ids)
         self.bus.publish(event)
         return event

@@ -67,7 +67,10 @@ class Phase51Tests(unittest.TestCase):
         self.assertFalse(a['eligible']);self.assertEqual(0,a['world_pressure'])
         self.assertFalse(self.act(self.p,n,'finish',self.q.id)[0]);self.assertTrue(self.q.alive)
     def test_02_grave_known_loss_enables_intention_execution(self):
-        n=self.lethal();a=self.e.action_pressure.assess(self.p,n,'finish',self.q.id)
+        n=self.lethal()
+        self.e.graph.set(self.p.id,self.q.id,'amizade',0);self.e.graph.set(self.p.id,self.q.id,'casamento',0)
+        self.assertIsNotNone(self.e.lethal_decisions.consider(self.p,self.q,n))
+        a=self.e.action_pressure.assess(self.p,n,'finish',self.q.id)
         self.assertTrue(a['eligible']);self.assertGreaterEqual(a['world_pressure'],80)
         self.assertEqual(0,self.e.action_pressure.assess(self.p,n,'finish',self.t.mayor_id)['world_pressure'])
         self.p.health=40;self.p.fatigue=145
@@ -103,9 +106,11 @@ class Phase51Tests(unittest.TestCase):
         self.p.personality.honesty=0;self.e.graph.set(self.p.id,self.q.id,'amizade',0);self.e.graph.set(self.p.id,self.q.id,'casamento',0)
         self.e.items.create(self.p.id,'weapon');self.e.recovery.damage(self.p,65,'hunger')
         self.e.agency.adopt(self.p,n,force=True).intensity=100
-        self.assertTrue(self.e.lethality.evaluate(self.p,self.q,n)['available'])
+        audit=self.e.lethality.evaluate(self.p,self.q,n)
+        self.assertFalse(audit['available']);self.assertIn('low_confidence',audit['blocking'])
         self.assertFalse(self.e.action_pressure.world_pressure(self.p,n)['grave'])
-        hp=self.q.health;self.assertFalse(self.act(self.p,n,'attack',self.q.id)[0]);self.assertEqual(hp,self.q.health)
+        self.assertFalse(self.e.lethal_decisions.action_audit(self.p,self.q.id,n)['eligible'])
+        self.assertNotEqual('kill',self.e.conflicts.intent(self.p,self.q,n));self.assertTrue(self.q.alive)
     def test_04_received_group_failures_raise_pressure_without_duplicate(self):
         g=self.group();leader=self.w.characters[g.leader_id];prop=self.e.society.propose(leader,g)
         self.e.collective.group_pressure(g,leader);before=g.action_pressure.value
@@ -153,6 +158,9 @@ class Phase51Tests(unittest.TestCase):
         self.assertEqual(2,self.e.items.count(f.id,'food'));self.assertGreater(self.p.fatigue,10)
         self.assertFalse(self.e.collective.faction_assessment(f,self.p)['eligible'])
         self.e.society.orders(self.p,f)
+        # O abastecimento institucional tem precedência enquanto há estoque.
+        stock=self.e.items.count(f.id,'food')
+        if stock:self.e.items.transfer(f.id,self.p.id,self.e.items.first(f.id,'food'),stock)
         self.assertIn('perform_assignment',[a for a,d,t in self.e.society.candidates(self.p,n)])
         f.money=2;before=f.money+self.p.money
         self.assertTrue(self.act(self.p,n,'perform_assignment',f.id)[0]);self.assertEqual(before,f.money+self.p.money)
@@ -189,13 +197,20 @@ class Phase51Tests(unittest.TestCase):
         g=self.e.society.form(p,'resource_pressure',None,p.needs['political_pressure']);self.assertIsNotNone(g)
         leader=self.w.characters[g.leader_id];prop=self.e.society.propose(leader,g);self.assertIsNotNone(prop)
         peer=next(self.w.characters[i] for i in g.member_ids if i!=leader.id)
+        # Viagem exige a rota da jurisdição e provisões físicas, em ambos os sentidos.
+        route=next(r for r in self.w.routes.values() if set((r.origin,r.destination))==set((village.id,prop.town_id)))
+        for origin in (route.origin,route.destination):self.e.geography.learn(leader,route,origin,'controlled_jurisdiction')
+        self.e.items.create(leader.id,'food',30);self.e.items.create(leader.id,'water',30)
         self.assertNotEqual(village.id,prop.town_id)
         n=self.e.needs.ensure(leader,'organizational_survival',70,'test','Representação física',leader.id);n.context['group_id']=g.id
         def visit(target):
             steps=0
             while leader.position.map_id!=target and steps<1000:
                 old=leader.position;self.assertTrue(self.act(leader,n,'represent_travel',target)[0]);steps+=1;self.w.turn+=1
-                if old.map_id==leader.position.map_id:self.assertLessEqual(abs(old.x-leader.position.x)+abs(old.y-leader.position.y),1)
+                if old.map_id==leader.position.map_id:
+                    import math
+                    speed=math.ceil(route.distance/route.travel_time) if old.map_id==self.w.world_map_id else 1
+                    self.assertLessEqual(abs(old.x-leader.position.x)+abs(old.y-leader.position.y),speed)
             self.assertEqual(target,leader.position.map_id)
             while leader.position!=self.w.towns[target].market:self.e.navigation.approach(leader,self.w.towns[target].market,1);self.w.turn+=1
             return steps
@@ -204,7 +219,8 @@ class Phase51Tests(unittest.TestCase):
         self.assertTrue(self.act(leader,n,'submit_proposal',prop.id)[0]);prop.solution='food_distribution'
         mayor.personality.compassion=100;mayor.personality.greed=0;mayor.personality.diligence=0
         self.assertTrue(self.e.society.resolve(mayor,prop)[0]);self.assertIn(prop.status,('accepted','partial'))
-        self.assertEqual('submitted',g.proposal_knowledge[prop.id]['status'])
+        # A liderança aprendeu; os demais membros continuam sem receber a notícia.
+        self.assertEqual(prop.status,g.proposal_knowledge[prop.id]['status'])
         self.assertFalse(any(f.kind=='PolicyDecided' and f.target_id==prop.id for f in peer.knowledge.values()))
         visit(village.id);self.assertEqual(village.id,leader.town_id)
         self.assertTrue(self.act(leader,n,'relay_response',g.id)[0]);self.assertEqual(prop.status,g.proposal_knowledge[prop.id]['status'])

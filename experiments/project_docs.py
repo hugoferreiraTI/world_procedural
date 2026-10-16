@@ -355,9 +355,8 @@ definitiva: a política pode retomar e concluir.
       ['TRANSPORT','Comerciante, rota conhecida e provisões','Carga real de três grãos/madeira/ferro, Journey no mesmo reino e entrega confirmada antes do salário.'],
       ['cult_recognition','Objetivo especial de política','Reconhecimento administrativo de culto usa Town.policies, sem criar alimento.']])
     text+='Barreiras emitidas incluem orçamento esgotado, trabalhador inapto, falta de madeira/ferro/grão/armazenamento, rota/carga/provisões ausentes, chegada não confirmada, carga perdida e falta de trabalho efetivo. Nem toda causa de não seleção vira barreira: uma Need que nunca foi escolhida pode não chegar a policy_work. `known_policies` é informação individual; a existência de uma política não contrata todos os profissionais automaticamente.\n\n'
-    text+='## Formalização, facções e adesão\n\nO chamado de formalização em `Society.meeting` tem guardas anteriores: investimento ≥4, idade ≥168h, pelo menos três membros e dois presentes com dinheiro >15. Passar por elas ainda não garante formalizar. `Institutions.formalization` deriva pressão, presença e contribuições; `Society.found_faction` verifica limite mundial, liderança e capacidade organizacional.\n\n'
-    text+='Existe também uma via legada em `AccessActions.candidates/execute`: `formalize_organization` chama `Society.found_faction` diretamente. Ela exige idade/investimento/membros e contribuições, mas não passa pelo score ≥65 nem pelo mínimo de três presentes de `Institutions.formalization`. A auditoria reproduziu a divergência com score 55 e dois fundadores; não foi corrigida nesta limpeza. Portanto, os gates da função de pressão não são invariantes de todas as vias.\n\n'
-    text+=excerpt('institutions.py','Institutions.formalization')
+    text+='## Formalização, facções e adesão\n\nTodos os entrypoints usam Institutions.can_formalize: idade ≥168h, investimento ≥4, score ≥65, três presentes, dois com dinheiro >15, contribuições ≥4, liderança/estado/limites. formalize_organization é compatibilidade para a mesma regra, sem fórmula alternativa. Idade/investimento sozinhos não garantem o score.\n\n'
+    text+=excerpt('institutions.py','Institutions.can_formalize')
     text+='A facção guarda `origin_group_id`, fundadores, causa, história e hora da formalização. Contribuições saem de dinheiro pessoal real; apenas fundadores presentes entram. O modelo preserva o grupo de origem como registro. Cooperação criminosa reutiliza o mesmo Group/Faction, derivada de fatos próprios, conhecimento de crime e confiança; não há BanditNPC.\n\n'
     text+='`AccessActions` descobre organizações por encontro/fato. Convite precisa de oferta comunicada; pedido espontâneo usa interesse conhecido. `Institutions.membership` avalia termos recebidos e custos. Fadiga ≥85 ou HP <45 adiam com reconsideração; independência ≥90 pode recusar. Guarda/soldado pode condicionar ingresso a arma em risco alto. Contato com um membro basta para registrar; não há adesão telepática. O ingresso comum exige ausência de organização prévia, embora o modelo comporte até três por outros caminhos.\n\n'
     text+=excerpt('institutions.py','Institutions.membership_scores')
@@ -365,7 +364,7 @@ definitiva: a política pode retomar e concluir.
     text+='Convites conservam offered/considering/conditioned/deferred/accepted/rejected/expired_for_reason; morte é motivo de expiração, não um simples relógio. Retomada depende de refresh, prioridade, aptidão e contato. Termos podem citar relatório do estoque de HQ e recursos da organização, sem prometer recebimento automático.\n\n'
     text+=excerpt('institutions.py','Institutions.capabilities')
     text+='`faction_candidates` permite compra, suprimento, patrulha, apoio político ou incursão conforme causa/capacidade. As ações existentes também incluem contribuições, relatórios, ordens e preparação. Capacidade booleana não prova que exista uma ação autônoma completa para cada rótulo: treinamento especializado, comércio geral, escolta remunerada e contratos CityContract são **PARCIAIS/ausentes como ciclo completo**. Estoque de Faction é agregado; não existe um sistema completo de depósitos e custódia por região.\n\n'
-    text+='Inconsistências atuais documentadas na auditoria, sem correção comportamental: `faction_candidates` oferece suprimento se houver comida OU água, enquanto `execute` exige o tipo da maior privação; `GoalSystem.preventive_choice` pode recriar `fill_water` após `_evaluate`, contornando o bloqueio de falha e sem verificar estoque. `Society.refresh` também pode preservar `faction_id` ao reutilizar organizational_survival para um grupo; é preciso ler fonte/alvo/contexto juntos, pois não há uma Need independente para cada instituição.\n\n'
+    text+='Na 5.5.5, suprimento carrega resource_kind até Goal/execução; seleção e preparação compartilham eligibility; contextos institucionais usam organization_type/organization_id e apenas o alias correspondente.\n\n'
     text+='''## Crime, lei, investigação e combate
 
 Roubo transfere bem real e emite ItemStolen; autoria conhecida é separada de
@@ -467,19 +466,22 @@ significa que todos os personagens se tornaram testemunhas ou concordaram.
 
 ## Persistência e compatibilidade
 
-`persistence.encode/decode` usa tags `$type`, `$dict`, `$tuple`; tipos permitidos
+`persistence.encode/decode` usa tags `$type`, `$dict`, `$tuple`, `$set`; tipos permitidos
 vêm das dataclasses conhecidas. JSON não executa código. `loads` verifica versão
 de formato e regras, valida WorldState e testa restauração do RNG.
 `JsonRepository.save` valida, escreve arquivo temporário, fsync e substitui
 atomicamente o destino. As regras atuais não migram automaticamente saves de
 outra versão. Auditorias antigas não são saves necessários ao runtime.
 
-O contexto de Event/Fact pode conservar listas mutáveis do estado vivo. Por
-exemplo, adesões posteriores podem alterar a lista de membros de um evento de
-fundação antigo. A serialização por valor não preserva esses aliases: continuar
-após load pode produzir histórico diferente do mundo original mesmo com RNG e
-membros atuais iguais. Continuidade determinística básica funciona em cenários
-cobertos, mas não é garantia universal enquanto esse caso existir.
+Event e Fact copiam profundamente seus payloads na construção, incluindo coleções
+aninhadas. Adesões futuras não alteram a fundação antiga. A avaliação após morte
+fica no evento PostKillAppraisal, ligado à morte por parent_event_ids.
+
+Formato atual: 2; regras mvp-13-fase5.5.5. generation_version e generation_config
+são persistidos. Não há migração de saves antigos. A observabilidade possui IDs
+privados, episódios de Need, DecisionTrace, ActionAttempt e LearningReceipt;
+seus índices são reconstruídos no load. Os controles e limites estão no relatório
+da Fase 5.5.5.
 
 ## Invariantes verificadas e limites operacionais
 
@@ -530,7 +532,7 @@ viajar, formalizar ou sobreviver.
     text+='### Métodos centrais: entradas, saídas e efeitos\n\n'
     central=[('engine.py','Engine.step','Estado do mundo e RNG','None','Avança hora, executa ações/fisiologia/eventos e rotinas.'),
       ('needs.py','NeedSystem.refresh','Character','Lista ordenada de Need','Cria/reativa/encerra pressões e atualiza prioridades.'),
-      ('goals.py','GoalSystem.solutions','Character e Need','Lista ordenada de Solution','Enumera e pontua caminhos; alguns produtores mantêm diagnósticos/estado de acesso, portanto não usar debug como prova de ausência de efeitos.'),
+      ('goals.py','GoalSystem.solutions','Character e Need','Lista ordenada de Solution','QUERY isolada: enumera em cópia do mundo/RNG; o ciclo executável usa plan_solutions (COMMAND).'),
       ('goals.py','GoalSystem.decide','Character e elapsed','None','Escolhe necessidade, mantém/interrompe Goal e anda/executa.'),
       ('goals.py','GoalSystem.execute','Character, Goal, horas','(bool, texto)','Valida, despacha serviço, registra resultado/estado.'),
       ('institutions.py','Institutions.search_groups','Pessoa, causa, sujeito, audit','Lista de Group','Busca conhecimento pessoal; pode emitir diagnóstico throttled.'),
@@ -575,17 +577,11 @@ atualização da rota. Chegar não é mudar residência nem obter audiência div
 
 ## Limitações atuais
 
-- `FaithSystem.candidates` pode enumerar `report_congregation`, mas essa ação
-  não existe em `utility.BASE`; avaliar a alternativa provoca KeyError antes do
-  envio do relato religioso. Há reprodução controlada, sem correção aplicada.
-- `Society.react` retorna após delegar PolicyDecided antes do ramo que atribui
-  `Group.responsibility_id`; a consequência de responsabilização/tomada de cargo
-  não completa esse caminho. A delegada atual não preenche o campo.
-- `GoalSystem.solutions` pode atualizar planos/diagnósticos durante a enumeração;
-  não é uma API universalmente pura para um visualizador consultar passivamente.
-- Morte por exploração registra a causa `exploration`, mas a descrição genérica
-  de `finish_death` pode descrevê-la como autoinfligida. O contexto guarda a causa
-  específica; a frase não é uma fonte confiável para classificá-la.
+- A Fase 5.5.5 corrigiu B01–B08 e separou consulta pura de planejamento.
+  A evidência completa está em `FASE_5_5_5.md`; a auditoria anterior é histórica.
+- Observabilidade V1 preserva eventos, decisões privadas e recebimentos separados.
+  Detalhes ordinários têm retenção limitada; eventos históricos continuam crescendo.
+- Saves do formato 1 / regras 5.5 são recusados explicitamente. Não há migração.
 - Decisões institucionais competem com fisiologia, deslocamento e compromissos;
   não há garantia de atendimento por prefeito, representante ou candidato.
 - A busca social usa afinidade dirigida ao líder; familiaridade, confiança e
@@ -604,35 +600,9 @@ atualização da rota. Chegar não é mudar residência nem obter audiência div
   desempate e razões de cada movimento. A auditoria externa observa parte desses
   dados sem adicionar persistência ou instrumentação nova ao núcleo.
 '''
+    text='> Estado atual: Fase 5.5.5. Veja [FASE_5_5_5.md](FASE_5_5_5.md) para validação e contratos históricos V1.\n\n'+text
     (BASE/'PROJECT.md').write_text(text,encoding='utf-8')
-    readme='''# Simulador procedural — estado atual 5.5
-
-Jogo de terminal em português, Python 3.11+, somente biblioteca padrão.
-Regras e saves: `mvp-12-fase5.5`; geração: `mvp-5.4`.
-
-```bash
-python3 -m procedural --seed Dovha --nome Viajante
-python3 -m procedural --seed MinhaSeed --simular 100 --salvar campanha.json
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tests python3 -m unittest test_phase55 test_phase54
-```
-
-No terminal, `ajuda` lista os comandos. Movimento/ações válidas consomem horas;
-consultas e ações inválidas não avançam o mundo. Salvar/carregar inclui RNG e estado tipado; versões incompatíveis são recusadas.
-Há uma limitação de continuidade com contextos mutáveis, documentada em PROJECT.md.
-
-- [PROJECT.md](PROJECT.md): arquitetura, modelos, fórmulas, sistemas, arquivos e testes.
-- [Radiografia total](reports/auditoria_total/RADIOGRAFIA_TOTAL.md): auditoria integral, decisões reais e observabilidade.
-- [Relatório de coesão](reports/diagnostico_coesao/RELATORIO_COESAO.md): campanha diagnóstica nova de 300h.
-- [LIMPEZA.md](LIMPEZA.md): o que foi retirado e preservado.
-- Referência anterior Vaelora-55: [técnico](reports/fase_5_5/RELATORIO_TECNICO.md),
-  [mundo](reports/fase_5_5/MUNDO.md), [histórias](reports/fase_5_5/HISTORIAS_REAIS.md).
-
-A Limpeza Intuitiva não é uma nova fase e não rebalanceia o jogo. A única mudança
-no núcleo foi a correção de crash em `Geography.emit`, autorizada pelo usuário e
-registrada no relatório e manifesto. O histórico de fontes/documentos retirados da árvore está no
-Git local. Relatórios antigos podem citar evidências e saves já removidos pela
-retenção; os três Markdown de Vaelora-55 são a baseline documental preservada.
-'''
+    readme='# Simulador procedural — estado atual 5.5.5\n\nJogo de terminal em português, Python 3.11+, somente biblioteca padrão.\nRegras e saves: `mvp-13-fase5.5.5`; geração: `mvp-5.4`.\n\n```bash\npython3 -m procedural --seed Dovha --nome Viajante\npython3 -m procedural --seed MinhaSeed --simular 100 --salvar campanha.json\nPYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v\n```\n\nNo terminal, `ajuda` lista os comandos. Movimento/ações válidas consomem horas;\nconsultas e ações inválidas não avançam o mundo. Salvar/carregar inclui RNG e estado tipado; versões incompatíveis são recusadas.\nEventos e Facts são snapshots. A observabilidade V1 separa história do mundo, decisões privadas e aprendizagem. Saves anteriores ao formato 2 são incompatíveis; não há migração automática.\n\n- [Fase 5.5.5](FASE_5_5_5.md): correções, observabilidade, suíte e campanha de regressão.\n- [PROJECT.md](PROJECT.md): arquitetura, modelos, fórmulas, sistemas, arquivos e testes.\n- [Radiografia total](reports/auditoria_total/RADIOGRAFIA_TOTAL.md): auditoria integral, decisões reais e observabilidade.\n- [Relatório de coesão](reports/diagnostico_coesao/RELATORIO_COESAO.md): campanha diagnóstica nova de 300h.\n- [LIMPEZA.md](LIMPEZA.md): o que foi retirado e preservado.\n- Referência anterior Vaelora-55: [técnico](reports/fase_5_5/RELATORIO_TECNICO.md),\n  [mundo](reports/fase_5_5/MUNDO.md), [histórias](reports/fase_5_5/HISTORIAS_REAIS.md).\n\nNa Limpeza Intuitiva anterior, a única mudança no núcleo foi a correção de crash em `Geography.emit`, autorizada pelo usuário e\nregistrada no relatório e manifesto. O histórico de fontes/documentos retirados da árvore está no\nGit local. Relatórios antigos podem citar evidências e saves já removidos pela\nretenção; os três Markdown de Vaelora-55 são a baseline documental preservada.\n\nConfiguração histórica por API: `generate_world(..., historical_trace_level="OFF" | "NORMAL" | "AUDIT")`. O padrão é `NORMAL`. A Fase 5.5.5 não altera produção, dano, pressões ou thresholds de balanceamento.\n'
     (BASE/'README.md').write_text(readme,encoding='utf-8')
     print(f'PROJECT.md: {len(text.splitlines())} linhas; {len(text.encode())} bytes')
 

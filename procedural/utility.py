@@ -134,3 +134,8 @@ WEIGHTS.update({'route_travel':{'persistence':20,'risk':-20},'ask_route':{'persi
 
 BASE.update(policy_work=65,support_proposal=65,institutional_support=65,institutional_patrol=60,institutional_purchase=60,institutional_supply=85,institutional_raid=55,institutional_response=55)
 WEIGHTS.update(policy_work={"diligence":25,"financial_pressure":25},institutional_patrol={"diligence":20,"courage":15},institutional_raid={"greed":35,"honesty":-75,"courage":15})
+
+# Relato é comunicação religiosa de fatos conhecidos, como report_to_faction;
+# afinidade vem da devoção e dever da diligência. Viagem usa a penalidade comum.
+BASE['report_congregation'] = BASE['report_to_faction']
+WEIGHTS['report_congregation'] = {'diligence':20, 'devotion':25}

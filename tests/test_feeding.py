@@ -67,8 +67,12 @@ class FeedingTests(unittest.TestCase):
 
     def test_meal_at_normal_threshold_uses_most_nutrition(self):
         self.person.hunger = FEEDING.meal_threshold;self.give_food()
-        self.engine.goals.decide(self.person)
-        self.assertEqual(self.person.goal.action, 'eat')
+        need=self.need('food')
+        choices=self.engine.goals.solutions(self.person,need)
+        choice=self.engine.goals.choose(choices)
+        self.assertEqual('eat',choice.action)
+        goal=Goal(self.world.allocate_id(),need.id,choice.action,choice.score,self.world.turn)
+        self.assertTrue(self.engine.goals.execute(self.person,goal,1)[0])
         self.assertEqual(self.person.hunger, max(0,FEEDING.meal_threshold-FEEDING.meal_reduction))
         self.assertEqual(self.world.metrics['Feeding:NutritionUsed:sum'], min(FEEDING.meal_threshold,FEEDING.meal_reduction))
 
@@ -126,7 +130,8 @@ class FeedingTests(unittest.TestCase):
         self.stock('food', 1);self.person.money = 0;self.person.hunger = 100;self.person.health = 2
         self.engine.economy.observe(self.person)
         food = self.need('food')
-        choices = self.engine.goals.solutions(self.person, food)
+        # COMMAND explícito: este teste inspeciona o diagnóstico do planejamento.
+        choices = self.engine.goals.plan_solutions(self.person, food)
         self.assertNotIn('work', [s.action for s in choices])
         rejected = next(s for s in self.engine.goals.rejected_food[self.person.id] if s.action == 'work')
         self.assertTrue(rejected.feeding['economically_viable'])

@@ -68,6 +68,7 @@ class NeedSystem:
                     self.agency.close(owner,commitment,'satisfied' if need.status=='satisfied' else 'abandoned',
                         need.context.get('resolution','need_satisfied' if need.status=='satisfied' else 'need_no_longer_valid'))
             need.created_at = self.world.turn
+            need.episode += 1
             need.context, need.expires_at = {}, None
             self.count("Created", need.kind, owner)
         need.base_urgency = max(0, min(100, urgency))

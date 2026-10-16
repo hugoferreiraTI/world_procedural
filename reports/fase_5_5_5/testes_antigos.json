@@ -1,0 +1,170 @@
+[
+  {
+    "test": "test_phase45.Phase45Tests.test_12_lethal_incapacity_requires_new_moral_decision",
+    "before": "ERROR",
+    "classification": "OUTDATED_FIXTURE",
+    "cause": "A perda referida não possuía vínculo próximo suficiente no cenário; o ataque não formava decisão letal persistente.",
+    "action": "Vínculo próximo explícito; mantém a comparação entre poupar e desfecho fatal real.",
+    "after": "PASS"
+  },
+  {
+    "test": "test_phase46.Phase46Tests.test_02_extreme_convergence_and_evidence_trace",
+    "before": "ERROR",
+    "classification": "OUTDATED_TEST",
+    "cause": "loss_importance deixou de integrar o retorno da avaliação moderna.",
+    "action": "Verifica known_close_loss, world_pressure e os fatos conhecidos que sustentam a decisão.",
+    "after": "PASS"
+  },
+  {
+    "test": "test_phase5.Phase5Tests.test_10_promotion_not_xp_or_money_only",
+    "before": "ERROR",
+    "classification": "OUTDATED_FIXTURE",
+    "cause": "Recrutar agora comunica convite; não registra aceitação do convidado.",
+    "action": "Executa contato/avaliação/aceitação antes da promoção; promote também retorna False para vínculo/assignment ausente (robustez).",
+    "after": "PASS"
+  },
+  {
+    "test": "test_feeding.FeedingTests.test_meal_at_normal_threshold_uses_most_nutrition",
+    "before": "FAIL",
+    "classification": "INVALID_EXPECTATION",
+    "cause": "Fome 35 é oportunidade normal; fé pode ganhar a competição entre Needs.",
+    "action": "Testa escolha/execução de eat dentro da Need food e mantém os testes globais de emergência; não elevou prioridade da fome.",
+    "after": "PASS"
+  },
+  {
+    "test": "test_phase4.Phase4Tests.test_15_population_balance_geography_identity",
+    "before": "FAIL",
+    "classification": "OUTDATED_TEST",
+    "cause": "1728 NPCs / 73 localidades eram números anteriores à geração 5.4.",
+    "action": "Confere faixa atual, 104/60/18 residentes por tipo, proporção abstrata e identidade da geografia entre densidades.",
+    "after": "PASS"
+  },
+  {
+    "test": "test_phase41.Phase41Tests.test_06_recovery_ends_and_material_despair_falls_gradually",
+    "before": "FAIL",
+    "classification": "OUTDATED_FIXTURE",
+    "cause": "Faltava reserva alimentar: aos 76 HP a reserva e o expediente venciam a recuperação de baixa prioridade.",
+    "action": "Adiciona provisões reais à fixture de estabilização; mantém 12h, HP≥80, redução de desespero material e preservação do luto. Prioridades do mundo não foram ajustadas.",
+    "after": "PASS"
+  },
+  {
+    "test": "test_phase45.Phase45Tests.test_16_interlocal_following_uses_only_known_lead",
+    "before": "FAIL",
+    "classification": "OUTDATED_FIXTURE",
+    "cause": "Local conhecido podia ser a própria cidade; lugar conhecido não concede rota. follow_lead é compatibilidade para Geography.travel.",
+    "action": "Ensina uma conexão real entre localidades diferentes, fornece provisões e verifica route_travel/Journey; limpa lugar/rota para validar desconhecimento.",
+    "after": "PASS"
+  },
+  {
+    "test": "test_phase46.Phase46Tests.test_03_low_confidence_and_unknown_author",
+    "before": "FAIL",
+    "classification": "OUTDATED_TEST",
+    "cause": "A causa letal atual filtra evidência abaixo de 60; a certeza de uma causa admissível passa a zero.",
+    "action": "Exige confiança zero, low_confidence e indisponibilidade, mantendo o controle sem autor conhecido.",
+    "after": "PASS"
+  },
+  {
+    "test": "test_phase5.Phase5Tests.test_06_group_response_requires_received_decision",
+    "before": "FAIL",
+    "classification": "CONFIRMED_BUG",
+    "cause": "B02: ramo que atribuía responsabilidade era inalcançável.",
+    "action": "Institutions.react_decision é a única autoridade; a expectativa original passa sem afrouxamento.",
+    "after": "PASS"
+  },
+  {
+    "test": "test_phase5.Phase5Tests.test_21_divine_death_is_separate_and_not_automatic_apotheosis",
+    "before": "FAIL",
+    "classification": "OUTDATED_FIXTURE",
+    "cause": "Posição espiritual do deus não garante acesso físico desde 5.4.",
+    "action": "Constrói manifestação física controlada antes de testar morte/essência; preserva separação de apoteose.",
+    "after": "PASS"
+  },
+  {
+    "test": "test_phase5.Phase5Tests.test_22_claimed_essence_transforms_domain",
+    "before": "FAIL",
+    "classification": "OUTDATED_FIXTURE",
+    "cause": "Não havia manifestação física, portanto não era liberada a essência.",
+    "action": "Satisfaz o acesso físico na fixture; preserva testes do domínio transformado, crença, singularidade e persistência.",
+    "after": "PASS"
+  },
+  {
+    "test": "test_phase5.Phase5Tests.test_26_situational_lethality_requires_immediate_extreme_threat",
+    "before": "FAIL",
+    "classification": "OUTDATED_TEST",
+    "cause": "O modelo moderno distingue reactive_threat e a lesão atribuída persistente que pode continuar como retributive.",
+    "action": "Verifica os modos e a causa persistente corretos; não obriga o motor a apagar lesão depois de quatro horas.",
+    "after": "PASS"
+  },
+  {
+    "test": "test_phase5.Phase5Tests.test_28_save_limits_query_purity_and_seeded_continuity",
+    "before": "FAIL",
+    "classification": "CONFIRMED_BUG",
+    "cause": "solutions modificava planos/diagnósticos na consulta.",
+    "action": "QUERY em cópia isolada; o ciclo executável usa plan_solutions. Mantida igualdade integral do save e consultas de interface.",
+    "after": "PASS"
+  },
+  {
+    "test": "test_phase5.Phase5Tests.test_29_office_contact_and_known_physical_faction_route",
+    "before": "FAIL",
+    "classification": "OUTDATED_FIXTURE",
+    "cause": "Relatório organizacional era tratado como teleporte entre mapa global e cidade.",
+    "action": "Exige rejeição sem percurso, confirma posição e depois testa o relatório em presença real; restante da sucessão/residência é preservado.",
+    "after": "PASS"
+  },
+  {
+    "test": "test_phase5.Phase5Tests.test_30_public_reply_is_physical_and_remote_status_is_not_knowledge",
+    "before": "FAIL",
+    "classification": "OUTDATED_FIXTURE",
+    "cause": "Outros membros presentes na administração aprendiam a resposta legitimamente.",
+    "action": "Afasta todos os membros para testar ausência de notícia, depois retorna o representante ao quadro público.",
+    "after": "PASS"
+  },
+  {
+    "test": "test_phase51.Phase51Tests.test_02_grave_known_loss_enables_intention_execution",
+    "before": "FAIL",
+    "classification": "REAL_REGRESSION",
+    "cause": "O candidato attack podia ignorar incapacidade exigida pela execução de uma decisão letal ativa; a fixture também permitia contenção por vínculo ao alvo.",
+    "action": "Constitui decisão persistente explícita, sem vínculo protetor; _evaluate usa o mesmo action_audit letal da execução. Mantém desejo persistente, bloqueio físico, RNG e desfecho real.",
+    "after": "PASS"
+  },
+  {
+    "test": "test_phase51.Phase51Tests.test_03_many_weak_factors_do_not_become_grave_world_pressure",
+    "before": "FAIL",
+    "classification": "INVALID_EXPECTATION",
+    "cause": "Relatos abaixo da confiança mínima já não produzem intenção letal válida.",
+    "action": "Exige bloqueio letal e ausência de intenção kill; não obriga o retorno do desejo irracional que foi substituído pelo modelo atual.",
+    "after": "PASS"
+  },
+  {
+    "test": "test_phase51.Phase51Tests.test_04_received_group_failures_raise_pressure_without_duplicate",
+    "before": "FAIL",
+    "classification": "CONFIRMED_BUG",
+    "cause": "B02 bloqueava responsabilidade e assume_local_office.",
+    "action": "Mantém todas as expectativas originais: três falhas conhecidas, sem duplicação, cargo disponível e restrição para guarda.",
+    "after": "PASS"
+  },
+  {
+    "test": "test_phase51.Phase51Tests.test_07_capable_faction_acts_with_cost_and_ideology_filter",
+    "before": "FAIL",
+    "classification": "INVALID_EXPECTATION",
+    "cause": "Abastecimento existente tem precedência sobre serviço no provedor institucional; a ordem não desapareceu.",
+    "action": "Transfere estoque real antes de testar a etapa de ordem; conserva custo, ideologia, patrulha/roubo e pagamento. Não altera prioridade dos provedores.",
+    "after": "PASS"
+  },
+  {
+    "test": "test_phase51.Phase51Tests.test_10_village_representation_travels_and_response_returns",
+    "before": "FAIL",
+    "classification": "OUTDATED_FIXTURE",
+    "cause": "Faltavam rota/provisões e a antiga velocidade de um passo não representa a estrada atual. Também havia bloqueio real de retransmissão após conhecimento do líder.",
+    "action": "Ensina rota/provisões e confere velocidade do próprio trajeto; corrige respostas ainda não retransmitidas sem duplicar responsabilização e mantém encontro físico.",
+    "after": "PASS"
+  },
+  {
+    "test": "test_phase51.Phase51Tests.test_11_pressure_save_queries_and_deterministic_continuation",
+    "before": "FAIL",
+    "classification": "CONFIRMED_BUG",
+    "cause": "B01: contexto de fundação compartilhava lista de membros.",
+    "action": "Snapshots profundos e consulta pura; igualdade integral permanece exigida.",
+    "after": "PASS"
+  }
+]

@@ -1,4 +1,5 @@
 """Organização local por encontros. Decisões continuam em Need/Solution/Goal."""
+from .organization_context import organization_id, bind_organization
 from dataclasses import asdict,replace
 from .models import Group, Proposal, Faction, Commitment, Goal, Location, Fact
 from .needs import FINISHED
@@ -149,12 +150,12 @@ class SocietySystem:
         mine=[self.w.groups[i] for i in p.group_ids if i in self.w.groups and self.w.groups[i].status=='active' and self.w.groups[i].cause!='expedition']
         if mine:
             g=mine[0];n=self.e.needs.ensure(p,'organizational_survival',min(75,25+g.pressure*.4),
-                 'group:'+str(g.id),'Participar da organização conhecida',g.leader_id);n.context['group_id']=g.id
+                 'group:'+str(g.id),'Participar da organização conhecida',g.leader_id);bind_organization(n.context,'group',g.id)
         elif p.organization_ids:
             f=next((self.w.factions.get(i) for i in p.organization_ids if self.w.factions.get(i) and self.w.factions[i].status=='active'),None)
             if f:
                 n=self.e.needs.ensure(p,'organizational_survival',45,'faction:'+str(f.id),'Atender função organizacional',f.leader_id)
-                n.context={'faction_id':f.id}
+                n.context={};bind_organization(n.context,'faction',f.id)
                 if p.id==f.leader_id and p.position.map_id!=p.town_id:
                     n.context['known_location']=vars(self.w.towns[p.town_id].market)
             else:self.e.needs.satisfy(p,'organizational_survival')
@@ -195,16 +196,6 @@ class SocietySystem:
             if institutional:return institutional
         collective=self.e.collective.candidates(p,n)
         if collective is not None:return collective
-        if n.kind=='political_pressure':
-            cause=n.context['cause'];subject=n.context.get('subject');here=self.e.spatial.at(p.position)
-            choices=[]
-            if self.w.turn-p.social_state.get('last_share',-1000)>=24:
-                choices.append(('share_problem',None,None))
-            if len(p.group_ids)<3 and not any(g.cause==cause and g.subject_id==subject and p.id in g.member_ids for g in self.groups_here(p)) and self.shared_facts(p,cause,subject):choices.append(('organize',None,None))
-            for g in self.groups_here(p):
-                if len(p.group_ids)<3 and g.cause==cause and g.subject_id==subject and p.id not in g.member_ids and g.leader_id in here:
-                    choices.append(('join_group',None,g.id))
-            return choices
         if n.kind=='military_service':return [('issue_local_order',self.w.towns[p.town_id].market,n.target_id)]
         if n.kind=='governance':
             if n.context.get('mode')=='office_hours':return [('serve_office',self.w.towns[p.town_id].market,p.id)]
@@ -215,38 +206,16 @@ class SocietySystem:
             return choices
         if n.kind=='recognition':return [('seek_local_office',self.w.towns[p.town_id].market,n.target_id)]
         if n.kind!='organizational_survival':return []
-        gid=n.context.get('group_id');g=self.w.groups.get(gid)
-        if g:
-            pending=[self.w.proposals[i] for i in g.proposal_ids if i in self.w.proposals and g.proposal_knowledge.get(i,{}).get('status') in ('draft','submitted','deferred')]
-            if p.id==g.leader_id and pending and g.proposal_knowledge[pending[0].id]['status']=='draft':
-                observed=p.observations.get(pending[0].target_id)
-                dest=observed.position if observed and self.w.turn-observed.turn<=24 and observed.position.map_id==g.town_id else self.w.towns[g.town_id].market
-                return [('submit_proposal',dest,pending[0].id)]
-            choices=[]
-            if p.id==g.leader_id and pending and self.w.turn-p.social_state.get('last_policy_read',-1000)>=24:
-                choices.append(('read_response',self.w.towns[g.town_id].market,g.id))
-            if p.id==g.leader_id and self.w.turn-g.last_meeting>=24:choices.append(('meet_group',self.w.towns[g.town_id].market,g.id))
-            if g.failures and self.w.turn-p.social_state.get('last_protest',-1000)>=48:choices.append(('protest',self.w.towns[g.town_id].market,g.id))
-            if g.responsibility_id and g.pressure>=85 and g.failures>=3 and p.id==g.leader_id:
-                choices.append(('assume_local_office',self.w.towns[g.town_id].market,g.id))
-            return choices
-        f=self.w.factions.get(n.context.get('faction_id'))
+        gid=organization_id(n.context,'group');g=self.w.groups.get(gid)
+        # Grupos ativos já foram tratados por CollectiveAction.
+        if g:return []
+        f=self.w.factions.get(organization_id(n.context,'faction'))
         if not f:return []
-        if p.id==f.leader_id and p.position.map_id!=p.town_id:
-            # Preparação e percurso existentes, sem teleporte ou mudança de residência.
-            temporary=replace(n,kind='family',context={'known_location':vars(self.w.towns[p.town_id].market)})
-            return self.e.agency.travel_candidates(p,temporary)
         choices=[]
         if self.w.turn-p.social_state.get('last_report',-1000)>=24:choices.append(('report_to_faction',None,f.id))
         if self.w.turn-p.social_state.get('last_contribution',-1000)>=72 and p.money>15:choices.append(('contribute',None,f.id))
-        if p.id==f.leader_id and len(f.member_ids)<64:
-            for i in self.e.spatial.at(p.position):
-                q=self.w.characters[i]
-                if q.id!=p.id and q.id not in f.member_ids and self.affinity(q,p,f.purpose)>=35:choices.append(('recruit_member',None,q.id))
         assignment=f.assignments.get(p.id,{}).get('order')
         if assignment:choices.append(('perform_assignment',Location(**assignment['location']),f.id))
-        if p.id==f.leader_id and not choices and p.position.map_id!=p.town_id:
-            choices.append(('report_to_faction',None,f.id))
         return choices
     def meeting(self,p,g):
         present=[q for q in self.living(g.member_ids) if q.position==p.position]
@@ -262,8 +231,7 @@ class SocietySystem:
         if not any(g.proposal_knowledge.get(i,{}).get('status') in ('draft','submitted','deferred') for i in g.proposal_ids):
             if self.propose(p,g):p.social_state['meaningful_social_actions']=p.social_state.get('meaningful_social_actions',0)+1
         self.emit('GroupMeeting',p,g.id,members=[q.id for q in present],pressure=g.pressure,known_facts=list(g.knowledge)[-3:])
-        if g.investment>=4 and self.w.turn-g.created_at>=168 and len(g.member_ids)>=3 and sum(q.money>15 for q in present)>=2:
-            self.e.institutions.formalization(p,g,present,True)
+        self.e.institutions.formalization(p,g,present,True)
         return True,'Reunião e avaliação coletiva realizadas.'
     def propose(self,p,g):
         return self.e.institutions.propose(p,g)
@@ -271,43 +239,6 @@ class SocietySystem:
     def decision_scores(self,p,prop):
         return self.e.institutions.decision_scores(p,prop)
 
-    def material(self,p,prop,partial=False):
-        t=self.w.towns[prop.town_id];g=self.w.groups[prop.group_id];result={'food':0,'money':0,'recipients':[]}
-        limit=max(1,prop.support//2) if partial else prop.support
-        if prop.solution=='food_distribution':
-            for q in self.living(g.member_ids):
-                if limit<=0 or not self.e.items.count(t.id,'food'):break
-                if q.position!=t.market or q.hunger<35:continue
-                self.e.items.transfer(t.id,q.id,self.e.items.first(t.id,'food'));result['food']+=1;result['recipients'].append(q.id);limit-=1
-        elif prop.solution=='temporary_work':
-            # Contrata trabalho existente; o pagamento físico requer estoque e demanda.
-            for q in self.living(g.member_ids):
-                if limit<=0:break
-                if q.position==t.market and self.e.professions.temporary_eligible(q):
-                    before=self.e.items.count(q.id,'food');ok,_=self.e.professions.temporary_service(q,1)
-                    if ok:result['food']+=self.e.items.count(q.id,'food')-before;result['recipients'].append(q.id);limit-=1
-        elif prop.solution=='arms_funding':
-            smith=next((q for q in self.local(t) if q.profession=='ferreiro' and q.position==t.market),None)
-            guards=[q for q in self.local(t) if q.profession=='guarda' and q.position==t.market]
-            if smith and guards and t.money>=2 and self.e.items.count(t.id,'iron')>=2 and self.e.items.count(t.id,'wood')>=1:
-                self.e.items.consume(t.id,'iron',2);self.e.items.consume(t.id,'wood');t.money-=2;smith.money+=2
-                weapon=self.e.items.create(guards[0].id,'weapon',creator_id=smith.id,origin='Encomenda política custeada')
-                result.update(money=2,weapon_id=weapon.id,recipients=[guards[0].id]);t.demand['iron']=min(40,t.demand.get('iron',0)+2)
-        elif prop.solution=='security_funding':
-            guards=[q for q in self.local(t) if q.profession=='guarda' and q.position==t.market]
-            for q in guards[:limit]:
-                amount=min(3,t.money);t.money-=amount;q.money+=amount;result['money']+=amount;result['recipients'].append(q.id)
-                if amount:t.policies['security_until']=self.w.turn+72
-                fact=next((f for f in g.knowledge.values() if f.kind=='WantedIssued'),None)
-                if fact and amount:self.e.knowledge.learn(q,self.e.knowledge.transmitted(fact,p,q),False)
-        elif prop.solution in ('recognize_cult','restrict_cult'):
-            cost=min(2,t.money)
-            if cost<2:return result
-            t.money-=cost;p.money+=cost;result['money']=cost
-            key=str(prop.subject_id);t.policies.setdefault('cults',{})[key]='restricted' if prop.solution=='restrict_cult' else 'recognized'
-            while len(t.policies['cults'])>8:t.policies['cults'].pop(next(iter(t.policies['cults'])))
-            result['cult']=prop.subject_id;result['policy']=t.policies['cults'][key]
-        return result
     def resolve(self,p,prop):
         return self.e.institutions.resolve(p,prop)
 
@@ -315,32 +246,6 @@ class SocietySystem:
         if f.kind=='PolicyDecided':
             self.e.institutions.react_decision(p,f)
             return
-        g=self.w.groups.get(f.context.get('group_id'))
-        if not g or g.status!='active' or p.id not in g.member_ids:return
-        if f.kind=='PolicyDecided' and p.id==g.leader_id:
-            if p.position.map_id!=g.town_id:return
-            if f.target_id not in g.proposal_ids:return
-            # Reação só ocorre quando liderança aprende resposta, não lendo status remoto.
-            known=g.proposal_knowledge.get(f.target_id,{})
-            if f.event_id==known.get('response_fact'):
-                known['confidence']=max(known.get('confidence',0),f.confidence);return
-            if f.event_id<known.get('response_fact',-1):return
-            self.remember(g,f);decision=f.context['result']['decision']
-            p.social_state['meaningful_social_actions']=p.social_state.get('meaningful_social_actions',0)+1
-            g.proposal_knowledge[f.target_id]={'status':{'approve':'accepted','partial':'partial','reject':'rejected','defer':'deferred'}[decision],
-                'confidence':f.confidence,'source_fact':f.event_id,'response_fact':f.event_id}
-            while len(g.proposal_knowledge)>6:g.proposal_knowledge.pop(next(iter(g.proposal_knowledge)))
-            if decision=='approve':g.plan['awaiting_material_policy']=f.context['result'].get('policy_id')
-            elif decision=='partial':
-                material=f.context['result'].get('material',{})
-                if any(material.get(k) for k in ('food','money','policy')):
-                    g.pressure*=.6;g.plan['relief_until']=self.w.turn+48
-                    g.action_pressure.value*=.6;g.action_pressure.failures=max(0,g.action_pressure.failures-1)
-            elif decision in ('reject','defer'):
-                g.failures+=1;g.pressure=min(100,g.pressure+5)
-                g.action_pressure.failures=min(6,g.failures);g.action_pressure.updated_at=-1
-                if f.confidence>=60 and decision=='reject':g.responsibility_id=f.actor_id
-                self.count('pressure_increased')
     def on_fact(self,p,f):
         self.react(p,f)
         if f.kind=='PolicyDecided':
@@ -369,10 +274,9 @@ class SocietySystem:
             if g.id in p.group_ids:p.group_ids.remove(g.id)
         leader=self.w.characters[g.leader_id];self.emit('GroupDissolved',leader,g.id,reason=reason);self.count('group_dissolved')
     def found_faction(self,p,g,present):
-        present=[q for q in present if q.alive and q.id in g.member_ids and q.position==p.position]
-        if (len(self.w.factions)>=24 or g.status!='active' or p.id!=g.leader_id or
-            g.investment<4 or self.w.turn-g.created_at<168 or len(g.member_ids)<3 or
-            any(len(self.w.characters[i].organization_ids)>=3 for i in g.member_ids)):return None
+        check=self.e.institutions.can_formalize(p,g,present)
+        if not check['eligible']:return None
+        present=[self.w.characters[i] for i in check['present_ids']]
         purpose={'security':'justice','religious_interest':'religious','resource_pressure':'professional','expedition':'professional','water_access':'professional','criminal_cooperation':'professional'}[g.cause]
         total=sum(min(2,max(0,q.money-15)) for q in present)
         if total<4:return None
@@ -466,7 +370,7 @@ class SocietySystem:
             king.treasury-=amount;t.money+=amount
             self.emit('RoyalAidDecided',ruler,t.id,representative=p.id,money=amount);self.count('royal_aid',amount)
             return True,'Recursos existentes transferidos por decisão da autoridade central.'
-        f=self.w.factions.get(n.context.get('faction_id')) if n else None
+        f=self.w.factions.get(organization_id(n.context,'faction')) if n else None
         if not f:return False,'Não há função organizacional conhecida.'
         if a=='recruit_member':
             return self.e.access.invite(p,f)
@@ -518,7 +422,9 @@ class SocietySystem:
                 f.assignments[q.id]['order']={'fact':fact.event_id,'location':vars(fact.location),'issued_at':self.w.turn}
                 self.emit('OrganizationalOrder',leader,q.id,faction_id=f.id,source_fact=fact.event_id);self.count('order')
     def promote(self,leader,f,p):
-        record=f.assignments[p.id];index=f.ranks.index(record['rank'])
+        record=f.assignments.get(p.id)
+        if not record or p.id not in f.member_ids or record.get('rank') not in f.ranks:return False
+        index=f.ranks.index(record['rank'])
         if p.id==leader.id or index>=len(f.ranks)-2:return False
         if record.get('deeds',0)<2 or self.w.turn-record['joined_at']<72 or self.e.graph.value(leader.id,p.id,'confiança',10)<40:return False
         # Vaga e propósito relevantes; contribuição monetária sozinha não promove.

@@ -169,6 +169,7 @@ class Geography:
         return sum(p.route_knowledge[f'{a}:{b}'].travel_time for a,b in zip(plan[1],plan[1][1:])) + 10
 
     def block(self, p, target, reason):
+        self.e.observability.gate('route_travel','NO_KNOWN_TARGET' if reason=='place_unknown' else 'NO_KNOWN_ROUTE',target,reason)
         key = f'blocked:{target}:{reason}'
         if self.w.turn-p.access_state.get(key, -1000) < 24: return
         p.access_state[key] = self.w.turn

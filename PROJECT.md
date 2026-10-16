@@ -1,3 +1,5 @@
+> Estado atual: Fase 5.5.5. Veja [FASE_5_5_5.md](FASE_5_5_5.md) para validação e contratos históricos V1.
+
 # PROJECT — simulador procedural de mundo
 
 Documentação do estado atual, sem reconstrução narrativa das fases anteriores.
@@ -5,7 +7,7 @@ Documentação do estado atual, sem reconstrução narrativa das fases anteriore
 | Campo | Valor |
 | --- | --- |
 | Objetivo | Mundo finito com NPCs persistentes, conhecimento subjetivo e consequências materiais |
-| Regras/save | `mvp-12-fase5.5` |
+| Regras/save | `mvp-13-fase5.5.5` |
 | Geração | `mvp-5.4` |
 | Linguagem | Python 3.11+; somente biblioteca padrão |
 | Arquitetura | Dataclasses + serviços coordenados por Engine; Need → alternativas → Utility → Goal → ação |
@@ -121,7 +123,8 @@ eventos e objetos de serviço são reconstruídos pelo Engine, não serializados
 | Journey | Viagem física em etapas, baseada no que se sabia na partida. | `origin`, `destination`, `route_ids`, `nodes`, `reason`, `started_at`, `mode`, `guide_id`, `leg`, `offset` … |
 | DivineContract | Condições e estados de um pacto específico. | `id`, `god`, `mortal`, `god_obligation`, `mortal_obligation`, `conditions`, `status`, `created_at`, `audience_id`, `known_by_god` … |
 | WantedRecord | Estrutura auxiliar persistente. | `id`, `suspect_id`, `jurisdiction`, `originating_fact`, `severity`, `confidence`, `created_at`, `last_known_location`, `known_by`, `status` … |
-| Goal | Intenção operacional escolhida: ação, alvo, destino, estado e resultado. | `id`, `need_id`, `action`, `score`, `created_at`, `target_id`, `destination`, `status`, `outcome` |
+| Goal | Intenção operacional escolhida: ação, alvo, destino, estado e resultado. | `id`, `need_id`, `action`, `score`, `created_at`, `target_id`, `destination`, `status`, `outcome`, `resource_kind` … |
+| MaterialCandidate | Alternativa transitória; desempacotamento antigo de três campos preservado. | `action`, `destination`, `target_id`, `resource_kind`, `amount` |
 | Fact | Conhecimento de um acontecimento, com fonte/confiança/contexto. | `event_id`, `kind`, `actor_id`, `target_id`, `location`, `turn`, `description`, `confidence`, `required_trust`, `source_id` … |
 | FactImpact | Contribuição já contabilizada, independente da memória curta. | `actor_id`, `confidence`, `tags`, `trust`, `emotion_confidence`, `renown_confidence` |
 | Memory | Estrutura auxiliar persistente. | `event_id`, `turn`, `description`, `firsthand` |
@@ -140,7 +143,11 @@ eventos e objetos de serviço são reconstruídos pelo Engine, não serializados
 | Divinity | Deus objetivo; separado da crença em um mortal ou num nome. | `id`, `name`, `domain`, `values`, `power`, `origin`, `location`, `alive`, `known_followers`, `influence` … |
 | PointOfInterest | POI com mapa, estoque, posse e história. | `id`, `name`, `kind`, `position`, `depth`, `areas`, `danger`, `shelter`, `inventory`, `remains` … |
 | Relationship | Aresta dirigida tipada entre IDs. | `source_id`, `target_id`, `kind`, `value` |
-| Event | Registro publicado pelo motor; não implica conhecimento universal. | `id`, `kind`, `turn`, `description`, `actor_id`, `target_id`, `location`, `witnesses`, `historical`, `context` |
+| Event | Registro publicado pelo motor; não implica conhecimento universal. | `id`, `kind`, `turn`, `description`, `actor_id`, `target_id`, `location`, `witnesses`, `historical`, `context` … |
+| ActionAttempt | Estrutura auxiliar persistente. | `id`, `actor_id`, `turn`, `goal_id`, `action`, `target_id`, `success`, `outcome`, `emitted_event_ids` |
+| DecisionTrace | Estrutura auxiliar persistente. | `id`, `actor_id`, `turn`, `lod`, `need_episode_id`, `need_kind`, `need_priority`, `source_fact_ids`, `generated_actions`, `blocked_actions` … |
+| LearningReceipt | Estrutura auxiliar persistente. | `receiver_id`, `event_id`, `turn`, `channel`, `source_id`, `confidence_before`, `confidence_after` |
+| HistoricalObservability | Estrutura auxiliar persistente. | `schema_version`, `level`, `next_id`, `decisions`, `attempts`, `recent_decisions`, `learning`, `recent_learning`, `event_archive`, `counters` … |
 | Quest | Estrutura auxiliar persistente. | `id`, `owner_id`, `need_id`, `title`, `created_at`, `status`, `completed_at`, `kind`, `target_id`, `context` |
 | WorldState | Agregado persistente: entidades, relações, relógio, RNG, métricas, histórico e registros de morte. | `seed`, `rules_version`, `world_map_id`, `next_id`, `turn`, `player_id`, `primordial_id`, `maps`, `characters`, `towns` … |
 
@@ -614,23 +621,27 @@ Barreiras emitidas incluem orçamento esgotado, trabalhador inapto, falta de mad
 
 ## Formalização, facções e adesão
 
-O chamado de formalização em `Society.meeting` tem guardas anteriores: investimento ≥4, idade ≥168h, pelo menos três membros e dois presentes com dinheiro >15. Passar por elas ainda não garante formalizar. `Institutions.formalization` deriva pressão, presença e contribuições; `Society.found_faction` verifica limite mundial, liderança e capacidade organizacional.
+Todos os entrypoints usam Institutions.can_formalize: idade ≥168h, investimento ≥4, score ≥65, três presentes, dois com dinheiro >15, contribuições ≥4, liderança/estado/limites. formalize_organization é compatibilidade para a mesma regra, sem fórmula alternativa. Idade/investimento sozinhos não garantem o score.
 
-Existe também uma via legada em `AccessActions.candidates/execute`: `formalize_organization` chama `Society.found_faction` diretamente. Ela exige idade/investimento/membros e contribuições, mas não passa pelo score ≥65 nem pelo mínimo de três presentes de `Institutions.formalization`. A auditoria reproduziu a divergência com score 55 e dois fundadores; não foi corrigida nesta limpeza. Portanto, os gates da função de pressão não são invariantes de todas as vias.
-
-Fonte: `procedural/institutions.py :: Institutions.formalization`.
+Fonte: `procedural/institutions.py :: Institutions.can_formalize`.
 
 ```python
-def formalization(self,p,g,present,execute=False):
+def can_formalize(self,p,g,present):
+        """QUERY: única regra de formalização, também na execução direta."""
+        if not g:return {'eligible':False,'reason_code':'NO_KNOWN_TARGET','present_ids':[]}
+        present=[q for q in present if q.alive and q.id in g.member_ids and q.position==p.position]
+        present=list({q.id:q for q in present}.values())
         age=self.w.turn-g.created_at;funds=sum(min(2,max(0,q.money-15)) for q in present)
         score=min(100,min(25,age/8)+g.failures*8+g.investment*5+min(15,len(present)*3)+min(15,funds*2))
-        g.plan['formalization_pressure']={'value':score,'age':age,'known_failures':g.failures,'meetings':g.investment,'present_members':len(present),'available_contributions':funds}
-        if self.w.turn-g.plan.get('last_formalization_audit',-1000)>=24:
-            g.plan['last_formalization_audit']=self.w.turn
-            self.emit('FormalizationConsidered',p,g.id,group_id=g.id,factors=g.plan['formalization_pressure'])
-        if not execute or score<65 or g.investment<4 or age<168 or len(present)<3 or funds<4:return None
-        f=self.e.society.found_faction(p,g,present)
-        return f
+        factors={'value':score,'age':age,'known_failures':g.failures,'meetings':g.investment,
+                 'present_members':len(present),'available_contributions':funds}
+        eligible=(g.status=='active' and g.cause!='expedition' and p.id==g.leader_id and p.id in [q.id for q in present]
+                  and len(self.w.factions)<24 and g.investment>=4 and age>=168 and len(g.member_ids)>=3
+                  and len(present)>=3 and sum(q.money>15 for q in present)>=2 and funds>=4 and score>=65
+                  and not any(len(self.w.characters[i].organization_ids)>=3 for i in g.member_ids))
+        ready=g.investment>=4 and age>=168 and len(g.member_ids)>=3 and sum(q.money>15 for q in present)>=2
+        return {'eligible':eligible,'ready':ready,'reason_code':None if eligible else 'FORMALIZATION_REQUIREMENTS',
+                'present_ids':[q.id for q in present],'factors':factors}
 ```
 
 A facção guarda `origin_group_id`, fundadores, causa, história e hora da formalização. Contribuições saem de dinheiro pessoal real; apenas fundadores presentes entram. O modelo preserva o grupo de origem como registro. Cooperação criminosa reutiliza o mesmo Group/Faction, derivada de fatos próprios, conhecimento de crime e confiança; não há BanditNPC.
@@ -694,7 +705,7 @@ def capabilities(self,f,p):
 
 `faction_candidates` permite compra, suprimento, patrulha, apoio político ou incursão conforme causa/capacidade. As ações existentes também incluem contribuições, relatórios, ordens e preparação. Capacidade booleana não prova que exista uma ação autônoma completa para cada rótulo: treinamento especializado, comércio geral, escolta remunerada e contratos CityContract são **PARCIAIS/ausentes como ciclo completo**. Estoque de Faction é agregado; não existe um sistema completo de depósitos e custódia por região.
 
-Inconsistências atuais documentadas na auditoria, sem correção comportamental: `faction_candidates` oferece suprimento se houver comida OU água, enquanto `execute` exige o tipo da maior privação; `GoalSystem.preventive_choice` pode recriar `fill_water` após `_evaluate`, contornando o bloqueio de falha e sem verificar estoque. `Society.refresh` também pode preservar `faction_id` ao reutilizar organizational_survival para um grupo; é preciso ler fonte/alvo/contexto juntos, pois não há uma Need independente para cada instituição.
+Na 5.5.5, suprimento carrega resource_kind até Goal/execução; seleção e preparação compartilham eligibility; contextos institucionais usam organization_type/organization_id e apenas o alias correspondente.
 
 ## Crime, lei, investigação e combate
 
@@ -976,19 +987,22 @@ significa que todos os personagens se tornaram testemunhas ou concordaram.
 
 ## Persistência e compatibilidade
 
-`persistence.encode/decode` usa tags `$type`, `$dict`, `$tuple`; tipos permitidos
+`persistence.encode/decode` usa tags `$type`, `$dict`, `$tuple`, `$set`; tipos permitidos
 vêm das dataclasses conhecidas. JSON não executa código. `loads` verifica versão
 de formato e regras, valida WorldState e testa restauração do RNG.
 `JsonRepository.save` valida, escreve arquivo temporário, fsync e substitui
 atomicamente o destino. As regras atuais não migram automaticamente saves de
 outra versão. Auditorias antigas não são saves necessários ao runtime.
 
-O contexto de Event/Fact pode conservar listas mutáveis do estado vivo. Por
-exemplo, adesões posteriores podem alterar a lista de membros de um evento de
-fundação antigo. A serialização por valor não preserva esses aliases: continuar
-após load pode produzir histórico diferente do mundo original mesmo com RNG e
-membros atuais iguais. Continuidade determinística básica funciona em cenários
-cobertos, mas não é garantia universal enquanto esse caso existir.
+Event e Fact copiam profundamente seus payloads na construção, incluindo coleções
+aninhadas. Adesões futuras não alteram a fundação antiga. A avaliação após morte
+fica no evento PostKillAppraisal, ligado à morte por parent_event_ids.
+
+Formato atual: 2; regras mvp-13-fase5.5.5. generation_version e generation_config
+são persistidos. Não há migração de saves antigos. A observabilidade possui IDs
+privados, episódios de Need, DecisionTrace, ActionAttempt e LearningReceipt;
+seus índices são reconstruídos no load. Os controles e limites estão no relatório
+da Fase 5.5.5.
 
 ## Invariantes verificadas e limites operacionais
 
@@ -1088,23 +1102,23 @@ A tabela é obtida da AST atual: símbolos e imports são do código existente. 
 | --- | --- | --- | --- | --- |
 | `procedural/__init__.py` | Motor procedural independente da interface. | constantes | — | — |
 | `procedural/__main__.py` | python3 -m procedural: terminal jogável ou simulação sem jogador. | main | engine, generation, persistence, ui, validation | — |
-| `procedural/access.py` | Ações espaciais acopladas a Need/Goal, Sociedade, Fé, itens e conhecimento existentes. | AccessActions | models | engine, goals |
-| `procedural/action_pressure.py` | Causa, disposição e capacidade separadas; consultas não alteram o mundo. | ActionPressureSystem, clamp, band | models, needs | collective_action, engine, goals |
+| `procedural/access.py` | Ações espaciais acopladas a Need/Goal, Sociedade, Fé, itens e conhecimento existentes. | AccessActions | models, organization_context | engine, goals |
+| `procedural/action_pressure.py` | Causa, disposição e capacidade separadas; consultas não alteram o mundo. | ActionPressureSystem, clamp, band | models, needs, organization_context | collective_action, engine, goals |
 | `procedural/aftermath.py` | Avaliação do próprio matador e aprendizagem compacta, sem diagnóstico clínico. | AftermathSystem | lethal_decisions | engine |
 | `procedural/agency.py` | Intenção persistente: informa Need/Utility, nunca executa ações. | AgencySystem, clamp | models, navigation, needs, rules | engine |
-| `procedural/collective_action.py` | Continuidade presencial de grupos e um conjunto pequeno de ações de facção. | CollectiveActionSystem | action_pressure, models, navigation | engine, goals, society |
+| `procedural/collective_action.py` | Continuidade presencial de grupos e um conjunto pequeno de ações de facção. | CollectiveActionSystem | action_pressure, models, navigation, organization_context | engine, goals, society |
 | `procedural/conflicts.py` | Soluções e execução de interação. Decisão pertence a Need/Goal/Utility. | ConflictSystem | models, navigation, needs, rules | engine, goals |
 | `procedural/divine_relations.py` | Afinidade dirigida e canais divinos explícitos; presença não é conhecimento. | DivineRelations | faith, models, navigation | engine |
 | `procedural/economy.py` | Produção, consumo e dinheiro regionais; estoque nunca é infinito. | Economy | items, models | engine |
 | `procedural/emotions.py` | Estado dinâmico causal: modifica prioridades/utility, nunca escolhe ações. | EmotionSystem, clamp | models, needs, rules | engine |
-| `procedural/engine.py` | Coordenação do motor. Nenhum input, print ou acesso a arquivos de save. | CommandResult, Engine | access, action_pressure, aftermath, agency, collective_action, conflicts, divine_relations, economy, emotions, events, faith, feeding, geography, goals, institutions, investigation, items, justice, knowledge, lethal_decisions, lethality, migration, models, navigation, needs, personal, personal_actions, politics, population, professions, quests, recovery, relationships, religious_health, renown, social, society, terminal_combat, violence_patterns | __main__, generation, ui |
-| `procedural/events.py` | Event Bus interno e registro limitado de eventos cotidianos. | EventBus, SpatialIndex, EventRecorder | models | engine, generation |
+| `procedural/engine.py` | Coordenação do motor. Nenhum input, print ou acesso a arquivos de save. | CommandResult, Engine | access, action_pressure, aftermath, agency, collective_action, conflicts, divine_relations, economy, emotions, events, faith, feeding, geography, goals, institutions, investigation, items, justice, knowledge, lethal_decisions, lethality, migration, models, navigation, needs, personal, personal_actions, politics, population, professions, quests, recovery, relationships, religious_health, renown, social, society, terminal_combat, violence_patterns | __main__, generation, goals, ui |
+| `procedural/events.py` | Event Bus interno e registro limitado de eventos cotidianos. | EventBus, SpatialIndex, EventRecorder | models, observability | engine, generation |
 | `procedural/faith.py` | Verdade divina, crença subjetiva e ações religiosas são estados distintos. | FaithSystem | models, needs | divine_relations, engine, goals, religious_health |
 | `procedural/feeding.py` | Cobertura alimentar, prazo biológico e diagnóstico dentro de Need/Solution. | FeedingSystem | navigation, rules | engine, goals |
 | `procedural/generation.py` | Geração por etapas usando um único RNG e uma versão explícita das regras. | GenerationConfig, seed_number, make_local_grid, generate_world | engine, events, items, models, population, relationships | __main__, professions |
 | `procedural/geography.py` | Rotas físicas e conhecimento individual, usando os mapas e o Event Bus existentes. | Geography | models, navigation | engine, goals |
-| `procedural/goals.py` | Alternativas avaliadas pela personalidade, seguidas de execução e reavaliação. | Solution, GoalSystem | access, action_pressure, collective_action, conflicts, faith, feeding, geography, institutions, investigation, models, navigation, personal, rules, society, utility | engine |
-| `procedural/institutions.py` | Continuidade institucional sobre Sociedade, Need/Goal, itens, trabalho e eventos. | Institutions | models | engine, goals |
+| `procedural/goals.py` | Alternativas avaliadas pela personalidade, seguidas de execução e reavaliação. | Solution, GoalSystem | access, action_pressure, collective_action, conflicts, engine, faith, feeding, geography, institutions, investigation, models, navigation, personal, rules, society, utility | engine |
+| `procedural/institutions.py` | Continuidade institucional sobre Sociedade, Need/Goal, itens, trabalho e eventos. | Institutions | models, organization_context | engine, goals |
 | `procedural/investigation.py` | Busca geral por informação conhecida; pistas são locais de busca, não GPS. | InvestigationSystem | models, navigation, rules | engine, goals |
 | `procedural/items.py` | Inventários referenciam itens únicos; transferências dividem pilhas. | ItemService | models | economy, engine, generation, professions, quests |
 | `procedural/justice.py` | Evidência conhecida por autoridades locais; não é um rastreador global. | JusticeSystem | models, needs, rules | engine |
@@ -1112,9 +1126,11 @@ A tabela é obtida da AST atual: símbolos e imports são do código existente. 
 | `procedural/lethal_decisions.py` | Decisão é persistente; avaliações e oportunidades são consultas sem efeitos. | LethalDecisionSystem, clamp | models, needs | aftermath, engine |
 | `procedural/lethality.py` | Pressão relacional auditável. Não modifica potência, dano ou aleatoriedade. | LethalPressure | rules | engine |
 | `procedural/migration.py` | Deslocamento individual por rotas conhecidas, visita e residência separadas. | MigrationSystem | models, navigation, needs | engine |
-| `procedural/models.py` | Dados persistentes; as regras pertencem aos serviços, não às entidades. | Location, Area, Grid, Personality, Need, Observation, Grievance, EmotionalState, ActionPressure, CombatState, LethalDecision, MigrationState, Route, RouteKnowledge, Journey, DivineContract, WantedRecord, Goal, Fact, FactImpact, Memory, Reputation, Clue, Commitment, Aspiration, Character, Item, Town, Kingdom, Faction, Group, Proposal, Policy, Divinity, PointOfInterest, Relationship, Event, Quest, WorldState | — | access, action_pressure, agency, collective_action, conflicts, divine_relations, economy, emotions, engine, events, faith, generation, geography, goals, institutions, investigation, items, justice, knowledge, lethal_decisions, migration, navigation, needs, personal, professions, quests, relationships, religious_health, renown, society, violence_patterns |
+| `procedural/models.py` | Dados persistentes; as regras pertencem aos serviços, não às entidades. | Location, Area, Grid, Personality, Need, Observation, Grievance, EmotionalState, ActionPressure, CombatState, LethalDecision, MigrationState, Route, RouteKnowledge, Journey, DivineContract, WantedRecord, Goal, MaterialCandidate, Fact, FactImpact, Memory, Reputation, Clue, Commitment, Aspiration, Character, Item, Town, Kingdom, Faction, Group, Proposal, Policy, Divinity, PointOfInterest, Relationship, Event, ActionAttempt, DecisionTrace, LearningReceipt, HistoricalObservability, Quest, WorldState | — | access, action_pressure, agency, collective_action, conflicts, divine_relations, economy, emotions, engine, events, faith, generation, geography, goals, institutions, investigation, items, justice, knowledge, lethal_decisions, migration, navigation, needs, observability, personal, professions, quests, relationships, religious_health, renown, society, violence_patterns |
 | `procedural/navigation.py` | Navegação cardinal em mapas independentes; muralhas são intransponíveis. | Navigation, distance, passable | models | agency, collective_action, conflicts, divine_relations, engine, feeding, geography, goals, investigation, migration, validation |
 | `procedural/needs.py` | Necessidade é pressão; prioridade e ação são decisões separadas. | NeedSystem | models, rules | action_pressure, agency, conflicts, emotions, engine, faith, justice, lethal_decisions, migration, personal, personal_actions, quests, society |
+| `procedural/observability.py` | História nativa V1: dados privados, sem RNG, Facts ou regras de gameplay. | EventIndex, HistoricalObserver, fact_ids | models | events |
+| `procedural/organization_context.py` | Identidade institucional tipada; os aliases exclusivos mantêm consumidores antigos. | organization_id, bind_organization | — | access, action_pressure, collective_action, institutions, society |
 | `procedural/persistence.py` | Adaptador JSON versionado, com escrita atômica e sem execução de código. | WorldRepository, JsonRepository, encode, decode, dumps, loads | validation | __main__, ui |
 | `procedural/personal.py` | Pressões pessoais: percepção e ciclo de vida dentro do NeedSystem existente. | PersonalNeeds | models, needs | engine, goals, personal_actions |
 | `procedural/personal_actions.py` | Candidatos e execução pessoais chamados pelo GoalSystem existente. | PersonalActions | needs, personal | engine |
@@ -1128,7 +1144,7 @@ A tabela é obtida da AST atual: símbolos e imports são do código existente. 
 | `procedural/renown.py` | Fama deriva de fatos aprendidos. História objetiva de item não é crença. | RenownSystem | models | engine |
 | `procedural/rules.py` | Parâmetros pequenos, explícitos e comuns a todas as entidades. | SurvivalRules, UtilityRules, FeedingRules, RecoveryRules, InteractionRules, AgencyRules | — | agency, conflicts, emotions, feeding, goals, investigation, justice, knowledge, lethality, needs, recovery, social, terminal_combat, utility |
 | `procedural/social.py` | Considerações sociais e interpretação contextual, sem conhecimento global. | SocialSystem, normalized | rules | engine, utility |
-| `procedural/society.py` | Organização local por encontros. Decisões continuam em Need/Solution/Goal. | SocietySystem | collective_action, models, needs | engine, goals |
+| `procedural/society.py` | Organização local por encontros. Decisões continuam em Need/Solution/Goal. | SocietySystem | collective_action, models, needs, organization_context | engine, goals |
 | `procedural/terminal_combat.py` | Incapacidade muda o contexto; não refaz a barreira de entrada da decisão. | TerminalCombat | rules | engine |
 | `procedural/ui.py` | Apresentação textual: encaminha ações ao motor sem implementar regras. | render, run_terminal | engine, persistence | __main__ |
 | `procedural/utility.py` | Pesos e considerações normalizadas; nenhuma regra de execução aqui. | evaluate | rules, social | goals |
@@ -1141,7 +1157,7 @@ A tabela é obtida da AST atual: símbolos e imports são do código existente. 
 | --- | --- | --- | --- |
 | `engine.py :: Engine.step(self)` | Estado do mundo e RNG | None | Avança hora, executa ações/fisiologia/eventos e rotinas. |
 | `needs.py :: NeedSystem.refresh(self, character: Character)` | Character | Lista ordenada de Need | Cria/reativa/encerra pressões e atualiza prioridades. |
-| `goals.py :: GoalSystem.solutions(self, character, need)` | Character e Need | Lista ordenada de Solution | Enumera e pontua caminhos; alguns produtores mantêm diagnósticos/estado de acesso, portanto não usar debug como prova de ausência de efeitos. |
+| `goals.py :: GoalSystem.solutions(self, character, need)` | Character e Need | Lista ordenada de Solution | QUERY isolada: enumera em cópia do mundo/RNG; o ciclo executável usa plan_solutions (COMMAND). |
 | `goals.py :: GoalSystem.decide(self, character, elapsed: int=1)` | Character e elapsed | None | Escolhe necessidade, mantém/interrompe Goal e anda/executa. |
 | `goals.py :: GoalSystem.execute(self, character, goal, hours: int)` | Character, Goal, horas | (bool, texto) | Valida, despacha serviço, registra resultado/estado. |
 | `institutions.py :: Institutions.search_groups(self, p, cause, subject, audit=True)` | Pessoa, causa, sujeito, audit | Lista de Group | Busca conhecimento pessoal; pode emitir diagnóstico throttled. |
@@ -1153,7 +1169,7 @@ A tabela é obtida da AST atual: símbolos e imports são do código existente. 
 | `geography.py :: Geography.step(self, p)` | Pessoa viajando | (bool, texto) | Move fisicamente e registra travessia/chegada. |
 | `knowledge.py :: KnowledgeSystem.learn(self, character: Character, fact: Fact, firsthand: bool)` | Pessoa e Fact | Retorno do método | Filtra/aplica conhecimento e informa listeners. |
 | `professions.py :: ProfessionSystem.work(self, character, hours=1)` | Pessoa e horas | WorkResult | Consome/produz bens, transfere salário e registra produção. |
-| `engine.py :: Engine.finish_death(self, person, cause, killer=None, weapon_id=None, context=None)` | Pessoa, causa e contexto | bool | Fecha vida/intenções, preserva corpo/posses e publica morte única. |
+| `engine.py :: Engine.finish_death(self, person, cause, killer=None, weapon_id=None, context=None, parent_event_ids=())` | Pessoa, causa e contexto | bool | Fecha vida/intenções, preserva corpo/posses e publica morte única. |
 
 ## Testes existentes e o que demonstram
 
@@ -1174,6 +1190,7 @@ A tabela é obtida da AST atual: símbolos e imports são do código existente. 
 | test_phase521.py | 6 | Seis verificações da escolha final, continuidade e classificação dos Actors. | capacidade/regressão controlada |
 | test_phase54.py | 10 | 01_place_without_route_and_save_roundtrip; 02_directions_enable_physical_trip_and_audit; 03_multihop_has_no_unknown_edge; 04_follow_and_escort_learn_after_walking | capacidade/regressão controlada |
 | test_phase55.py | 14 | 01_known_compatible_group_precedes_creation; 02_unknown_group_does_not_prevent_legitimate_creation; 03_known_hostile_leader_allows_separate_group; 04_compatible_proposal_is_reused | capacidade/regressão controlada |
+| test_phase555.py | 15 | Regressões causais da 5.5.5; cenários controlados não provam emergência. | capacidade/regressão controlada |
 | test_simulation.py | 18 | Testes de invariantes, causalidade e continuação determinística. | capacidade/regressão controlada |
 
 Testes controlados preparam circunstâncias e comprovam capacidade/regressão. Emergência natural exige campanha sem manipulação de personagens/estoques/traits. `reports/diagnostico_coesao/RELATORIO_COESAO.md` faz essa distinção e compara o novo resultado com os três Markdown de Vaelora-55, sem inventar métricas históricas ausentes.
@@ -1199,17 +1216,11 @@ atualização da rota. Chegar não é mudar residência nem obter audiência div
 
 ## Limitações atuais
 
-- `FaithSystem.candidates` pode enumerar `report_congregation`, mas essa ação
-  não existe em `utility.BASE`; avaliar a alternativa provoca KeyError antes do
-  envio do relato religioso. Há reprodução controlada, sem correção aplicada.
-- `Society.react` retorna após delegar PolicyDecided antes do ramo que atribui
-  `Group.responsibility_id`; a consequência de responsabilização/tomada de cargo
-  não completa esse caminho. A delegada atual não preenche o campo.
-- `GoalSystem.solutions` pode atualizar planos/diagnósticos durante a enumeração;
-  não é uma API universalmente pura para um visualizador consultar passivamente.
-- Morte por exploração registra a causa `exploration`, mas a descrição genérica
-  de `finish_death` pode descrevê-la como autoinfligida. O contexto guarda a causa
-  específica; a frase não é uma fonte confiável para classificá-la.
+- A Fase 5.5.5 corrigiu B01–B08 e separou consulta pura de planejamento.
+  A evidência completa está em `FASE_5_5_5.md`; a auditoria anterior é histórica.
+- Observabilidade V1 preserva eventos, decisões privadas e recebimentos separados.
+  Detalhes ordinários têm retenção limitada; eventos históricos continuam crescendo.
+- Saves do formato 1 / regras 5.5 são recusados explicitamente. Não há migração.
 - Decisões institucionais competem com fisiologia, deslocamento e compromissos;
   não há garantia de atendimento por prefeito, representante ou candidato.
 - A busca social usa afinidade dirigida ao líder; familiaridade, confiança e

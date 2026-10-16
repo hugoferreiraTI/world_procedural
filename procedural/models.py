@@ -1,6 +1,7 @@
 """Dados persistentes; as regras pertencem aos serviços, não às entidades."""
 
 from dataclasses import dataclass, field
+from copy import deepcopy
 
 
 @dataclass(frozen=True)
@@ -58,6 +59,11 @@ class Need:
     reason: str
     context: dict = field(default_factory=dict)
     expires_at: int | None = None
+    episode: int = 1
+
+    @property
+    def need_episode_id(self):
+        return f'n{self.id}:{self.episode}'
 
 
 @dataclass
@@ -264,6 +270,21 @@ class Goal:
     destination: Location | None = None
     status: str = "active"
     outcome: str = ""
+    resource_kind: str | None = None
+    amount: int = 1
+
+
+@dataclass
+class MaterialCandidate:
+    """Alternativa transitória; desempacotamento antigo de três campos preservado."""
+    action: str
+    destination: Location | None
+    target_id: int | None
+    resource_kind: str
+    amount: int = 1
+
+    def __iter__(self):
+        return iter((self.action,self.destination,self.target_id))
 
 
 @dataclass
@@ -280,6 +301,9 @@ class Fact:
     source_id: int | None = None
     source_kind: str = "rumor"
     context: dict = field(default_factory=dict)
+
+    def __post_init__(self):
+        self.context=deepcopy(self.context)
 
 
 @dataclass
@@ -725,6 +749,84 @@ class Event:
     witnesses: list[int] = field(default_factory=list)
     historical: bool = False
     context: dict = field(default_factory=dict)
+    schema_version: int = 1
+    parent_event_ids: list[int] = field(default_factory=list)
+    decision_id: str | None = None
+    action_attempt_id: str | None = None
+    related_decision_ids: list[str] = field(default_factory=list)
+
+    def __post_init__(self):
+        self.context=deepcopy(self.context)
+        self.witnesses=list(self.witnesses)
+        self.parent_event_ids=list(self.parent_event_ids)
+        self.related_decision_ids=list(self.related_decision_ids)
+
+
+@dataclass
+class ActionAttempt:
+    id: str
+    actor_id: int
+    turn: int
+    goal_id: int
+    action: str
+    target_id: int | None
+    success: bool | None = None
+    outcome: str = ''
+    emitted_event_ids: list[int] = field(default_factory=list)
+
+
+@dataclass
+class DecisionTrace:
+    id: str
+    actor_id: int
+    turn: int
+    lod: int
+    need_episode_id: str | None = None
+    need_kind: str | None = None
+    need_priority: float = 0
+    source_fact_ids: list[int] = field(default_factory=list)
+    generated_actions: list[dict] = field(default_factory=list)
+    blocked_actions: list[dict] = field(default_factory=list)
+    evaluated_scores: list[dict] = field(default_factory=list)
+    selected_action: str | None = None
+    selected_score: float | None = None
+    selected_target_id: int | None = None
+    selected_resource_kind: str | None = None
+    goal_id: int | None = None
+    action_attempt_id: str | None = None
+    success: bool | None = None
+    outcome: str = ''
+    emitted_event_ids: list[int] = field(default_factory=list)
+    important: bool = False
+    truncated: dict[str,int] = field(default_factory=dict)
+    schema_version: int = 1
+    related_event_ids: list[int] = field(default_factory=list)
+
+
+@dataclass
+class LearningReceipt:
+    receiver_id: int
+    event_id: int
+    turn: int
+    channel: str
+    source_id: int | None
+    confidence_before: int
+    confidence_after: int
+
+
+@dataclass
+class HistoricalObservability:
+    schema_version: int = 1
+    level: str = 'NORMAL'
+    next_id: int = 1
+    decisions: dict[str,DecisionTrace] = field(default_factory=dict)
+    attempts: dict[str,ActionAttempt] = field(default_factory=dict)
+    recent_decisions: list[str] = field(default_factory=list)
+    learning: list[LearningReceipt] = field(default_factory=list)
+    recent_learning: list[LearningReceipt] = field(default_factory=list)
+    event_archive: dict[int,Event] = field(default_factory=dict)
+    counters: dict[str,int] = field(default_factory=dict)
+    last_decision_ids: dict[int,str] = field(default_factory=dict)
 
 
 @dataclass
@@ -777,6 +879,9 @@ class WorldState:
     sacred_sites: dict[int, dict] = field(default_factory=dict)
     geography_initialized: bool = False
     institutional_policies: dict[int, Policy] = field(default_factory=dict)
+    generation_version: str = ''
+    generation_config: dict = field(default_factory=dict)
+    observability: HistoricalObservability = field(default_factory=HistoricalObservability)
 
     def allocate_id(self) -> int:
         entity_id = self.next_id

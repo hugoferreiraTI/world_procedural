@@ -1,4 +1,6 @@
 """Continuidade institucional sobre Sociedade, Need/Goal, itens, trabalho e eventos."""
+from .models import MaterialCandidate
+from .organization_context import organization_id, bind_organization
 from dataclasses import asdict
 from .models import Proposal, Policy, Fact, Location
 
@@ -20,9 +22,9 @@ class Institutions:
             t.infrastructure.setdefault('water_storage',160)
             t.infrastructure.setdefault('water_work',0)
 
-    def emit(self,kind,p,target=None,**context):
+    def emit(self,kind,p,target=None,parent_event_ids=(),**context):
         return self.e.recorder.emit(kind,f'{p.name}: {kind}.',p.id,target,p.position,
-                                   historical=True,context=context)
+                                   historical=True,context=context,parent_event_ids=parent_event_ids)
 
     def remember(self,book,id,row,limit=64):
         book[id]=row
@@ -169,7 +171,8 @@ class Institutions:
     def register_group(self,p,g):
         g.plan.setdefault('objective',g.cause)
         for q in self.e.society.living(g.member_ids):self.know_group(q,g,'founder')
-        self.emit('NewGroupCreated',p,g.id,group_id=g.id,cause=g.cause,members=g.member_ids)
+        parent=self.e.observability.index.reference('GroupFormed',g.id)
+        self.emit('NewGroupCreated',p,g.id,group_id=g.id,cause=g.cause,members=g.member_ids,parent_event_ids=[parent] if parent else [])
 
     def proposal_key(self,g):
         sector=SECTORS.get(g.cause,'EMPLOYMENT')
@@ -224,7 +227,8 @@ class Institutions:
         self.w.proposals[prop.id]=prop;t.proposal_ids.append(prop.id)
         self.remember(p.known_proposals,prop.id,{'source':'author','learned_at':self.w.turn})
         self.support(p,g,prop)
-        self.emit('ProposalCreated',p,prop.id,proposal_id=prop.id,group_id=g.id,sector=sector,effect=effect,source_fact=g.originating_fact)
+        parent=self.e.observability.index.reference('GroupFormed',g.id)
+        self.emit('ProposalCreated',p,prop.id,proposal_id=prop.id,group_id=g.id,sector=sector,effect=effect,source_fact=g.originating_fact,parent_event_ids=[parent] if parent else [])
         self.e.society.count('proposal_created');return prop
 
     def faction_support(self,p,f,prop):
@@ -262,7 +266,8 @@ class Institutions:
             if prop.id not in ids:ids.append(prop.id)
             del ids[:-24]
         self.deliver_support(p,prop,g)
-        self.emit('ProposalSubmitted',p,mayor.id,proposal_id=prop.id,group_id=g.id,supporter_ids=list(prop.delivered_supporter_ids),source_fact=prop.source_fact)
+        parent=self.e.observability.index.reference('ProposalCreated',prop.id)
+        self.emit('ProposalSubmitted',p,mayor.id,proposal_id=prop.id,group_id=g.id,supporter_ids=list(prop.delivered_supporter_ids),source_fact=prop.source_fact,parent_event_ids=[parent] if parent else [])
         g.proposal_knowledge[prop.id]={'status':'submitted','confidence':100,'source_fact':prop.source_fact}
         return True,'Proposta e apoio recebidos presencialmente.'
 
@@ -304,7 +309,8 @@ class Institutions:
         t.money-=budget
         policy=Policy(self.w.allocate_id(),t.id,prop.id,prop.sector,prop.desired_effect,prop.pressure,budget,budget,self.w.turn,work_required=4 if partial else 8,source_fact=prop.source_fact)
         self.w.institutional_policies[policy.id]=policy;prop.policy_id=policy.id
-        event=self.emit('PolicyCreated',p,policy.id,policy_id=policy.id,proposal_id=prop.id,sector=policy.sector,objective=policy.objective,budget=budget,source_fact=prop.source_fact)
+        parent=self.e.observability.index.reference('ProposalSubmitted',context={'proposal_id':prop.id})
+        event=self.emit('PolicyCreated',p,policy.id,policy_id=policy.id,proposal_id=prop.id,sector=policy.sector,objective=policy.objective,budget=budget,source_fact=prop.source_fact,parent_event_ids=[parent] if parent else [])
         policy.history.append(event.id)
         return policy
 
@@ -319,7 +325,9 @@ class Institutions:
         prop.result={'decision':decision,'scores':scores,'reason':'pressure_personality_and_material_budget','political_pressure':prop.pressure,
                      'policy_id':policy.id if policy else None,'material':{'food':0,'money':0,'recipients':[]}}
         t.office.setdefault('decisions',[]).append(prop.id);del t.office['decisions'][:-12]
-        event=self.emit('PolicyDecided',p,prop.id,proposal_id=prop.id,group_id=prop.group_id,supporting_groups=list(prop.supporting_group_ids),town_id=t.id,solution=prop.solution,result=prop.result)
+        parents=[self.e.observability.index.reference('ProposalSubmitted',context={'proposal_id':prop.id})]
+        if policy:parents.append(self.e.observability.index.reference('PolicyCreated',policy.id))
+        event=self.emit('PolicyDecided',p,prop.id,proposal_id=prop.id,group_id=prop.group_id,supporting_groups=list(prop.supporting_group_ids),town_id=t.id,solution=prop.solution,result=prop.result,parent_event_ids=[id for id in parents if id])
         self.emit('PolicyDecision',p,prop.id,proposal_id=prop.id,decision=decision,pressure=prop.pressure,reason=prop.result['reason'],policy_id=prop.policy_id)
         t.office.setdefault('public_responses',[]).append(Fact(event.id,event.kind,p.id,prop.id,p.position,self.w.turn,event.description,confidence=80,source_id=p.id,source_kind='known',context=event.context))
         del t.office['public_responses'][:-12]
@@ -332,12 +340,20 @@ class Institutions:
             g=self.w.groups.get(gid)
             if not g or p.id not in g.member_ids:continue
             record=g.proposal_knowledge.get(prop.id,{})
-            if record.get('response_fact',-1)>=fact.event_id:continue
+            if record.get('response_fact',-1)>fact.event_id:continue
+            if record.get('response_fact')==fact.event_id:
+                if fact.confidence>record.get('confidence',0):
+                    record['confidence']=fact.confidence
+                    if fact.context['result']['decision']=='reject' and fact.confidence>=60:g.responsibility_id=fact.actor_id
+                continue
             decision=fact.context['result']['decision']
             g.proposal_knowledge[prop.id]={'status':{'approve':'accepted','partial':'partial','reject':'rejected','defer':'deferred','ignore':'ignored'}[decision],'confidence':fact.confidence,'response_fact':fact.event_id,'source_fact':fact.event_id}
             self.e.society.remember(g,fact)
             if decision in ('reject','defer','ignore'):
                 g.failures=min(12,g.failures+1);g.pressure=min(100,g.pressure+5)
+                g.action_pressure.failures=min(6,g.failures);g.action_pressure.updated_at=-1
+                if decision=='reject' and fact.confidence>=60:
+                    g.responsibility_id=fact.actor_id
             else:g.plan['awaiting_material_policy']=fact.context['result'].get('policy_id')
             p.social_state['meaningful_social_actions']=p.social_state.get('meaningful_social_actions',0)+1
 
@@ -349,6 +365,8 @@ class Institutions:
                 'EMPLOYMENT':self.e.professions.temporary_eligible(p),'TRANSPORT':p.profession=='comerciante'}.get(policy.sector,False)
 
     def policy_barrier(self,p,policy,reason):
+        code='NO_WORKER' if reason=='worker_unfit' else 'INSUFFICIENT_MONEY' if reason=='budget_exhausted' else 'NO_KNOWN_ROUTE' if reason=='missing_known_route_or_cargo' else 'NO_INPUT'
+        self.e.observability.gate('policy_work',code,policy.id,reason)
         if policy.barriers.get('reason')!=reason or self.w.turn-policy.barriers.get('at',-1000)>=24:
             policy.barriers={'reason':reason,'at':self.w.turn};policy.status='stalled'
             ev=self.emit('PolicyBlocked',p,policy.id,policy_id=policy.id,proposal_id=policy.proposal_id,sector=policy.sector,reason=reason)
@@ -424,11 +442,12 @@ class Institutions:
         if p.id not in policy.workers:policy.workers.append(p.id)
         for key,value in effect.items():
             if isinstance(value,(int,float)):policy.effects[key]=policy.effects.get(key,0)+value if key in ('food_produced','water_created') else value
-        ev=self.emit('PolicyEffect',p,policy.id,policy_id=policy.id,proposal_id=policy.proposal_id,sector=policy.sector,effect=effect,materials=materials,wage=1,remaining_budget=policy.money,work_done=policy.work_done)
+        parent=self.e.observability.index.reference('PolicyCreated',policy.id)
+        ev=self.emit('PolicyEffect',p,policy.id,policy_id=policy.id,proposal_id=policy.proposal_id,sector=policy.sector,effect=effect,materials=materials,wage=1,remaining_budget=policy.money,work_done=policy.work_done,parent_event_ids=[parent] if parent else [])
         policy.history.append(ev.id);del policy.history[:-24]
         if policy.work_done>=policy.work_required:
             policy.status='completed';t.money+=policy.money;policy.refunded+=policy.money;policy.money=0
-            self.emit('PolicyCompleted',p,policy.id,policy_id=policy.id,proposal_id=policy.proposal_id,work_done=policy.work_done,effects=policy.effects,refunded=policy.refunded)
+            self.emit('PolicyCompleted',p,policy.id,policy_id=policy.id,proposal_id=policy.proposal_id,work_done=policy.work_done,effects=policy.effects,refunded=policy.refunded,parent_event_ids=[ev.id])
         return True,'Trabalho real e salário do orçamento reservado.'
 
     def invitation_info(self,p,f):
@@ -500,16 +519,32 @@ class Institutions:
                 'explore':len(supplied)>=2 and any(q.profession in ('mineiro','caçador') for q in supplied),
                 'occupy':len(supplied)>=2 and bool(hq)}
 
-    def formalization(self,p,g,present,execute=False):
+    def can_formalize(self,p,g,present):
+        """QUERY: única regra de formalização, também na execução direta."""
+        if not g:return {'eligible':False,'reason_code':'NO_KNOWN_TARGET','present_ids':[]}
+        present=[q for q in present if q.alive and q.id in g.member_ids and q.position==p.position]
+        present=list({q.id:q for q in present}.values())
         age=self.w.turn-g.created_at;funds=sum(min(2,max(0,q.money-15)) for q in present)
         score=min(100,min(25,age/8)+g.failures*8+g.investment*5+min(15,len(present)*3)+min(15,funds*2))
-        g.plan['formalization_pressure']={'value':score,'age':age,'known_failures':g.failures,'meetings':g.investment,'present_members':len(present),'available_contributions':funds}
+        factors={'value':score,'age':age,'known_failures':g.failures,'meetings':g.investment,
+                 'present_members':len(present),'available_contributions':funds}
+        eligible=(g.status=='active' and g.cause!='expedition' and p.id==g.leader_id and p.id in [q.id for q in present]
+                  and len(self.w.factions)<24 and g.investment>=4 and age>=168 and len(g.member_ids)>=3
+                  and len(present)>=3 and sum(q.money>15 for q in present)>=2 and funds>=4 and score>=65
+                  and not any(len(self.w.characters[i].organization_ids)>=3 for i in g.member_ids))
+        ready=g.investment>=4 and age>=168 and len(g.member_ids)>=3 and sum(q.money>15 for q in present)>=2
+        return {'eligible':eligible,'ready':ready,'reason_code':None if eligible else 'FORMALIZATION_REQUIREMENTS',
+                'present_ids':[q.id for q in present],'factors':factors}
+
+    def formalization(self,p,g,present,execute=False):
+        check=self.can_formalize(p,g,present)
+        if not check.get('ready'):return None
+        g.plan['formalization_pressure']=check['factors']
         if self.w.turn-g.plan.get('last_formalization_audit',-1000)>=24:
             g.plan['last_formalization_audit']=self.w.turn
-            self.emit('FormalizationConsidered',p,g.id,group_id=g.id,factors=g.plan['formalization_pressure'])
-        if not execute or score<65 or g.investment<4 or age<168 or len(present)<3 or funds<4:return None
-        f=self.e.society.found_faction(p,g,present)
-        return f
+            self.emit('FormalizationConsidered',p,g.id,group_id=g.id,factors=check['factors'])
+        if execute and check['eligible']:return self.e.society.found_faction(p,g,present)
+        return None
 
     def registered_faction(self,p,g,f):
         f.norms.update(origin_group_id=g.id,founders=list(f.member_ids),cause=g.cause,formalized_at=self.w.turn,
@@ -568,7 +603,7 @@ class Institutions:
                 n.context['notice']=notice
 
     def faction_candidates(self,p,n):
-        f=self.w.factions.get(n.context.get('faction_id'))
+        f=self.w.factions.get(organization_id(n.context,'faction'))
         if not f or f.status!='active':return None
         caps=self.capabilities(f,p);t=self.w.towns.get(p.position.map_id)
         result=[]
@@ -583,8 +618,11 @@ class Institutions:
             result.append(('institutional_patrol',t.market if t else p.position,f.id))
         if t and p.id==f.leader_id and f.money>=2 and self.w.turn-p.social_state.get('last_faction_purchase',-1000)>=12:
             result.append(('institutional_purchase',t.market,f.id))
-        if self.e.items.count(f.id,'food') or self.e.items.count(f.id,'water'):
-            result.append(('institutional_supply',None,f.id))
+        stocks=[k for k in ('food','water') if self.e.items.count(f.id,k)]
+        if stocks:
+            preferred='water' if p.thirst>=p.hunger else 'food'
+            kind=preferred if preferred in stocks else stocks[0]
+            result.append(MaterialCandidate('institutional_supply',None,f.id,kind))
         if f.norms.get('allow_theft') and p.id==f.leader_id and t and p.personality.honesty<35 and p.personality.greed>=60 and self.e.items.count(t.id,'food') and p.hunger>=45:
             result.append(('institutional_raid',t.market,f.id))
         return result or None
@@ -603,16 +641,18 @@ class Institutions:
 
     def execute(self,p,goal,n):
         if goal.action=='institutional_support':
-            prop=self.w.proposals.get(goal.target_id);f=self.w.factions.get(n.context.get('faction_id')) if n else None
+            prop=self.w.proposals.get(goal.target_id);f=self.w.factions.get(organization_id(n.context,'faction')) if n else None
             return self.faction_support(p,f,prop) if prop and f else (False,'Apoio institucional desconhecido.')
         if goal.action=='support_proposal':
-            prop=self.w.proposals.get(goal.target_id);g=self.w.groups.get(n.context.get('group_id')) if n else None
+            prop=self.w.proposals.get(goal.target_id);g=self.w.groups.get(organization_id(n.context,'group')) if n else None
             return self.deliver_support(p,prop,g) if prop and g else (False,'Representação desconhecida.')
         if goal.action=='policy_work':
             policy=self.w.institutional_policies.get(goal.target_id)
             return self.policy_work(p,policy) if policy else (False,'Política inexistente.')
         f=self.w.factions.get(goal.target_id)
         if not f or p.id not in f.member_ids or f.status!='active':return False,'Sem vínculo institucional válido.'
+        if n and n.kind=='organizational_survival' and n.context.get('organization_type'):
+            if organization_id(n.context,'faction')!=f.id:return False,'Intenção pertence a outra organização.'
         t=self.w.towns.get(p.position.map_id);effect={};illegal=False
         if goal.action=='institutional_patrol':
             if not self.capabilities(f,p)['patrol'] or p.profession not in ('guarda','soldado'):return False,'Sem capacidade de patrulha.'
@@ -629,7 +669,9 @@ class Institutions:
             # Um membro com estoque deve estar presente: o depósito não vira inventário remoto.
             leader=self.w.characters.get(f.leader_id)
             if p.position.map_id!=f.headquarters_id and (not leader or leader.position!=p.position):return False,'Depósito ou responsável não está presente.'
-            kind='water' if p.thirst>=p.hunger else 'food';id=self.e.items.first(f.id,kind)
+            kind=goal.resource_kind
+            if kind not in ('food','water') or goal.amount!=1:return False,'Intenção material de abastecimento ausente ou inválida.'
+            id=self.e.items.first(f.id,kind)
             if not id:return False,'A organização não possui este recurso.'
             item=self.e.items.transfer(f.id,p.id,id);effect={'supplied':kind,'recipient':p.id,'item_id':item.id}
         elif goal.action=='institutional_raid':

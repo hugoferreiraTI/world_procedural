@@ -1,0 +1,561 @@
+{
+  "task": "Fase 5.5.5",
+  "rules": "mvp-13-fase5.5.5",
+  "save_format": 2,
+  "generation_version": "mvp-5.4",
+  "initial_commit": "1f3f9e73baa6a873fa3de5632837372085e5a645",
+  "request": {
+    "path": "/home/hugo/.codex/attachments/25fa9b39-2482-413e-bd14-600656fd06db/Texto colado.txt",
+    "sha256": "4327b2200b7e59f0c419aae12d21a22e39c92b7450b7c9d6da93c7f91b8fd33f",
+    "requirements": [
+      {
+        "number": 1,
+        "title": "FORA DO ESCOPO",
+        "report_sections": [
+          1,
+          14
+        ]
+      },
+      {
+        "number": 2,
+        "title": "OBJETIVOS DA FASE",
+        "report_sections": [
+          1,
+          14
+        ]
+      },
+      {
+        "number": 3,
+        "title": "B01 — HISTÓRICO MUTÁVEL / ALIAS EM EVENTOS",
+        "report_sections": [
+          2
+        ]
+      },
+      {
+        "number": 4,
+        "title": "B02 — RAMO POLÍTICO INALCANÇÁVEL",
+        "report_sections": [
+          2
+        ]
+      },
+      {
+        "number": 5,
+        "title": "B03 — PREVENTIVE_CHOICE CONTORNA COOLDOWN DE ÁGUA",
+        "report_sections": [
+          2
+        ]
+      },
+      {
+        "number": 6,
+        "title": "B04 — DUAS VIAS DE FORMALIZAÇÃO COM REGRAS DIFERENTES",
+        "report_sections": [
+          2
+        ]
+      },
+      {
+        "number": 7,
+        "title": "B05 — INSTITUTIONAL_SUPPLY: CANDIDATO ≠ EXECUÇÃO",
+        "report_sections": [
+          2
+        ]
+      },
+      {
+        "number": 8,
+        "title": "B06 — CONTEXTO GROUP/FACTION AMBÍGUO",
+        "report_sections": [
+          2
+        ]
+      },
+      {
+        "number": 9,
+        "title": "B07 — DESCRIÇÃO ERRADA DE MORTE EM EXPLORAÇÃO",
+        "report_sections": [
+          2
+        ]
+      },
+      {
+        "number": 10,
+        "title": "B08 — REPORT_CONGREGATION CAUSA KEYERROR",
+        "report_sections": [
+          2
+        ]
+      },
+      {
+        "number": 11,
+        "title": "ELIMINAR CAMINHOS LEGADOS INACESSÍVEIS",
+        "report_sections": [
+          3
+        ]
+      },
+      {
+        "number": 12,
+        "title": "NÃO MANTER DUAS IMPLEMENTAÇÕES DA MESMA REGRA",
+        "report_sections": [
+          3
+        ]
+      },
+      {
+        "number": 13,
+        "title": "CONSTANTES OCIOSAS",
+        "report_sections": [
+          3
+        ]
+      },
+      {
+        "number": 14,
+        "title": "QUERIES DEVEM SER PURAS QUANDO DECLARADAS COMO QUERY",
+        "report_sections": [
+          7
+        ]
+      },
+      {
+        "number": 15,
+        "title": "OBJETIVO",
+        "report_sections": [
+          5
+        ]
+      },
+      {
+        "number": 16,
+        "title": "CLASSIFICAR CADA FALHA ATUAL",
+        "report_sections": [
+          4
+        ]
+      },
+      {
+        "number": 17,
+        "title": "TESTES LEGADOS",
+        "report_sections": [
+          4
+        ]
+      },
+      {
+        "number": 18,
+        "title": "TESTES DOS OITO BUGS",
+        "report_sections": [
+          5
+        ]
+      },
+      {
+        "number": 19,
+        "title": "SUÍTE VERDE NÃO É PROVA DE EMERGÊNCIA",
+        "report_sections": [
+          5,
+          11
+        ]
+      },
+      {
+        "number": 20,
+        "title": "OBJETIVO",
+        "report_sections": [
+          6
+        ]
+      },
+      {
+        "number": 21,
+        "title": "PRINCÍPIO FUNDAMENTAL",
+        "report_sections": [
+          6
+        ]
+      },
+      {
+        "number": 22,
+        "title": "WORLD EVENT",
+        "report_sections": [
+          6
+        ]
+      },
+      {
+        "number": 23,
+        "title": "CAUSAL LINKS",
+        "report_sections": [
+          6,
+          12
+        ]
+      },
+      {
+        "number": 24,
+        "title": "NEED EPISODE",
+        "report_sections": [
+          6
+        ]
+      },
+      {
+        "number": 25,
+        "title": "DECISION TRACE V1",
+        "report_sections": [
+          6,
+          12
+        ]
+      },
+      {
+        "number": 26,
+        "title": "GATES DEVEM TER CÓDIGOS",
+        "report_sections": [
+          6
+        ]
+      },
+      {
+        "number": 27,
+        "title": "NÃO LOGAR CADA CÁLCULO DE CADA NPC PARA SEMPRE",
+        "report_sections": [
+          6,
+          11
+        ]
+      },
+      {
+        "number": 28,
+        "title": "LEARNING RECEIPT",
+        "report_sections": [
+          6,
+          12
+        ]
+      },
+      {
+        "number": 29,
+        "title": "NÃO TORNAR PENSAMENTOS EM FATOS PÚBLICOS",
+        "report_sections": [
+          6
+        ]
+      },
+      {
+        "number": 30,
+        "title": "WORLD ACCORDING TO NPC",
+        "report_sections": [
+          6,
+          13
+        ]
+      },
+      {
+        "number": 31,
+        "title": "EVENT HISTORY NÃO PODE SER O BUFFER DE 256",
+        "report_sections": [
+          6
+        ]
+      },
+      {
+        "number": 32,
+        "title": "ÍNDICES",
+        "report_sections": [
+          6,
+          7
+        ]
+      },
+      {
+        "number": 33,
+        "title": "COMPATIBILIDADE DE SAVE",
+        "report_sections": [
+          8
+        ]
+      },
+      {
+        "number": 34,
+        "title": "GENERATION VERSION / CONFIG",
+        "report_sections": [
+          8
+        ]
+      },
+      {
+        "number": 35,
+        "title": "TESTE DE NEUTRALIDADE",
+        "report_sections": [
+          9
+        ]
+      },
+      {
+        "number": 36,
+        "title": "TESTE SAVE/LOAD",
+        "report_sections": [
+          10
+        ]
+      },
+      {
+        "number": 37,
+        "title": "RETENÇÃO",
+        "report_sections": [
+          8,
+          11
+        ]
+      },
+      {
+        "number": 38,
+        "title": "EVENTOS HISTÓRICOS IMPORTANTES",
+        "report_sections": [
+          6,
+          12
+        ]
+      },
+      {
+        "number": 39,
+        "title": "DEBUG MODE OPCIONAL",
+        "report_sections": [
+          6,
+          9
+        ]
+      },
+      {
+        "number": 40,
+        "title": "NÃO FAZER NOVA CAMPANHA GRANDE ANTES DOS TESTES",
+        "report_sections": [
+          5,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "number": 41,
+        "title": "CAMPANHA NATURAL FINAL",
+        "report_sections": [
+          11
+        ]
+      },
+      {
+        "number": 42,
+        "title": "O QUE A CAMPANHA DEVE PROCURAR",
+        "report_sections": [
+          11
+        ]
+      },
+      {
+        "number": 43,
+        "title": "NÃO USAR RESULTADOS PARA REBALANCEAR",
+        "report_sections": [
+          11,
+          14
+        ]
+      },
+      {
+        "number": 44,
+        "title": "RELATÓRIO FINAL",
+        "report_sections": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ]
+      },
+      {
+        "number": 45,
+        "title": "RELATÓRIO DE TESTES",
+        "report_sections": [
+          4
+        ]
+      },
+      {
+        "number": 46,
+        "title": "RELATÓRIO DE CÓDIGO LEGADO",
+        "report_sections": [
+          3
+        ]
+      },
+      {
+        "number": 47,
+        "title": "RELATÓRIO DA OBSERVABILIDADE",
+        "report_sections": [
+          6,
+          12
+        ]
+      },
+      {
+        "number": 48,
+        "title": "CRITÉRIO DE CONCLUSÃO",
+        "report_sections": [
+          14
+        ]
+      },
+      {
+        "number": 49,
+        "title": "DEFINIÇÃO DE SUCESSO DA OBSERVABILIDADE V1",
+        "report_sections": [
+          7,
+          12
+        ]
+      },
+      {
+        "number": 50,
+        "title": "O QUE FICA PARA A FASE 6.0",
+        "report_sections": [
+          14
+        ]
+      }
+    ]
+  },
+  "sources": {
+    "procedural/__init__.py": "9c76e09285c36bd0a873783141eb38ed2fe69d969a70670e44d3f5cdad782551",
+    "procedural/__main__.py": "673ad82fb29873bd6569a4c78d9c45c32e1f68543401ec17ae2f49021a77b790",
+    "procedural/access.py": "6d03f0be14c029a22d659b703088bd0a463839d61c989818fa582f17a9f6022c",
+    "procedural/action_pressure.py": "9132a476128d2e97caeac1a939c8dc2f2cdc6dd3cd6dde1847c23edb9fafde63",
+    "procedural/aftermath.py": "749f917c360b45b14188d9a690cf90a52900249a1f42be2af54c9d4da1b9c110",
+    "procedural/agency.py": "821cfca2ae983ec72bce2c84fde8d3c1981f28ccc54470e481ca5568771e7e55",
+    "procedural/collective_action.py": "9df24969224e435cc9cc09aacf9074813f98a137629fffab26371bcf323377e2",
+    "procedural/conflicts.py": "e9715324a1912824e3c795cea361ad627fb383b4997a967685e4171a1430323f",
+    "procedural/divine_relations.py": "f5c243f937b96c70749d09926cb7cdbac6dd42694b9176c22e1ba456ad5546d5",
+    "procedural/economy.py": "e3c217acf0ed36a15abe6e1b0876724be9de75cc89fac285d6a6ba48b26b0eb4",
+    "procedural/emotions.py": "0f6a06d6cf737e59887d831b15324d9fe811c8152286db13c120d1ca38b29319",
+    "procedural/engine.py": "89dedfd335bcfab2794aaa49f063873330b476bd14a0e5a8fe3b7aa2eaa04a89",
+    "procedural/events.py": "13f5e2bb19e33753cf9d49e6a5a63b6e0c54feb88934c8a5114a4b56bbf01dc0",
+    "procedural/faith.py": "a4cf5f3633ed0e6949c32a17bb8c19779fe3a8b423387f8e945521e449b08a59",
+    "procedural/feeding.py": "7b88b3d44cf499b7ba48d571dacb97a1e6752715737194ca07e05e66b36a42b4",
+    "procedural/generation.py": "9a889ba5a53fdc73acfe7d60eb63f6a60565edf19b343352fece311686b8d189",
+    "procedural/geography.py": "14089dbae17e83062db089a70189c7b0fac8a82c3ef9a61f125a2b54ea57d8c3",
+    "procedural/goals.py": "4ae4c8c71e81badf3e82966df0a05489019d18d84934b1648be10078a43a76ca",
+    "procedural/institutions.py": "365a83322bfd28f1709a353542c49af110e8b93324c5ecefc763a92a3536211f",
+    "procedural/investigation.py": "0e5145f8b913102f244fc1669684e84157051ad4738a490e3949ee784b614a3b",
+    "procedural/items.py": "ce22ac933ebf3be264f6d827bfbcc41d1f1a004ce79f9c10f1f4a316a6fdedfd",
+    "procedural/justice.py": "5dfd5fb726a22347039a309d4177b190f7ba7f0e15e5bd1ec73e9944ef9dfe20",
+    "procedural/knowledge.py": "bcfe210c035a3382e4b30fadeeaefebe4e691927e15eea17bbf07eaac4ccfd25",
+    "procedural/lethal_decisions.py": "3b69ff7c1a4c33db6074656905641f4a5c3fabfff42e70b13b3fc62f946edefd",
+    "procedural/lethality.py": "b221a6891ff1adddeda6876b9f84f51fce313473f79cd2b16573b8e6b68a4654",
+    "procedural/migration.py": "845d8d2deaaf44c0886237c321d48437f7970637b8a9c4a6b4eba74a12f5285c",
+    "procedural/models.py": "61c0c7e6a9acd3135bd9660a53d1ae2472f1a420820e533fb2fef26222be90e5",
+    "procedural/navigation.py": "42e2ca4eba1b7b2a454253fc23b803356db7f876b085b4b5906e7e2a35574ba7",
+    "procedural/needs.py": "c4d0e35c7ffd48e1dbdba3677688795c330caef6390c3ed4bb113dabe708f70f",
+    "procedural/observability.py": "553ade2099b52abfc294553c102dbd001fc98a6064775b426babdf3b54f78831",
+    "procedural/organization_context.py": "c4fcf756bc92c9b2f90f39fd45ee83ae1d9cc061a189ca2a9372f6d9e16d339e",
+    "procedural/persistence.py": "740a233224af5b1fc46d8c29f39f492c8847a46c292d1a47b5b690c4c9095ef4",
+    "procedural/personal.py": "b6f06658efc0f02dda431421bf1de84af55b53c44942fba0600f1ebf86e3a454",
+    "procedural/personal_actions.py": "eab1383b35234f955c4bdc89529f316e4bac26f81606191b359cdfb9be03be46",
+    "procedural/politics.py": "4de1ac419e8c55405affa92942d79fa72e95124ab7883b409f074ddd2fb9b648",
+    "procedural/population.py": "f0e4d1be92f89fed78840f51d7c62bcd3e965ca183db018607ce8727283be625",
+    "procedural/professions.py": "359da19f2a1325114fc50bf5aa3c165827b6af6ba242da5bd387ca673a525ae8",
+    "procedural/quests.py": "e7814a3b34e60f950ef31112b6dac75cfa1720b81ee609e3910c225b0046a971",
+    "procedural/recovery.py": "d3e21c794eaab71e2610fa833fdf9a7576dd2fc3c30df2e2f70d3141e30c9030",
+    "procedural/relationships.py": "55e599eb5b8d43b532dad878bc323cb5bfe63c0505823f14080ea372d8476055",
+    "procedural/religious_health.py": "a6db9653d08a28e4ae7cebfa6ca0058c717d8f6829d4e74d7e742fec91297aa7",
+    "procedural/renown.py": "939a3d73352d0a3ae608c807f5d39fd0b3ae7d99a1c9e4b7b196cc5ecf304f50",
+    "procedural/rules.py": "67859ba30a4d514c8b27a5e016221d7605858cdabfa56bf875e28011a8176c9e",
+    "procedural/social.py": "c8b918ee27b3f91c317d0f6269520c47623464edbd54f7a6c0a94953709da402",
+    "procedural/society.py": "61884323420b6a128fbe78f3861bbbd19327902686b4c8bdb00000c5b458509f",
+    "procedural/terminal_combat.py": "a3c5da33b941cb83a8b5dcdc73f3c2f80d3d5338c098bdec4a281db5b16134f6",
+    "procedural/ui.py": "deed3a4e539cf4d969fc90e7588a4127c939b40908c6dfea608d24228b610539",
+    "procedural/utility.py": "04de1385188d1c5710f6175045109ee96a0866465124c8fb5bcee51823c8d68d",
+    "procedural/validation.py": "1f21f38951951e2b65a138848ae8f260b510a5344678533e46e070ae1c8d8d7c",
+    "procedural/violence_patterns.py": "78641e116b1c09ffbf418a59d93ba1e8bac7dcc8bc6414a7eced41f253312996",
+    "tests/test_feeding.py": "f6289e5e2bd31a51205c4a507027dfc47bef8cd7f8058ba2cf4514d1f692a688",
+    "tests/test_hardening.py": "6ac25c68098990f3142b15d71a3284b38c954cc28f5498eeab8928e268c72877",
+    "tests/test_phase2.py": "5aa852a2b34f24e647e09979cb33ff2eff6a257802e71eda53ee4b35506fa31a",
+    "tests/test_phase3.py": "cbbdd0670e1913f4abd24f2f9e3f9d9d9384cc0e315832dce883527b3228f74c",
+    "tests/test_phase32.py": "05a6fb3144f1b59110f63047d6e2f67a57b00437d47143d99e9b08192a59143d",
+    "tests/test_phase4.py": "55c064956facc5b08140cb43ca294bb6f6cf992207d15a58cc65cbefb3c99fcf",
+    "tests/test_phase41.py": "316fb2ee7d4aabecd2333acde14b79da8144bc223f2babee350ab5c25f7bbe4b",
+    "tests/test_phase45.py": "9206ec58d3c14b94046e9721f5f2dbfaea32cb76d38c3ec236a8c01558dd1987",
+    "tests/test_phase46.py": "8d352cc31f181669cafeba6166b48297de7711de1ea0a5492f368c4e94a682df",
+    "tests/test_phase5.py": "f61e78bcfbf6c3e6b7e7e691b3223265ba4d5acf4a79bffaa667afe1bf075726",
+    "tests/test_phase51.py": "6eeba3f0ed219e063cb290f7fa6ed3da696f48a39e24ed5a45ddd7f6d53b76a5",
+    "tests/test_phase52.py": "84de5e1698f85cddbd16e21d0a590d6440be80654a80158d6ff08422bdc8f0a8",
+    "tests/test_phase521.py": "ac6fbb4adb62f72dd0c1abb6b1f96e7d4e9b613526ebf1ee836dcb9d2906ef1c",
+    "tests/test_phase54.py": "5ab31ed5edd1e05b0bf4568f25482e1fe60dc078bf9b01ac11efd30675e1090b",
+    "tests/test_phase55.py": "75df94538a6eaaf96e68b85ee492d02b32d1de5bf6ce1314ac9a32c1ad0b83b2",
+    "tests/test_phase555.py": "26f4e04ebf533af590ec6a530a655020b319278574262d02b314b4a0e5419b56",
+    "tests/test_simulation.py": "c43c3d0ab72bcfa55d3c1b77a1d6e30696471105b9132781f2c12ffaa3f14f6a"
+  },
+  "suite": {
+    "tests": 341,
+    "passed": 341,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "new_tests": 15,
+    "baseline_issues_classified": 21
+  },
+  "controls": {
+    "continuity": "100h vs 50h/save/load/50h; todos os campos iguais",
+    "neutrality": "OFF/NORMAL/AUDIT, 24h cada, estado de gameplay e Events iguais",
+    "smoke": "12h, quatro reinos"
+  },
+  "campaign": {
+    "seed": "Elyndar-Estabilidade555",
+    "hours": 300,
+    "restarts": 0,
+    "with_player": false,
+    "historical_turns": 0,
+    "status": "completed"
+  },
+  "source_consistency": true,
+  "complete_natural_chain": true,
+  "full_save_removed_after_validation": true,
+  "patch_reverse_check_passed": true,
+  "preserved_prior_audit": true,
+  "no_gameplay_expansion_or_rebalance": true,
+  "artifacts": {
+    "reports/fase_5_5_5/cadeia_real.json": {
+      "bytes": 3627,
+      "sha256": "156251e5c79317889b8dd88c0eb1626430a064d33f31edea9d917ba15dac6d09"
+    },
+    "reports/fase_5_5_5/campanha.json": {
+      "bytes": 56481,
+      "sha256": "5f1858a979efe08c25be6c00f3b8a976dba72b6126bdb2d7df7bca5f8fb559c9"
+    },
+    "reports/fase_5_5_5/campanha.log": {
+      "bytes": 5896,
+      "sha256": "d5527e3c8d50abf90110b872297ee59f156eef9d95a0ae4ba765634b3c245321"
+    },
+    "reports/fase_5_5_5/controles.json": {
+      "bytes": 7692,
+      "sha256": "bd58cd198e4a9be2ee5854b293b0f71bafd5e4ab8fed97fce82f78841f05225a"
+    },
+    "reports/fase_5_5_5/controles.log": {
+      "bytes": 886,
+      "sha256": "50a674d3adea1dfd91e485a57878b1245ff3889502658be0606602e042453121"
+    },
+    "reports/fase_5_5_5/historico_nativo.json.gz": {
+      "bytes": 6310050,
+      "sha256": "acbe6f946cfdffd8e588f4c740326c6160b449344b153fb310fba72de4043cfc"
+    },
+    "reports/fase_5_5_5/implementacao.patch": {
+      "bytes": 187692,
+      "sha256": "9e20e40bf48bf2d68b02ef9667da324da7cdec08361dc06ddaa64a7c5f551a48"
+    },
+    "reports/fase_5_5_5/legado.json": {
+      "bytes": 3921,
+      "sha256": "7bb2a5d1dba07b91a0a559f9536e2788039952ae7405aa93c18d209b83890c42"
+    },
+    "reports/fase_5_5_5/referencias_legado.json": {
+      "bytes": 16656,
+      "sha256": "ee57bfbdda712a9836f7bbeaf7782e2543965e190fe95081bc5a80f8bcd41228"
+    },
+    "reports/fase_5_5_5/relatorio_validacao.json": {
+      "bytes": 17274,
+      "sha256": "43d4a90d2ab8dd4705d65088088ed50f0e5f26f134f5cf3c8e1a8e08b916041b"
+    },
+    "reports/fase_5_5_5/rodada_intermediaria.log": {
+      "bytes": 19265,
+      "sha256": "ea75f896388d997342b0dc2c1e347964a09514c0ad4e3c9135c0ee1583d047da"
+    },
+    "reports/fase_5_5_5/testes_antigos.json": {
+      "bytes": 9206,
+      "sha256": "8ba283083253b73265385375530b04c8bc9f5cb3eab3e9cbd1d71ffdc38c6eae"
+    },
+    "reports/fase_5_5_5/testes_final.log": {
+      "bytes": 48916,
+      "sha256": "de1df63dd9e84064ce1b833042332e471c781b97c6acd8581fe92bfe36e243ca"
+    },
+    "FASE_5_5_5.md": {
+      "bytes": 38362,
+      "sha256": "db3f433337d56d276ddf7f6b067a87f0620c0b6d5729795d6a7852fb6199f645"
+    },
+    "README.md": {
+      "bytes": 2083,
+      "sha256": "5746a9158d1a1ad6ec726aafcac7dc7342fcf2ab703cfe682229152049b4c1e0"
+    },
+    "PROJECT.md": {
+      "bytes": 99280,
+      "sha256": "59d69bc5e18633e6e168cebe9e4b023e7265de3da9f85c23cc661d2678ab2b8f"
+    },
+    "experiments/project_docs.py": {
+      "bytes": 51128,
+      "sha256": "a8e9f0ab179db582a5f1e9a31da72a91963c775871d0fc60fc3602a76b3f6141"
+    }
+  }
+}

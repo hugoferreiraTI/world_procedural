@@ -1,6 +1,7 @@
 """Alternativas avaliadas pela personalidade, seguidas de execução e reavaliação."""
 
 from dataclasses import dataclass, field, replace
+from copy import deepcopy
 
 from .models import Goal, Location, Personality
 from types import SimpleNamespace
@@ -20,6 +21,14 @@ class Solution:
     considerations: dict[str, float] = field(default_factory=dict)
     feeding: dict | None = None
     action_audit: dict | None = None
+    resource_kind: str | None = None
+    amount: int = 1
+
+    @classmethod
+    def candidate(cls, candidate):
+        action,destination,target=candidate
+        return cls(action,0,destination,target,resource_kind=getattr(candidate,'resource_kind',None),
+                   amount=getattr(candidate,'amount',1))
 
 
 class GoalSystem:
@@ -36,8 +45,23 @@ class GoalSystem:
         self.rejected_food = {}
         self.interactions = None
         self.agency = None
+        self.evaluated_choices = {}
 
     def solutions(self, character, need) -> list[Solution]:
+        """QUERY isolada: simula planejamento em cópia, sem RNG/eventos/planos reais.
+
+        Ferramentas externas usam esta API. O ciclo de decisão usa plan_solutions
+        (COMMAND), pois alguns fornecedores atualizam planos e diagnósticos.
+        """
+        from .engine import Engine
+        world=deepcopy(self.world);world.rng_state=self.rng.getstate()
+        engine=Engine(world)
+        person=world.characters[character.id]
+        query_need=next((n for n in person.needs.values() if n.id==need.id),deepcopy(need))
+        return engine.goals.plan_solutions(person,query_need)
+
+    def plan_solutions(self, character, need) -> list[Solution]:
+        """COMMAND: planejamento usado exclusivamente pela decisão executável."""
         places = character.known_places
         choices = []
         if self.interactions:
@@ -47,14 +71,14 @@ class GoalSystem:
                 choices=[Solution(a,0,d,t) for a,d,t in self.interactions.conflicts.candidates(character,need) if a!='attack']
                 return self._evaluate(character,need,choices)
         if self.interactions:
-            choices.extend(Solution(a,0,d,t) for a,d,t in self.interactions.society.candidates(character,need))
+            choices.extend(Solution.candidate(c) for c in self.interactions.society.candidates(character,need))
             choices.extend(Solution(a,0,d,t) for a,d,t in self.interactions.faith.candidates(character,need))
             choices.extend(Solution(a,0,d,t) for a,d,t in self.interactions.access.candidates(character,need))
             choices.extend(Solution(a,0,d,t) for a,d,t in self.interactions.institutions.candidates(character,need))
         if need.kind == 'recovery':
             plan = self.interactions.recovery.candidates(character)
             if isinstance(plan, str):
-                return self.solutions(character, replace(need, kind=plan, context={}))
+                return self.plan_solutions(character, replace(need, kind=plan, context={}))
             choices.extend(Solution(action, 0, destination, target) for action,destination,target in plan)
         if need.kind in ("food", "food_reserve"):
             owned = self.items.count(character.id, "food")
@@ -160,26 +184,31 @@ class GoalSystem:
 
     def _evaluate(self, character, need, choices):
         available, rejected = [], []
+        observer=self.recorder.observer
+        observer.candidates(need,choices)
         for choice in choices:
             action = MEALS.get(choice.action, choice.action)
+            reason=self.eligibility(character,choice)
+            if reason:
+                observer.blocked(need,choice,reason)
+                continue
             if self.interactions:
                 from .action_pressure import STRONG,FORWARD
                 if action in STRONG or action in FORWARD or action=='attack':
-                    choice.action_audit=self.interactions.action_pressure.assess(character,need,action,choice.target_id)
-                    if not choice.action_audit['eligible']:continue
+                    if action=='attack' and self.interactions.lethal_decisions.active(character,choice.target_id):
+                        choice.action_audit=self.interactions.lethal_decisions.action_audit(character,choice.target_id,need)
+                    else:choice.action_audit=self.interactions.action_pressure.assess(character,need,action,choice.target_id)
+                    if not choice.action_audit['eligible']:
+                        observer.blocked(need,choice,'NO_CAPABILITY',choice.action_audit.get('major_barriers'))
+                        continue
             if (action in ("work_for_food", "temporary_service") and choice.action not in MEALS and
                     self.items.count(character.id, 'food') > self.feeding.reserve_target(character)):
+                observer.blocked(need,choice,'EXCESS_RESERVE')
                 continue
             if (need.kind == 'family' and action in ACQUISITIONS and
                     self.items.count(character.id, 'food') >= self.feeding.reserve_target(character)+1):
+                observer.blocked(need,choice,'EXCESS_RESERVE')
                 continue  # Reserva própria mais uma provisão para o familiar.
-            if max(character.failures.get(choice.action, 0), character.failures.get(action, 0)) > self.world.turn:
-                continue
-            if action == "ask_help" and character.failures.get(f"request:{choice.target_id}", 0) > self.world.turn:
-                continue
-            if choice.destination:
-                if choice.destination.map_id != character.position.map_id:
-                    continue
             travel = distance(character.position, choice.destination) if choice.destination else 0
             terms = self.social.considerations(character, choice.target_id) if action in (
                 "ask_help", "ask_personal_help", "seek_company", "denounce", "give_supplies") else {}
@@ -211,12 +240,15 @@ class GoalSystem:
                 if target and self.interactions.terminal_combat.opportunity(character,target):
                     terminal=self.interactions.lethal_decisions.terminal(character,target)
                     score=terminal['scores'].get('help' if action=='first_aid' else action,-1000)
-                    if score<=-1000:continue
+                    if score<=-1000:
+                        observer.blocked(need,choice,'TERMINAL_UNAVAILABLE')
+                        continue
                     # Uma competição terminal. Necessidades vitais continuam
                     # concorrendo antes, na escolha de Need, como anteriormente.
                     choice.score=score;choice.considerations={'terminal_context':score/200,
                         'terminal_winner':terminal['choice']==('help' if action=='first_aid' else action)}
                     available.append(choice)
+                    observer.scored(need,choice)
                     continue
             choice.score, choice.considerations = evaluate(action, character, terms, travel)
             if choice.action_audit and action!='attack':
@@ -226,6 +258,7 @@ class GoalSystem:
                 choice.feeding = self.feeding.estimate(character, choice)
                 if choice.feeding and not choice.feeding['survival_viable']:
                     rejected.append(choice)
+                    observer.blocked(need,choice,'SURVIVAL_NOT_VIABLE')
                     continue
             role=need.context.get('institutional_role')
             if (role=='inquire' and action=='ask_about_person' or role=='watch' and action=='search_area'):
@@ -237,11 +270,14 @@ class GoalSystem:
                 choice.score+=mythic
                 if mythic:choice.considerations['mythic_influence']=mythic/200
             available.append(choice)
+            observer.scored(need,choice)
         self.rejected_food[character.id] = rejected
         if need.kind == 'food' and self.feeding.immediate_meal_needed(character):
             immediate = {(MEALS[c.action], c.destination, c.target_id) for c in available if c.action in MEALS}
             available = [c for c in available if (c.action, c.destination, c.target_id) not in immediate]
-        return sorted(available, key=lambda choice: (-choice.score, choice.action, choice.target_id or 0))
+        available=sorted(available, key=lambda choice: (-choice.score, choice.action, choice.target_id or 0))
+        self.evaluated_choices[(character.id,need.id)]=available
+        return available
 
     def choose(self, alternatives):
         if alternatives and all('terminal_winner' in s.considerations for s in alternatives):
@@ -252,6 +288,11 @@ class GoalSystem:
         return max(near, key=lambda s: s.score + self.rng.uniform(-UTILITY.variation, UTILITY.variation))
 
     def decide(self, character, elapsed: int = 1) -> None:
+        with self.recorder.observer.decision(character,self.feeding.decision_interval(character)):
+            self._decide(character,elapsed)
+
+    def _decide(self, character, elapsed: int = 1) -> None:
+        self.evaluated_choices.clear()
         self.world.metrics['NPCDecision']=self.world.metrics.get('NPCDecision',0)+1
         self.economy.observe(character)
         character.food_state['food_before_decision'] = self.items.count(character.id, "food")
@@ -281,7 +322,7 @@ class GoalSystem:
             return
         selected, choice = None, None
         for need in active:
-            alternatives = self.solutions(character, need)
+            alternatives = self.plan_solutions(character, need)
             if need.kind in ("food", "food_reserve"):
                 self.feeding.rejected(character, need, self.rejected_food.get(character.id, []))
             if alternatives:
@@ -303,7 +344,7 @@ class GoalSystem:
             paused = character.suspended_goal
             paused_need = next((n for n in active if n.id == paused.need_id), None)
             if paused_need and any(s.action == paused.action and s.target_id == paused.target_id and
-                                   s.destination == paused.destination for s in self.solutions(character, paused_need)):
+                                   s.destination == paused.destination for s in self.plan_solutions(character, paused_need)):
                 current = paused
                 current.status = "active"
                 character.goal = paused
@@ -318,7 +359,7 @@ class GoalSystem:
         if current and current.status == "active" and not meal_interrupt and not recovery_interrupt and not selected.context.get('emergency'):
             current_need = next((need for need in active if need.id == current.need_id), None)
             if current_need and selected.priority < current_need.priority + 12:
-                continuing = next((solution for solution in self.solutions(character, current_need)
+                continuing = next((solution for solution in self.plan_solutions(character, current_need)
                                    if solution.action == current.action and
                                    solution.target_id == current.target_id and
                                    solution.destination == current.destination), None)
@@ -330,7 +371,7 @@ class GoalSystem:
             if need is selected:
                 need.context["selections"] = need.context.get("selections",0)+1
                 self.needs.explain(character,need,"Selected")
-            elif not self.solutions(character,need):
+            elif not self.plan_solutions(character,need):
                 need.status = "blocked"
                 if not need.context.get("blocked_recorded"):
                     self.needs.count("Blocked",need.kind,character)
@@ -371,15 +412,17 @@ class GoalSystem:
                                   if self.needs.personal else 0} for n in active],
                 "candidates": [{"action": s.action, "target_id": s.target_id, "score": s.score,
                                 "considerations": s.considerations, "feeding": s.feeding}
-                               for s in self.solutions(character, selected)],
+                               for s in self.evaluated_choices.get((character.id,selected.id),())],
                 "rejected_food_solutions": [{"action": s.action, "feeding": s.feeding}
                                              for s in self.rejected_food.get(character.id, [])]}
         if not (current and current.status == "active" and current.need_id == selected.id and
                 current.action == choice.action and current.target_id == choice.target_id and
-                current.destination == choice.destination):
+                current.destination == choice.destination and current.resource_kind == choice.resource_kind):
             current = Goal(self.world.allocate_id(), selected.id, choice.action, choice.score,
-                           self.world.turn, choice.target_id, choice.destination)
+                           self.world.turn, choice.target_id, choice.destination,
+                           resource_kind=choice.resource_kind,amount=choice.amount)
             character.goal = current
+        self.recorder.observer.selected(selected,choice,current)
         if current.destination and character.position != current.destination:
             # Tempo de viagem é consumido antes da ação; não recebe horas de
             # produção por um intervalo que passou caminhando.
@@ -419,6 +462,19 @@ class GoalSystem:
             self.needs.satisfy(character, "rest")
 
     def execute(self, character, goal, hours: int) -> tuple[bool, str]:
+        observer=self.recorder.observer
+        if observer.current is None:
+            with observer.decision(character,0) as trace:
+                need=next((n for n in character.needs.values() if n.id==goal.need_id),None)
+                if need:observer.selected(need,goal,goal)
+                result=self.execute(character,goal,hours)
+            return result
+        with observer.action(character,goal):
+            result=self._execute_attempt(character,goal,hours)
+            observer.outcome(result)
+            return result
+
+    def _execute_attempt(self, character, goal, hours: int) -> tuple[bool, str]:
         if goal.action in ("work_for_food", "temporary_service"):
             deficit = max(1, self.feeding.reserve_target(character)-self.items.count(character.id, 'food'))
             hours = min(hours, deficit)
@@ -620,7 +676,41 @@ class GoalSystem:
             return True, "O guarda investigou o último local conhecido; o suspeito não estava lá."
         return False, "Ação desconhecida."
 
+    def eligibility(self, person, choice):
+        """QUERY: guardas fundamentais compartilhadas por seleção e preparação.
+
+        Estoque remoto só é consultado na observação própria recente; a presença
+        permite verificar a fonte material. Nenhuma informação remota é criada.
+        """
+        from .navigation import passable
+        action=MEALS.get(choice.action,choice.action)
+        if max(person.failures.get(choice.action,0),person.failures.get(action,0))>self.world.turn:
+            return 'ACTION_COOLDOWN'
+        if action=='ask_help' and person.failures.get(f'request:{choice.target_id}',0)>self.world.turn:
+            return 'ACTION_COOLDOWN'
+        destination=choice.destination
+        if destination and (destination.map_id!=person.position.map_id or not passable(self.world,destination)):
+            return 'NO_KNOWN_ROUTE'
+        if action=='fill_water':
+            if not destination or destination not in person.known_places.values():return 'NO_KNOWN_TARGET'
+            town=self.world.towns.get(destination.map_id)
+            _,structures=self.navigation.describe(destination)
+            if not town or 'Poço' not in structures:return 'NO_CAPABILITY'
+            seen=person.market_observation
+            if person.position==destination:
+                if not self.items.count(town.id,'water'):return 'NO_STOCK'
+            elif (seen.get('town_id')==town.id and self.world.turn-seen.get('turn',-1000)<=24
+                  and seen.get('stock',{}).get('water')==0):return 'NO_STOCK'
+        if (person.combat.detention_until>self.world.turn or person.combat.surrendered_until>self.world.turn):
+            if action not in ('eat','drink','drink_well','sleep') or destination and destination!=person.position:
+                return 'NO_CAPABILITY'
+        return None
+
     def preventive_choice(self, person, choice):
+        preparation=self._preventive_choice(person,choice)
+        return preparation if preparation and not self.eligibility(person,preparation) else None
+
+    def _preventive_choice(self, person, choice):
         # Uma refeição vital precede água para viagem e qualquer outro preparo.
         if (self.items.count(person.id, "food") and self.feeding.emergency(person) and
                 choice.action not in ("drink", "drink_well", "drink_stream")):
@@ -653,6 +743,10 @@ class GoalSystem:
         return None
 
     def collective(self,town,need,report):
+        with self.recorder.observer.decision(town,0):
+            return self._collective(town,need,report)
+
+    def _collective(self,town,need,report):
         """Mesmos Solution/Goal/utility; ações administrativas não movem NPCs."""
         proxy=SimpleNamespace(personality=Personality(),profession=None)
         actions=[]
@@ -676,27 +770,32 @@ class GoalSystem:
             score,terms=evaluate(action,proxy)
             choices.append(Solution(action,score+context,considerations=terms))
         choices.sort(key=lambda s:(-s.score,s.action))
+        self.recorder.observer.candidates(need,choices)
+        for candidate in choices:self.recorder.observer.scored(need,candidate)
         choice=self.choose(choices)
         town.goal=Goal(self.world.allocate_id(),need.id,choice.action,choice.score,self.world.turn)
         need.status='selected'
         self.needs.count('Selected',need.kind,town)
-        success=True
-        if choice.action=='expand_farming':
-            units=min(report['raw_required'],(town.abstract_population or 0)//100,town.money,
-                      max(0,240-self.items.count(town.id,'grain')))
-            if units:
-                town.money-=units; town.abstract_money+=units
-                self.items.create(town.id,'grain',units,origin='Colheita de trabalhadores locais')
-                self.professions.record_production(town,'grain',units)
-            success=bool(units)
-        elif choice.action=='materialize_worker':
-            success=self.professions.materialize(town)
-        vacancy=town.professional_demand.get('cozinheiro')
-        if vacancy:
-            vacancy['stage']=choice.action
-        town.goal.status='completed' if success else 'failed'
-        if not success: need.status='blocked'
-        if need.context.get('last_response')!=choice.action:
-            self.recorder.emit('LocalEconomicResponse',f'{town.name} decidiu: {choice.action}.',target_id=town.id,
-                               location=town.market,context={'action':choice.action,'bottlenecks':tags})
-        need.context['last_response']=choice.action
+        self.recorder.observer.selected(need,choice,town.goal)
+        with self.recorder.observer.action(town,town.goal):
+            success=True
+            if choice.action=='expand_farming':
+                units=min(report['raw_required'],(town.abstract_population or 0)//100,town.money,
+                          max(0,240-self.items.count(town.id,'grain')))
+                if units:
+                    town.money-=units; town.abstract_money+=units
+                    self.items.create(town.id,'grain',units,origin='Colheita de trabalhadores locais')
+                    self.professions.record_production(town,'grain',units)
+                success=bool(units)
+            elif choice.action=='materialize_worker':
+                success=self.professions.materialize(town)
+            vacancy=town.professional_demand.get('cozinheiro')
+            if vacancy:
+                vacancy['stage']=choice.action
+            town.goal.status='completed' if success else 'failed'
+            if not success: need.status='blocked'
+            if need.context.get('last_response')!=choice.action:
+                self.recorder.emit('LocalEconomicResponse',f'{town.name} decidiu: {choice.action}.',target_id=town.id,
+                                   location=town.market,context={'action':choice.action,'bottlenecks':tags})
+            need.context['last_response']=choice.action
+            self.recorder.observer.outcome((success,'EXECUTED' if success else 'BLOCKED_MATERIAL'))

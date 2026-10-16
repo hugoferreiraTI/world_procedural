@@ -1,0 +1,519 @@
+{
+  "material": [
+    {
+      "file": "procedural/conflicts.py",
+      "line": 448,
+      "text": "return True,'Restituição material real realizada.'"
+    },
+    {
+      "file": "procedural/emotions.py",
+      "line": 112,
+      "text": "stable = self.engine.recovery.material_stable(person)"
+    },
+    {
+      "file": "procedural/emotions.py",
+      "line": 113,
+      "text": "state.stable_material_hours = state.stable_material_hours+elapsed if stable else 0"
+    },
+    {
+      "file": "procedural/emotions.py",
+      "line": 132,
+      "text": "if state.stable_material_hours >= RECOVERY.stable_hours:"
+    },
+    {
+      "file": "procedural/emotions.py",
+      "line": 135,
+      "text": "reduction = min(state.despair_sources.get(source, 0), RECOVERY.material_desperation_decay*elapsed)"
+    },
+    {
+      "file": "procedural/goals.py",
+      "line": 683,
+      "text": "permite verificar a fonte material. Nenhuma informação remota é criada."
+    },
+    {
+      "file": "procedural/goals.py",
+      "line": 766,
+      "text": "elif age>=72 and self.professions.can_materialize(town):"
+    },
+    {
+      "file": "procedural/goals.py",
+      "line": 767,
+      "text": "actions.append(('materialize_worker',40))"
+    },
+    {
+      "file": "procedural/goals.py",
+      "line": 790,
+      "text": "elif choice.action=='materialize_worker':"
+    },
+    {
+      "file": "procedural/goals.py",
+      "line": 791,
+      "text": "success=self.professions.materialize(town)"
+    },
+    {
+      "file": "procedural/institutions.py",
+      "line": 63,
+      "text": "g.plan['last_material_effect']=fact.event_id"
+    },
+    {
+      "file": "procedural/institutions.py",
+      "line": 289,
+      "text": "# Sem capacidade material ou sob exaustão, uma demanda de baixa pressão"
+    },
+    {
+      "file": "procedural/institutions.py",
+      "line": 325,
+      "text": "prop.result={'decision':decision,'scores':scores,'reason':'pressure_personality_and_material_budget','political_pressure':prop.pressure,"
+    },
+    {
+      "file": "procedural/institutions.py",
+      "line": 326,
+      "text": "'policy_id':policy.id if policy else None,'material':{'food':0,'money':0,'recipients':[]}}"
+    },
+    {
+      "file": "procedural/institutions.py",
+      "line": 357,
+      "text": "else:g.plan['awaiting_material_policy']=fact.context['result'].get('policy_id')"
+    },
+    {
+      "file": "procedural/institutions.py",
+      "line": 374,
+      "text": "return False,'Política sem capacidade material: '+reason"
+    },
+    {
+      "file": "procedural/institutions.py",
+      "line": 383,
+      "text": "effect={};materials={}"
+    },
+    {
+      "file": "procedural/institutions.py",
+      "line": 390,
+      "text": "self.e.items.consume(t.id,'wood');self.e.items.consume(t.id,'iron');materials={'wood':1,'iron':1}"
+    },
+    {
+      "file": "procedural/institutions.py",
+      "line": 401,
+      "text": "effect={'food_produced':produced};materials={'grain':before-self.e.items.count(t.id,'grain')}"
+    },
+    {
+      "file": "procedural/institutions.py",
+      "line": 404,
+      "text": "self.e.items.consume(t.id,'iron',2);self.e.items.consume(t.id,'wood');materials={'iron':2,'wood':1}"
+    },
+    {
+      "file": "procedural/institutions.py",
+      "line": 428,
+      "text": "return True,'Carga material atribuída; pagamento exige chegada e entrega.'"
+    },
+    {
+      "file": "procedural/institutions.py",
+      "line": 446,
+      "text": "ev=self.emit('PolicyEffect',p,policy.id,policy_id=policy.id,proposal_id=policy.proposal_id,sector=policy.sector,effect=effect,materials=materials,wage=1,remaining_budget=policy.money,work_done=policy."
+    },
+    {
+      "file": "procedural/institutions.py",
+      "line": 673,
+      "text": "if kind not in ('food','water') or goal.amount!=1:return False,'Intenção material de abastecimento ausente ou inválida.'"
+    },
+    {
+      "file": "procedural/lethal_decisions.py",
+      "line": 178,
+      "text": "material_repair=f.kind=='RestitutionGiven' and d.cause=='known_theft_of_vital_resource' and f.context.get('quantity',0)>0"
+    },
+    {
+      "file": "procedural/lethal_decisions.py",
+      "line": 180,
+      "text": "if f.kind=='ConflictForgiven' or material_repair or accepted_apology:"
+    },
+    {
+      "file": "procedural/models.py",
+      "line": 109,
+      "text": "stable_material_hours: float = 0"
+    },
+    {
+      "file": "procedural/personal_actions.py",
+      "line": 175,
+      "text": "return True, \"Ajuda material prestada.\""
+    },
+    {
+      "file": "procedural/professions.py",
+      "line": 212,
+      "text": "def can_materialize(self, town):"
+    },
+    {
+      "file": "procedural/professions.py",
+      "line": 228,
+      "text": "def materialize(self, town):"
+    },
+    {
+      "file": "procedural/professions.py",
+      "line": 229,
+      "text": "if not self.can_materialize(town):"
+    },
+    {
+      "file": "procedural/professions.py",
+      "line": 260,
+      "text": "person.position,context={'previous':None,'target':'cozinheiro','required':24,'origin':'materialization'})"
+    },
+    {
+      "file": "procedural/recovery.py",
+      "line": 118,
+      "text": "def material_stable(self, person):"
+    },
+    {
+      "file": "procedural/rules.py",
+      "line": 75,
+      "text": "material_desperation_decay: float = .25"
+    },
+    {
+      "file": "procedural/society.py",
+      "line": 256,
+      "text": "material=f.context.get('result',{}).get('material',{})"
+    },
+    {
+      "file": "procedural/society.py",
+      "line": 258,
+      "text": "if other!=g.id and material.get('policy')=='restricted' and material.get('cult')==g.subject_id:"
+    },
+    {
+      "file": "procedural/utility.py",
+      "line": 14,
+      "text": "\"materialize_worker\":45,\"improve_utilization\":55})"
+    },
+    {
+      "file": "procedural/validation.py",
+      "line": 134,
+      "text": "sum(emotion.despair_sources.values()) > 100.00001 or emotion.stable_material_hours < 0):"
+    },
+    {
+      "file": "tests/test_phase3.py",
+      "line": 162,
+      "text": "def test_materialization_preserves_total_population(self):"
+    },
+    {
+      "file": "tests/test_phase3.py",
+      "line": 165,
+      "text": "self.assertTrue(self.engine.professions.materialize(self.town))"
+    },
+    {
+      "file": "tests/test_phase3.py",
+      "line": 179,
+      "text": "def test_materialization_never_duplicates_population(self):"
+    },
+    {
+      "file": "tests/test_phase3.py",
+      "line": 189,
+      "text": "def test_existing_candidate_preferred_before_materialization(self):"
+    },
+    {
+      "file": "tests/test_phase3.py",
+      "line": 191,
+      "text": "self.assertFalse(self.engine.professions.materialize(self.town))"
+    },
+    {
+      "file": "tests/test_phase3.py",
+      "line": 206,
+      "text": "def test_materialized_worker_has_new_identity(self):"
+    },
+    {
+      "file": "tests/test_phase3.py",
+      "line": 209,
+      "text": "self.assertTrue(self.engine.professions.materialize(self.town))"
+    },
+    {
+      "file": "tests/test_phase3.py",
+      "line": 216,
+      "text": "def test_materialized_worker_does_not_copy_dead_workers_memories(self):"
+    },
+    {
+      "file": "tests/test_phase3.py",
+      "line": 218,
+      "text": "before=set(self.world.characters);self.engine.professions.materialize(self.town)"
+    },
+    {
+      "file": "tests/test_phase3.py",
+      "line": 226,
+      "text": "self.assertFalse(self.engine.professions.materialize(self.town))"
+    },
+    {
+      "file": "tests/test_phase32.py",
+      "line": 155,
+      "text": "def test_old_location_is_stale_for_current_material_family_help(self):"
+    },
+    {
+      "file": "tests/test_phase41.py",
+      "line": 78,
+      "text": "def test_06_recovery_ends_and_material_despair_falls_gradually(self):"
+    },
+    {
+      "file": "tests/test_phase41.py",
+      "line": 82,
+      "text": "# Estabilização material requer reserva alimentar, além de água."
+    },
+    {
+      "file": "tests/test_phase5.py",
+      "line": 99,
+      "text": "context={'group_id':g.id,'result':{'decision':'reject','material':{}}},source_kind='direct')"
+    },
+    {
+      "file": "tests/test_phase5.py",
+      "line": 108,
+      "text": "context={'group_id':other.id,'group_subject':next(iter(self.q.beliefs)),'result':{'decision':'approve','material':{'policy':'restricted','cult':g.subject_id}}})"
+    },
+    {
+      "file": "tests/test_phase51.py",
+      "line": 119,
+      "text": "fact=Fact(self.w.allocate_id(),'PolicyDecided',self.t.mayor_id,prop.id,self.t.market,self.w.turn,'Recusa controlada',source_kind='direct',context={'group_id':g.id,'result':{'decision':'reject','materi"
+    },
+    {
+      "file": "tests/test_phase51.py",
+      "line": 125,
+      "text": "'Terceira recusa',source_kind='direct',context={'group_id':g.id,'result':{'decision':'reject','material':{}}})"
+    },
+    {
+      "file": "tests/test_phase55.py",
+      "line": 132,
+      "text": "def test_08_water_capacity_and_food_follow_material_work(self):"
+    },
+    {
+      "file": "tests/test_phase55.py",
+      "line": 163,
+      "text": "def test_09_policy_can_stall_without_material(self):"
+    },
+    {
+      "file": "tests/test_simulation.py",
+      "line": 120,
+      "text": "def test_smith_requires_and_consumes_materials(self):"
+    }
+  ],
+  "decision_scores": [
+    {
+      "file": "procedural/institutions.py",
+      "line": 286,
+      "text": "def decision_scores(self,p,prop):"
+    },
+    {
+      "file": "procedural/institutions.py",
+      "line": 320,
+      "text": "scores=self.decision_scores(p,prop);decision=max(scores,key=scores.get)"
+    },
+    {
+      "file": "procedural/society.py",
+      "line": 239,
+      "text": "def decision_scores(self,p,prop):"
+    },
+    {
+      "file": "procedural/society.py",
+      "line": 240,
+      "text": "return self.e.institutions.decision_scores(p,prop)"
+    },
+    {
+      "file": "tests/test_phase5.py",
+      "line": 81,
+      "text": "g,prop=self.proposal();a=self.e.society.decision_scores(self.m,prop)"
+    },
+    {
+      "file": "tests/test_phase5.py",
+      "line": 83,
+      "text": "b=self.e.society.decision_scores(self.m,prop)"
+    },
+    {
+      "file": "tests/test_phase55.py",
+      "line": 112,
+      "text": "low=self.e.society.decision_scores(m,prop)"
+    },
+    {
+      "file": "tests/test_phase55.py",
+      "line": 114,
+      "text": "high=self.e.society.decision_scores(m,prop)"
+    },
+    {
+      "file": "tests/test_phase55.py",
+      "line": 118,
+      "text": "ignored=self.e.institutions.decision_scores(m,prop)"
+    }
+  ],
+  "membership": [
+    {
+      "file": "procedural/access.py",
+      "line": 7,
+      "text": "ACTIONS = {'take_site_supplies','explore_poi','claim_location','invite_person','request_membership',"
+    },
+    {
+      "file": "procedural/access.py",
+      "line": 166,
+      "text": "if any(id in self.e.spatial.at(p.position) for id in f.member_ids):return [('answer_invitation' if record else 'request_membership',None,f.id)]"
+    },
+    {
+      "file": "procedural/access.py",
+      "line": 168,
+      "text": "if known and self.w.turn-known.turn<=24 and known.position.map_id==p.position.map_id:return [('answer_invitation' if record else 'request_membership',known.position,f.id)]"
+    },
+    {
+      "file": "procedural/access.py",
+      "line": 169,
+      "text": "return geo.candidates(p,p.known_factions[f.id]['headquarters'],'membership',n)"
+    },
+    {
+      "file": "procedural/access.py",
+      "line": 216,
+      "text": "def membership(self,p,f,request=False):"
+    },
+    {
+      "file": "procedural/access.py",
+      "line": 217,
+      "text": "return self.e.institutions.membership(p,f,request)"
+    },
+    {
+      "file": "procedural/access.py",
+      "line": 330,
+      "text": "if a in ('request_membership','answer_invitation'):return self.membership(p,self.w.factions[target],a=='request_membership')"
+    },
+    {
+      "file": "procedural/institutions.py",
+      "line": 462,
+      "text": "def membership_scores(self,p,f,record):"
+    },
+    {
+      "file": "procedural/institutions.py",
+      "line": 473,
+      "text": "def membership(self,p,f,request=False):"
+    },
+    {
+      "file": "procedural/institutions.py",
+      "line": 481,
+      "text": "scores=self.membership_scores(p,f,record);record['evaluation']=scores"
+    },
+    {
+      "file": "procedural/utility.py",
+      "line": 126,
+      "text": "claim_location=55, invite_person=55, request_membership=52, answer_invitation=65,"
+    },
+    {
+      "file": "tests/test_phase5.py",
+      "line": 143,
+      "text": "self.assertTrue(self.e.access.membership(self.q,f,True)[0]);self.assertIn(self.q.id,f.member_ids)"
+    },
+    {
+      "file": "tests/test_phase54.py",
+      "line": 114,
+      "text": "self.assertFalse(self.e.access.membership(self.p,f,True)[0])"
+    },
+    {
+      "file": "tests/test_phase54.py",
+      "line": 119,
+      "text": "self.assertTrue(self.e.access.membership(self.p,f,True)[0])"
+    },
+    {
+      "file": "tests/test_phase54.py",
+      "line": 142,
+      "text": "self.e.access.membership(self.p,f,True)"
+    },
+    {
+      "file": "tests/test_phase55.py",
+      "line": 184,
+      "text": "self.assertTrue(self.e.access.membership(self.p,f,True)[0]);self.assertEqual('deferred',f.norms['invitations'][self.p.id]['status'])"
+    },
+    {
+      "file": "tests/test_phase55.py",
+      "line": 186,
+      "text": "self.assertIn('affiliation',self.p.needs);self.assertTrue(self.e.access.membership(self.p,f)[0]);self.assertIn(self.p.id,f.member_ids)"
+    },
+    {
+      "file": "tests/test_phase55.py",
+      "line": 188,
+      "text": "self.assertTrue(self.e.access.membership(self.r,f,True)[0]);self.assertEqual('rejected',f.norms['invitations'][self.r.id]['status'])"
+    },
+    {
+      "file": "tests/test_phase55.py",
+      "line": 192,
+      "text": "self.assertTrue(self.e.access.membership(self.s,f,True)[0]);self.assertEqual('conditioned',f.norms['invitations'][self.s.id]['status'])"
+    },
+    {
+      "file": "tests/test_phase55.py",
+      "line": 193,
+      "text": "item=self.e.items.create(f.id,'weapon');self.assertTrue(self.e.access.membership(self.s,f)[0]);self.assertIn(self.s.id,f.member_ids);self.assertNotIn(item.id,f.inventory)"
+    }
+  ],
+  "formalize_organization": [
+    {
+      "file": "procedural/access.py",
+      "line": 9,
+      "text": "'abandon_contract','form_expedition','follow_expedition','formalize_organization'}"
+    },
+    {
+      "file": "procedural/access.py",
+      "line": 197,
+      "text": "return [('formalize_organization',None,g.id)]"
+    },
+    {
+      "file": "procedural/access.py",
+      "line": 346,
+      "text": "if a=='formalize_organization':"
+    },
+    {
+      "file": "procedural/utility.py",
+      "line": 128,
+      "text": "abandon_contract=25, form_expedition=62, follow_expedition=58, formalize_organization=65)"
+    },
+    {
+      "file": "tests/test_phase555.py",
+      "line": 89,
+      "text": "goal=Goal(self.w.allocate_id(),g.originating_need,'formalize_organization',0,200,g.id)"
+    }
+  ],
+  "react_decision": [
+    {
+      "file": "procedural/institutions.py",
+      "line": 336,
+      "text": "def react_decision(self,p,fact):"
+    },
+    {
+      "file": "procedural/society.py",
+      "line": 247,
+      "text": "self.e.institutions.react_decision(p,f)"
+    }
+  ],
+  "can_formalize": [
+    {
+      "file": "procedural/access.py",
+      "line": 196,
+      "text": "if g and self.e.institutions.can_formalize(p,g,[self.w.characters[i] for i in self.e.spatial.at(p.position)])['eligible']:"
+    },
+    {
+      "file": "procedural/institutions.py",
+      "line": 522,
+      "text": "def can_formalize(self,p,g,present):"
+    },
+    {
+      "file": "procedural/institutions.py",
+      "line": 540,
+      "text": "check=self.can_formalize(p,g,present)"
+    },
+    {
+      "file": "procedural/society.py",
+      "line": 277,
+      "text": "check=self.e.institutions.can_formalize(p,g,present)"
+    },
+    {
+      "file": "tests/test_phase5.py",
+      "line": 119,
+      "text": "self.assertFalse(self.e.institutions.can_formalize(leader,g,[self.p,self.q,self.r])['eligible'])"
+    },
+    {
+      "file": "tests/test_phase54.py",
+      "line": 123,
+      "text": "def test_07_existing_group_can_formalize_without_new_money(self):"
+    },
+    {
+      "file": "tests/test_phase555.py",
+      "line": 86,
+      "text": "self.assertFalse(self.e.institutions.can_formalize(self.p,g,present)['eligible'])"
+    },
+    {
+      "file": "tests/test_phase555.py",
+      "line": 92,
+      "text": "self.assertTrue(self.e.institutions.can_formalize(self.p,g,[self.p,self.q,self.r])['eligible'])"
+    }
+  ]
+}

@@ -331,6 +331,32 @@ def validate_world(world) -> list[str]:
     for town in world.towns.values():
         if town.infrastructure.get('water_daily',80)<80 or town.infrastructure.get('water_storage',160)<160:
             errors.append(f'Infraestrutura inválida: {town.id}')
+    for owner in (*world.characters.values(),*world.groups.values(),*world.factions.values(),*world.towns.values()):
+        for need in owner.needs.values():
+            if need.episode<1:errors.append(f'Episódio de Need inválido: {need.id}')
+            ctx=need.context;kind=ctx.get('organization_type')
+            if ctx.get('group_id') is not None and ctx.get('faction_id') is not None:
+                errors.append(f'Contexto institucional ambíguo: {need.id}')
+            if kind and (kind not in ('group','faction') or ctx.get(kind+'_id')!=ctx.get('organization_id')):
+                errors.append(f'Identidade institucional inconsistente: {need.id}')
+    data=world.observability
+    if data.level not in ('OFF','NORMAL','AUDIT') or data.schema_version!=1 or data.next_id<1:
+        errors.append('Observabilidade histórica incompatível.')
+    recent_limit=1024 if data.level=='AUDIT' else 256
+    receipt_limit=4096 if data.level=='AUDIT' else 1024
+    if len(data.recent_decisions)>recent_limit or len(data.recent_learning)>receipt_limit:
+        errors.append('Retenção histórica ordinária excedida.')
+    for event in (*world.history,*world.events,*data.event_archive.values()):
+        if event.schema_version!=1 or any(not isinstance(i,int) or i>=event.id or i<1 for i in event.parent_event_ids):
+            errors.append(f'Causalidade histórica inválida: {event.id}')
+    for id,trace in data.decisions.items():
+        if trace.id!=id or trace.actor_id not in entity_ids:
+            errors.append('DecisionTrace inválido.')
+        if trace.action_attempt_id and trace.action_attempt_id not in data.attempts:
+            errors.append(f'ActionAttempt ausente: {id}')
+    for receipt in (*data.learning,*data.recent_learning):
+        if receipt.receiver_id not in world.characters or not 0<=receipt.confidence_before<=receipt.confidence_after<=100:
+            errors.append('LearningReceipt inválido.')
     return errors
 
 

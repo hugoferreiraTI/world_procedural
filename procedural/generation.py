@@ -1,6 +1,6 @@
 """Geração por etapas usando um único RNG e uma versão explícita das regras."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 import hashlib
 import random
 
@@ -88,7 +88,7 @@ def make_local_grid(entity_id: int, name: str, size: int, outside: Location,
 
 def generate_world(seed: str = "Dovha", player_name: str = "Viajante",
                    with_player: bool = True,
-                   config: GenerationConfig | None = None) -> WorldState:
+                   config: GenerationConfig | None = None, historical_trace_level: str = 'NORMAL') -> WorldState:
     config = config or GenerationConfig()
     config.validate()
     seed = seed.strip()
@@ -96,6 +96,11 @@ def generate_world(seed: str = "Dovha", player_name: str = "Viajante",
         raise ValueError("A seed precisa conter um nome.")
     rng = random.Random(seed_number(seed))
     world = WorldState(seed, RULES_VERSION, 1)
+    if historical_trace_level not in ('OFF','NORMAL','AUDIT'):
+        raise ValueError('historical_trace_level deve ser OFF, NORMAL ou AUDIT.')
+    world.observability.level=historical_trace_level
+    world.generation_version=GENERATION_VERSION
+    world.generation_config={'config':asdict(config),'with_player':with_player,'player_name':player_name}
     graph, items = RelationshipGraph(world), ItemService(world, rng)
 
     # Regiões de bioma contínuas, com pequenas irregularidades por célula.

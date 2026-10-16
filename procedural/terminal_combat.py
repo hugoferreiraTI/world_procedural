@@ -24,14 +24,14 @@ class TerminalCombat:
         action_audit=self.e.lethal_decisions.action_audit(p,target.id,n,terminal=True)
         if not action_audit['eligible']:return False,'A mudança de contexto favorece parar ou falta capacidade.'
         audit=self.e.lethal_decisions.evaluate(p,target,n)
-        self.e.recorder.emit('TerminalDecision',f'{p.name} escolheu finalizar o confronto.',p.id,target.id,p.position,
+        decision_event=self.e.recorder.emit('TerminalDecision',f'{p.name} escolheu finalizar o confronto.',p.id,target.id,p.position,
             historical=True,context={'decision':'finish','terminal_context':terminal,'lethal_audit':audit,'action_audit':action_audit})
         self.w.metrics['TerminalDecisionFinish']=self.w.metrics.get('TerminalDecisionFinish',0)+1
         weapon=self.e.conflicts.weapon(p)
         self.e.finish_death(target,'combat',p,weapon.id if weapon else None,
             {'death_context':'deliberate_finish','violence_intent':'kill','post_incapacity':True,
              'lethal_audit':audit,'action_audit':action_audit,'terminal_context':terminal,
-             'source_fact':audit.get('source_fact'),'actor_groups':list(p.group_ids)})
+             'source_fact':audit.get('source_fact'),'actor_groups':list(p.group_ids)},parent_event_ids=[decision_event.id])
         self.e.lethality.count('death');self.e.lethality.count('finish')
         self.e.conflicts.end(target,'deliberate_finish',p)
         return True,'Desfecho fatal deliberado executado, sem nova rolagem de dano.'

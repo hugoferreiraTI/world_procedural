@@ -41,6 +41,7 @@ class Engine:
         self.bus = EventBus()
         self.spatial = SpatialIndex(world)
         self.recorder = EventRecorder(world, self.bus, self.spatial)
+        self.observability = self.recorder.observer
         self.graph = RelationshipGraph(world)
         self.items = ItemService(world, self.rng)
         from .feeding import FeedingSystem
@@ -48,6 +49,7 @@ class Engine:
         self.navigation = Navigation(world, self.spatial)
         self.social = SocialSystem(world, self.graph, self.items)
         self.knowledge = KnowledgeSystem(world, self.bus, self.spatial, self.graph, self.rng, self.social)
+        self.knowledge.observer=self.observability
         self.needs = NeedSystem(world, self.graph, self.recorder)
         self.needs.feeding = self.feeding
         self.economy = Economy(world, self.items, self.recorder, self.needs)
@@ -188,7 +190,7 @@ class Engine:
             "known_water_sources": [vars(p) for p in sources],
             "distance_to_water": min((distance(person.position,p) for p in sources),default=None)}
 
-    def finish_death(self, person, cause, killer=None, weapon_id=None, context=None):
+    def finish_death(self, person, cause, killer=None, weapon_id=None, context=None, parent_event_ids=()):
         """Único caminho de morte: mantém corpo/posses e publica a causa real."""
         if not person.alive:
             return False
@@ -213,10 +215,12 @@ class Engine:
         if person.suspended_goal:person.suspended_goal.status='failed';person.suspended_goal=None
         for need in person.needs.values():self.needs.finish(person,need,'expired')
         kind='CharacterKilled' if killer else 'CharacterDied'
+        death_descriptions={'deprivation':'morreu por privação.', 'combat':'morreu em confronto.',
+                            'self_harm':'morreu por causa autoinfligida abstrata.',
+                            'exploration':'morreu durante uma exploração.',
+                            'divine':'morreu por ação divina.'}
         description=(f'{killer.name} causou a morte de {person.name} em confronto.' if killer else
-                     f'{person.name} morreu por privação.' if cause=='deprivation' else
-                     f'{person.name} morreu em confronto.' if cause=='combat' else
-                     f'{person.name} morreu por causa autoinfligida abstrata.')
+                     f'{person.name} '+death_descriptions.get(cause,f'morreu por causa: {cause}.'))
         context=dict(context or {})
         if killer and context.get('violence_intent')=='kill':
             context.setdefault('death_context','intentional_combat_kill')
@@ -224,9 +228,14 @@ class Engine:
             self.world.metrics[metric]=self.world.metrics.get(metric,0)+1
             decision=killer.lethal_decisions.get(person.id)
             if decision:context.update(decision_id=decision.id,lethal_mode=decision.mode)
+        parents=list(parent_event_ids)
+        if killer and self.lethal_decisions.active(killer,person.id):
+            parent=self.observability.index.reference('LethalDecision',actor_id=killer.id,context={'target_id':person.id})
+            if parent:parents.append(parent)
         event=self.recorder.emit(kind,description,killer.id if killer else None,person.id,
             person.position,historical=True,context={'cause':cause,'weapon_id':weapon_id,
-                                                    'victim_faction':person.faction,**(context or {})})
+                                                    'victim_faction':person.faction,**(context or {})},
+            parent_event_ids=parents)
         self.world.death_records[person.id]['event_id']=event.id
         return True
 

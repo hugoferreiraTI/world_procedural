@@ -10,7 +10,7 @@ from typing import Protocol
 from . import RULES_VERSION, models
 from .validation import assert_valid
 
-FORMAT_VERSION = 1
+FORMAT_VERSION = 2
 TYPES = {name: value for name, value in vars(models).items()
          if isinstance(value, type) and is_dataclass(value)}
 
@@ -25,6 +25,8 @@ def encode(value):
         return {"$tuple": [encode(item) for item in value]}
     if isinstance(value, list):
         return [encode(item) for item in value]
+    if isinstance(value, set):
+        return {'$set':[encode(item) for item in sorted(value,key=repr)]}
     return value
 
 
@@ -41,6 +43,8 @@ def decode(value):
             return {decode(key): decode(item) for key, item in value["$dict"]}
         if "$tuple" in value:
             return tuple(decode(item) for item in value["$tuple"])
+        if "$set" in value:
+            return set(decode(item) for item in value['$set'])
         raise ValueError("Estrutura desconhecida no save.")
     return value
 

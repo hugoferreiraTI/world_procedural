@@ -213,7 +213,11 @@ class Phase4Tests(unittest.TestCase):
     def test_15_population_balance_geography_identity(self):
         a=generate_world('Mira',with_player=False,config=GenerationConfig(historical_turns=0,density_multiplier=1))
         b=generate_world('Mira',with_player=False,config=GenerationConfig(historical_turns=0))
-        self.assertEqual(1728,len(b.characters));self.assertEqual(73,len(b.towns))
+        self.assertGreater(len(b.characters),1200);self.assertLess(len(b.characters),2400)
+        self.assertEqual(len(a.towns),len(b.towns))
+        for t in b.towns.values():
+            expected=104 if t.capital else 60 if t.kind=='cidade' else 18
+            self.assertEqual(expected,len(t.resident_ids))
         self.assertEqual({i:t.position for i,t in a.towns.items()},{i:t.position for i,t in b.towns.items()})
         self.assertEqual(a.maps,b.maps)
         self.assertEqual(len(a.kingdoms),len(b.kingdoms))

@@ -79,6 +79,8 @@ class Phase41Tests(unittest.TestCase):
         self.engine.recovery.damage(self.p,40,'hunger')
         self.engine.navigation.relocate(self.p,self.p.home)
         self.p.money=25
+        # Estabilização material requer reserva alimentar, além de água.
+        self.engine.items.create(self.p.id,'food',3)
         self.engine.items.create(self.p.id,'water',3)
         self.p.emotions.desperation=60;self.p.emotions.despair_sources={'poverty':40,'grief':20}
         self.p.emotions.last_updated=100

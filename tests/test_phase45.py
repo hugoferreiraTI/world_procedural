@@ -152,6 +152,7 @@ class Phase45Tests(unittest.TestCase):
         self.assertFalse(self.p.combat.pending_judgments)
 
     def test_12_lethal_incapacity_requires_new_moral_decision(self):
+        self.e.graph.set(self.p.id,self.guard.id,'amizade',100)
         n,c=self.need();self.e.graph.set(self.p.id,self.q.id,'amizade',0)
         self.e.graph.set(self.p.id,self.q.id,'casamento',0)
         cause=self.fact('CharacterKilled',self.q.id,self.guard.id)
@@ -219,14 +220,21 @@ class Phase45Tests(unittest.TestCase):
         self.assertNotIn(record.originating_fact,other.knowledge)
 
     def test_16_interlocal_following_uses_only_known_lead(self):
-        n,c=self.need();dest=next(iter(self.p.known_towns))
+        n,c=self.need()
+        route=next(r for r in self.w.routes.values() if self.t.id in (r.origin,r.destination) and
+                   (r.destination if r.origin==self.t.id else r.origin) in self.w.towns)
+        dest=route.destination if route.origin==self.t.id else route.origin
+        self.e.geography.know_place(self.p,dest,'controlled_lead')
+        for origin in (route.origin,route.destination):self.e.geography.learn(self.p,route,origin,'controlled_route')
         n.context['known_location']=vars(self.w.towns[dest].market)
-        self.e.items.create(self.p.id,'food',6);self.e.items.create(self.p.id,'water',6)
-        self.assertIn('follow_lead',[a for a,d,t in self.e.agency.travel_candidates(self.p,n)])
+        self.e.items.create(self.p.id,'food',30);self.e.items.create(self.p.id,'water',30)
+        self.assertIn('route_travel',[a for a,d,t in self.e.agency.travel_candidates(self.p,n)])
         self.w.turn=20;self.p.active_until=0;self.p.combat.opponents.clear()
         self.assertTrue(self.e.agency.follow_lead(self.p,dest,n)[0])
+        self.assertIsNotNone(self.p.journey)
         self.assertEqual(1,self.e.feeding.decision_interval(self.p))
-        self.p.known_towns.clear();self.assertFalse(self.e.agency.travel_candidates(self.p,n))
+        self.p.journey=None;self.p.route_knowledge.clear();self.p.known_towns.clear();self.p.place_knowledge.clear()
+        self.assertFalse(self.e.agency.travel_candidates(self.p,n))
 
     def test_17_aspiration_derived_stable_and_ambition_changes_intensity(self):
         self.p.personality.greed=100;self.p.personality.family_loyalty=0;self.p.personality.diligence=0

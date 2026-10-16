@@ -1,0 +1,68 @@
+[
+  {
+    "symbol": "Society.react / ramo posterior de PolicyDecided",
+    "classification": "LEGACY_UNREACHABLE",
+    "evidence": "return incondicional depois de Institutions.react_decision; listeners chamam o wrapper ativo. 1.524.247 chamadas do método na auditoria anterior, sem prova de execução do ramo morto.",
+    "action": "Ramo removido; wrapper único preservado. Responsabilidade transferida à implementação ativa."
+  },
+  {
+    "symbol": "Society.candidates / segundo ramo political_pressure",
+    "classification": "LEGACY_UNREACHABLE",
+    "evidence": "Primeira linha já retorna Institutions.collective_candidates. Chamadas naturais do método inteiro: 938.155; a impossibilidade do ramo é estática.",
+    "action": "Ramo removido; provedor canônico preservado."
+  },
+  {
+    "symbol": "Society.candidates / fallback de grupo e fallback da liderança de facção",
+    "classification": "LEGACY_UNREACHABLE",
+    "evidence": "CollectiveAction.candidates retorna antes para grupo ativo e para liderança de facção; estado encerrado não é razão para reativar a regra antiga.",
+    "action": "Regras duplicadas removidas; tarefas de membros não líderes continuam no caminho ativo."
+  },
+  {
+    "symbol": "Society.material",
+    "classification": "TEST_ONLY",
+    "evidence": "Nenhum chamador produtivo/callback/dispatch no repositório; uma fixture antiga; zero chamadas naturais na auditoria. Substituída por Policy e policy_work. Uso externo fora do repositório não foi alegado.",
+    "action": "REMOVED; teste agora exige orçamento, trabalhador conhecido, grão debitado e alimento produzido materialmente."
+  },
+  {
+    "symbol": "Society.decision_scores",
+    "classification": "COMPATIBILITY_WRAPPER",
+    "evidence": "Testes locais chamam o símbolo; zero chamadas naturais anteriores. Uma linha delega para Institutions.decision_scores.",
+    "action": "Preservado sem segunda fórmula; classificado COMMAND porque pressure atualiza a proposta."
+  },
+  {
+    "symbol": "Access.membership",
+    "classification": "COMPATIBILITY_WRAPPER",
+    "evidence": "Usado por Access.execute e fixtures; três chamadas naturais medidas na auditoria anterior.",
+    "action": "Preservado como delegação para Institutions.membership."
+  },
+  {
+    "symbol": "formalize_organization",
+    "classification": "COMPATIBILITY_WRAPPER",
+    "evidence": "Ação ainda reconhecida por Utility e dispatcher Access. A via antiga pulava score e presença mínima.",
+    "action": "Preservada, redirecionada para formalization/can_formalize; FoundFaction revalida a mesma regra."
+  },
+  {
+    "symbol": "Institutions / CollectiveAction / Society.execute",
+    "classification": "ACTIVE",
+    "evidence": "Fornecedores e dispatchers chamados pelo motor, testes e decisões medidas; funções distintas para proposta, política material e resposta.",
+    "action": "Responsabilidades explicitadas; sem materialização política instantânea paralela."
+  },
+  {
+    "symbol": "AGENCY.maximum_aspirations / AGENCY.no_progress_hours",
+    "classification": "DEAD",
+    "evidence": "Campos declarados sem leitores produtivos, callbacks ou acesso dinâmico correspondente. Duração/abandono reais usam outras fórmulas.",
+    "action": "Removidos; nenhuma regra foi ligada artificialmente às constantes."
+  },
+  {
+    "symbol": "SURVIVAL.normal / moderate / severe",
+    "classification": "ACTIVE",
+    "evidence": "Leitores internos em SurvivalRules.band usam self; ausência de SURVIVAL.campo fora da classe não significa ociosidade.",
+    "action": "Preservados."
+  },
+  {
+    "symbol": "experiments.total_proofs",
+    "classification": "TEST_ONLY",
+    "evidence": "Reprodutor histórico da auditoria sobre mvp-12-fase5.5; não faz parte da suíte ativa tests.",
+    "action": "Preservado como evidência histórica; não deve ser executado sobre a versão corrigida esperando reproduzir os bugs."
+  }
+]

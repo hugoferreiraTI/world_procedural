@@ -17,6 +17,7 @@ class KnowledgeSystem:
         self.listeners = []
         self.agency = None
         self.processing = {}
+        self.observer = None
         bus.subscribe("*", self.observe)
 
     def learn(self, character: Character, fact: Fact, firsthand: bool) -> bool:
@@ -28,7 +29,8 @@ class KnowledgeSystem:
             return False
         # Armazena confiança efetiva; retransmissão nunca restaura certeza perdida.
         learned_fact = replace(fact, confidence=round(confidence * 100),
-                               source_kind="direct" if firsthand else fact.source_kind)
+                               source_kind="direct" if firsthand else fact.source_kind,
+                               context=fact.context)
         with self.protect(character, (fact.event_id,)):
             return self._accept(character, fact, firsthand, confidence, previous, learned_fact)
 
@@ -53,6 +55,8 @@ class KnowledgeSystem:
                 del self.processing[character.id]
 
     def _accept(self, character, fact, firsthand, confidence, previous, learned_fact):
+        if self.observer:
+            self.observer.learned(character,learned_fact,character.knowledge.get(fact.event_id),firsthand)
         character.knowledge[fact.event_id] = learned_fact
         while len(character.knowledge) > KNOWLEDGE_LIMIT:
             pinned = self.agency.pinned(character) if self.agency else set()
