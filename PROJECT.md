@@ -31,7 +31,7 @@ horas observadas. Não confundir o turno absoluto do CLI com o tempo solicitado.
 Não há dependências externas, instalação de pacote, banco de dados ou serviço de IA.
 
 No jogo, `ajuda` mostra os comandos. Consultas e ações inválidas não avançam o
-relógio; ações válidas usam `Engine.command` e o mesmo núcleo dos NPCs. As famílias
+relógio; ações válidas usam `Engine.execute` e o mesmo núcleo dos NPCs. As famílias
 de comandos incluem movimento/entrada/saída, comida/água/trabalho, conversa/fatos,
 investigação, combate, grupos/propostas/organizações, rotas/viagens e ritos.
 
@@ -68,7 +68,7 @@ o comportamento do motor.
 | `generation.generate_world(seed, player_name, with_player, config)` | Gera a verdade inicial e o histórico inicial configurado. |
 | `engine.Engine(world)` | Restaura RNG, instancia serviços, liga eventos/listeners e inicializa campos institucionais. |
 | `engine.Engine.step()` | Uma hora de decisões, fechamento fisiológico e rotinas globais. |
-| `engine.Engine.command(text)` | Traduz comando de jogador em operação validada do núcleo. |
+| `engine.Engine.execute(text)` | Traduz comando de jogador em operação validada do núcleo. |
 | `ui.run_terminal(engine, repository)` | Laço de apresentação e entrada; não define regras do mundo. |
 | `persistence.JsonRepository.save/load` | Adaptador de disco; valida dados e versão. |
 | `unittest` + `tests/test_*.py` | Entrada de testes controlados; não é evidência de ocorrência natural. |
@@ -443,6 +443,11 @@ Cada dono mantém `inventory: item_id → quantidade`; o item possui um único
 `owner_id`. `ItemService.transfer` movimenta/soma pilhas sem duplicar quantidade.
 Consume elimina quantidade real. Dinheiro pertence a Character/Town/Kingdom/
 Faction/Group/Policy; tesouro municipal não é saldo pessoal do prefeito.
+`Kingdom.treasury` guarda o tesouro real (inicialmente 2000/reino), enquanto
+`Town.abstract_money` pertence ao conjunto abstrato local. `Economy.daily` cria
+`abstract_population // 100` moedas por localidade/dia nessa conta, registrando
+`MoneySourceAbstractWork`; é uma fonte monetária explícita, sem débito de outro
+pagador. Os demais salários materiais seguem transferências de saldos existentes.
 
 `Economy.observe` registra cotação/estoque e sua data; `known_unaffordable` usa
 observação, enquanto compra executada verifica preço, saldo e estoque reais.
@@ -978,6 +983,13 @@ de formato e regras, valida WorldState e testa restauração do RNG.
 atomicamente o destino. As regras atuais não migram automaticamente saves de
 outra versão. Auditorias antigas não são saves necessários ao runtime.
 
+O contexto de Event/Fact pode conservar listas mutáveis do estado vivo. Por
+exemplo, adesões posteriores podem alterar a lista de membros de um evento de
+fundação antigo. A serialização por valor não preserva esses aliases: continuar
+após load pode produzir histórico diferente do mundo original mesmo com RNG e
+membros atuais iguais. Continuidade determinística básica funciona em cenários
+cobertos, mas não é garantia universal enquanto esse caso existir.
+
 ## Invariantes verificadas e limites operacionais
 
 `validation.validate_world/assert_valid` verifica IDs, donos, inventários,
@@ -1187,6 +1199,17 @@ atualização da rota. Chegar não é mudar residência nem obter audiência div
 
 ## Limitações atuais
 
+- `FaithSystem.candidates` pode enumerar `report_congregation`, mas essa ação
+  não existe em `utility.BASE`; avaliar a alternativa provoca KeyError antes do
+  envio do relato religioso. Há reprodução controlada, sem correção aplicada.
+- `Society.react` retorna após delegar PolicyDecided antes do ramo que atribui
+  `Group.responsibility_id`; a consequência de responsabilização/tomada de cargo
+  não completa esse caminho. A delegada atual não preenche o campo.
+- `GoalSystem.solutions` pode atualizar planos/diagnósticos durante a enumeração;
+  não é uma API universalmente pura para um visualizador consultar passivamente.
+- Morte por exploração registra a causa `exploration`, mas a descrição genérica
+  de `finish_death` pode descrevê-la como autoinfligida. O contexto guarda a causa
+  específica; a frase não é uma fonte confiável para classificá-la.
 - Decisões institucionais competem com fisiologia, deslocamento e compromissos;
   não há garantia de atendimento por prefeito, representante ou candidato.
 - A busca social usa afinidade dirigida ao líder; familiaridade, confiança e

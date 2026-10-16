@@ -10,10 +10,11 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tests python3 -m unittest test_phase55 test
 ```
 
 No terminal, `ajuda` lista os comandos. Movimento/ações válidas consomem horas;
-consultas e ações inválidas não avançam o mundo. Salvar/carregar preserva RNG e
-estado completo; versões incompatíveis são recusadas.
+consultas e ações inválidas não avançam o mundo. Salvar/carregar inclui RNG e estado tipado; versões incompatíveis são recusadas.
+Há uma limitação de continuidade com contextos mutáveis, documentada em PROJECT.md.
 
 - [PROJECT.md](PROJECT.md): arquitetura, modelos, fórmulas, sistemas, arquivos e testes.
+- [Radiografia total](reports/auditoria_total/RADIOGRAFIA_TOTAL.md): auditoria integral, decisões reais e observabilidade.
 - [Relatório de coesão](reports/diagnostico_coesao/RELATORIO_COESAO.md): campanha diagnóstica nova de 300h.
 - [LIMPEZA.md](LIMPEZA.md): o que foi retirado e preservado.
 - Referência anterior Vaelora-55: [técnico](reports/fase_5_5/RELATORIO_TECNICO.md),

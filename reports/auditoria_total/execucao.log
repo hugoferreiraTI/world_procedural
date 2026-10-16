@@ -1,0 +1,14 @@
+{"seed": "Thalven-Radiografia55", "hours_requested": 300, "config": {"width": 500, "height": 500, "kingdom_count": 4, "minimum_distance": 5, "maximum_village_distance": 18, "npcs_per_city": 8, "historical_turns": 0, "density_multiplier": null}, "initial_named": 1916, "initial_abstract": 4742, "initial_money": {"characters": 28164, "towns": 58163, "kingdoms": 0, "groups": 0, "factions": 0, "policies": 0, "abstract_money": 47420, "total": 133747}, "restarts": 0, "observer_sha256": "ee9b2313dc537472b4e7569531d5246e04765137d119f430c27125d3e4e887b9"}
+{"hour": 25, "alive": 1916, "deaths": 0, "events": 16169, "observer_errors": 0, "seconds": 195.85}
+{"hour": 50, "alive": 1916, "deaths": 0, "events": 30550, "observer_errors": 0, "seconds": 423.02}
+{"hour": 75, "alive": 1916, "deaths": 0, "events": 41440, "observer_errors": 0, "seconds": 620.71}
+{"hour": 100, "alive": 1916, "deaths": 0, "events": 52668, "observer_errors": 0, "seconds": 852.34}
+{"hour": 125, "alive": 1916, "deaths": 0, "events": 63850, "observer_errors": 0, "seconds": 1146.76}
+{"hour": 150, "alive": 1893, "deaths": 23, "events": 74747, "observer_errors": 0, "seconds": 1498.09}
+{"hour": 175, "alive": 1860, "deaths": 56, "events": 84425, "observer_errors": 0, "seconds": 1844.33}
+{"hour": 200, "alive": 1799, "deaths": 117, "events": 94129, "observer_errors": 0, "seconds": 2202.23}
+{"hour": 225, "alive": 1731, "deaths": 185, "events": 104453, "observer_errors": 0, "seconds": 2559.21}
+{"hour": 250, "alive": 1674, "deaths": 242, "events": 114183, "observer_errors": 0, "seconds": 2912.5}
+{"hour": 275, "alive": 1602, "deaths": 314, "events": 123371, "observer_errors": 0, "seconds": 3251.77}
+{"hour": 300, "alive": 1574, "deaths": 342, "events": 132917, "observer_errors": 0, "seconds": 3584.8}
+{"complete": 300, "runtime_seconds": 3609.34}
