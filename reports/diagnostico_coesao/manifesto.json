@@ -1,0 +1,564 @@
+{
+  "project_size_before": 741581971,
+  "file_count_before": 2897,
+  "directories_before": {
+    "reports": 734851476,
+    "experiments": 2508107,
+    "procedural": 1998290,
+    "tests": 971861,
+    "instruction.md": 124100,
+    "COMPARATIVO_DOCUMENTO_ORIGINAL_FASE_4_6.md": 95675,
+    "RELATORIO_FASE_3_2.md": 62556,
+    "RELATORIO_CORRECAO_ALIMENTAR.md": 60792,
+    "fase_5_2.md": 57784,
+    "fase_5.md": 47883,
+    "RELATORIO_FASE_3_2_DIAGNOSTICO.md": 40743,
+    "fase_4.md": 39114,
+    "fase_4_5.md": 38257,
+    "RELATORIO_FASE_2.md": 38150,
+    "COMPARATIVO_ESPECIFICACAO_MVP.md": 37240,
+    "RELATORIO_FASE_4_1.md": 36662,
+    "fase_3_2.md": 36333,
+    "fase_5_5.md": 32637,
+    "fase_4_6.md": 31423,
+    "RELATORIO_FASE_3.md": 29977,
+    "RELATORIO_FASE_5.md": 29589,
+    "fase_2.md": 29046,
+    "RELATORIO_ESTADO_IMPLEMENTACAO.md": 28901,
+    "RELATORIO_FASE_4.md": 27119,
+    "README.md": 26783,
+    "fase_5_4.md": 26274,
+    "RELATORIO_LORES_VESPERA_47.md": 25941,
+    "RELATORIO_ABASTECIMENTO_E_CONTINUIDADE.md": 24938,
+    "fase_3.md": 24403,
+    "fase_5_1.md": 24214,
+    "fase_4_1.md": 24177,
+    "RELATORIO_FOME_E_MORTES.md": 23064,
+    "correcao_alimentar.md": 15157,
+    "RELATORIO_5_4.md": 14679,
+    "VALIDACAO.md": 14528,
+    "fase_5_2_1.md": 14314,
+    "RELATORIO_FASE_4_6.md": 14187,
+    "RELATORIO_FASE_5_1.md": 14168,
+    "RELATORIO_FASE_4_5.md": 13143,
+    "RELATORIO_HARDENING.md": 11654,
+    "RELATORIO_5_2_1.md": 10330,
+    "RELATORIO_PERSONALIDADE_MORTES_COMBATES.md": 4727,
+    "RELATORIO_FASE_5_2.md": 1166,
+    "MUNDO.md": 351,
+    ".gitignore": 58
+  },
+  "largest_files": [
+    {
+      "path": "reports/fase_4/auditoria_global_10000h/resumo.json",
+      "bytes": 46554998
+    },
+    {
+      "path": "reports/tres_perspectivas_20261007/espectador/cronica.jsonl",
+      "bytes": 12005607
+    },
+    {
+      "path": "reports/tres_perspectivas_20261007/mundo/cronica.jsonl",
+      "bytes": 10538162
+    },
+    {
+      "path": "reports/correcao_alimentar/auditorias/espectador/cronica.jsonl",
+      "bytes": 9693923
+    },
+    {
+      "path": "reports/fase_4_5/curta_ajustes_finais_500h/arcos.json",
+      "bytes": 9525312
+    },
+    {
+      "path": "reports/fase_5/longa_5000h/eventos_adicionais.json",
+      "bytes": 9500557
+    },
+    {
+      "path": "reports/fase_4_5/curta_entrega_500h/arcos.json",
+      "bytes": 9432890
+    },
+    {
+      "path": "reports/fase_3_2/auditorias/espectador/cronica.jsonl",
+      "bytes": 9385445
+    },
+    {
+      "path": "reports/fase_3_2/intermediaria_v2/auditorias/espectador/cronica.jsonl",
+      "bytes": 9385445
+    },
+    {
+      "path": "reports/fase_3_2/intermediaria_v1/auditorias/espectador/cronica.jsonl",
+      "bytes": 9356541
+    },
+    {
+      "path": "reports/fase_4_5/curta_final_500h/arcos.json",
+      "bytes": 9341340
+    },
+    {
+      "path": "reports/correcao_alimentar/auditorias/mundo/cronica.jsonl",
+      "bytes": 9253401
+    },
+    {
+      "path": "reports/fase_3_2/intermediaria_v1/auditorias/mundo/cronica.jsonl",
+      "bytes": 9236865
+    },
+    {
+      "path": "reports/fase_3_2/auditorias/mundo/cronica.jsonl",
+      "bytes": 9102305
+    },
+    {
+      "path": "reports/fase_3_2/intermediaria_v2/auditorias/mundo/cronica.jsonl",
+      "bytes": 9102305
+    },
+    {
+      "path": "reports/fase_5_2_1/mundo_thalendor/registro_mundo.json",
+      "bytes": 8366692
+    },
+    {
+      "path": "reports/fase_5/longa_5000h/arcos_grupos.json",
+      "bytes": 8212954
+    },
+    {
+      "path": "reports/fase_5/curta_final_500h/personagens_fase5.json",
+      "bytes": 7544226
+    },
+    {
+      "path": "reports/fase_3/auditorias/espectador/cronica.jsonl",
+      "bytes": 7490934
+    },
+    {
+      "path": "reports/fase_5/curta_500h/personagens_fase5.json",
+      "bytes": 7490545
+    },
+    {
+      "path": "reports/fase_3/auditorias/mundo/cronica.jsonl",
+      "bytes": 7472939
+    },
+    {
+      "path": "reports/fase_5/curta_validada_500h/personagens_fase5.json",
+      "bytes": 7472306
+    },
+    {
+      "path": "reports/fase_5/curta_entrega_500h/personagens_fase5.json",
+      "bytes": 7465307
+    },
+    {
+      "path": "reports/fase_3/auditorias_pre_correcao_estoque/mundo/cronica.jsonl",
+      "bytes": 6760413
+    },
+    {
+      "path": "reports/fase_3/auditorias_pre_correcao/mundo/cronica.jsonl",
+      "bytes": 6556832
+    }
+  ],
+  "extension_counts": {
+    ".md": 98,
+    "": 1,
+    ".py": 1122,
+    ".log": 127,
+    ".json": 835,
+    ".txt": 94,
+    ".pyc": 449,
+    ".patch": 5,
+    ".gz": 107,
+    ".jsonl": 59
+  },
+  "core_and_tests_sha256": {
+    "tests/test_phase5.py": "1729d8f4447c745b5a8813b95b1b2b830f74caecb381105aac910a424af8d7c7",
+    "tests/test_phase32.py": "05a6fb3144f1b59110f63047d6e2f67a57b00437d47143d99e9b08192a59143d",
+    "tests/test_hardening.py": "6ac25c68098990f3142b15d71a3284b38c954cc28f5498eeab8928e268c72877",
+    "tests/test_simulation.py": "c43c3d0ab72bcfa55d3c1b77a1d6e30696471105b9132781f2c12ffaa3f14f6a",
+    "tests/test_feeding.py": "19cdb86a64c105a2ce9a19ff2a932eeeeb6b012625c195718e93898522024539",
+    "tests/test_phase54.py": "0c27567333de2c259907f718312769efb3ba64f286c5ee9fcd2452846ef58def",
+    "tests/test_phase2.py": "5aa852a2b34f24e647e09979cb33ff2eff6a257802e71eda53ee4b35506fa31a",
+    "tests/test_phase4.py": "a80efc801e44ac057305d9d1589abcf525b649a0c3e5dc7aeb8339b8f69c0aa6",
+    "tests/test_phase52.py": "84de5e1698f85cddbd16e21d0a590d6440be80654a80158d6ff08422bdc8f0a8",
+    "tests/test_phase3.py": "cbbdd0670e1913f4abd24f2f9e3f9d9d9384cc0e315832dce883527b3228f74c",
+    "tests/test_phase55.py": "75df94538a6eaaf96e68b85ee492d02b32d1de5bf6ce1314ac9a32c1ad0b83b2",
+    "tests/test_phase51.py": "be992e5e33d8ae677990adb69212cfee52ae04dae5cb435121f2099b1737c8a7",
+    "tests/test_phase45.py": "b36428b5ace28572be0ef726d51e843b97467cd746fc1ce1616e631858246844",
+    "tests/test_phase41.py": "d915457ad31c81f549ebc52bcb5811d7208936e3f26d40f6b00e3073e45259a6",
+    "tests/test_phase46.py": "c876a2813aa6c9140b379a10e905124c85026762769b10197da41fdf758da376",
+    "tests/test_phase521.py": "ac6fbb4adb62f72dd0c1abb6b1f96e7d4e9b613526ebf1ee836dcb9d2906ef1c",
+    "procedural/agency.py": "821cfca2ae983ec72bce2c84fde8d3c1981f28ccc54470e481ca5568771e7e55",
+    "procedural/access.py": "ae702d806957c76430431c152229dfb204e5088f0912dd184f67da2a88ead845",
+    "procedural/personal.py": "b6f06658efc0f02dda431421bf1de84af55b53c44942fba0600f1ebf86e3a454",
+    "procedural/needs.py": "e114b6e6cf3de3045f2b42ac24becd20a1418b8990a499710db0027cad43919b",
+    "procedural/faith.py": "a4cf5f3633ed0e6949c32a17bb8c19779fe3a8b423387f8e945521e449b08a59",
+    "procedural/engine.py": "64574772c5384067e76e1dc1e15d5b297addaecc549a091beeda15790e60b5f9",
+    "procedural/lethal_decisions.py": "3b69ff7c1a4c33db6074656905641f4a5c3fabfff42e70b13b3fc62f946edefd",
+    "procedural/relationships.py": "55e599eb5b8d43b532dad878bc323cb5bfe63c0505823f14080ea372d8476055",
+    "procedural/divine_relations.py": "f5c243f937b96c70749d09926cb7cdbac6dd42694b9176c22e1ba456ad5546d5",
+    "procedural/professions.py": "359da19f2a1325114fc50bf5aa3c165827b6af6ba242da5bd387ca673a525ae8",
+    "procedural/feeding.py": "7b88b3d44cf499b7ba48d571dacb97a1e6752715737194ca07e05e66b36a42b4",
+    "procedural/politics.py": "4de1ac419e8c55405affa92942d79fa72e95124ab7883b409f074ddd2fb9b648",
+    "procedural/terminal_combat.py": "ea612165878e895ea1b4eff6401f022b70e49c08f704c2d3b78ea1d31784641b",
+    "procedural/recovery.py": "d3e21c794eaab71e2610fa833fdf9a7576dd2fc3c30df2e2f70d3141e30c9030",
+    "procedural/__main__.py": "673ad82fb29873bd6569a4c78d9c45c32e1f68543401ec17ae2f49021a77b790",
+    "procedural/geography.py": "3836d0bddcdfd4f3589a04c2e7692057628e92d8355f4532128c8d0aef0a01e3",
+    "procedural/conflicts.py": "cb553f954f3ce2fcfa1817e8342ae024903c40ad4d661165bdc9642dfe777c57",
+    "procedural/population.py": "f0e4d1be92f89fed78840f51d7c62bcd3e965ca183db018607ce8727283be625",
+    "procedural/utility.py": "a70377166b2d5678b884d0675c1cef0b6bdfe46c1f92106290768b13dbac6c69",
+    "procedural/justice.py": "5dfd5fb726a22347039a309d4177b190f7ba7f0e15e5bd1ec73e9944ef9dfe20",
+    "procedural/navigation.py": "42e2ca4eba1b7b2a454253fc23b803356db7f876b085b4b5906e7e2a35574ba7",
+    "procedural/renown.py": "939a3d73352d0a3ae608c807f5d39fd0b3ae7d99a1c9e4b7b196cc5ecf304f50",
+    "procedural/models.py": "40b067e6af24e347b55661a9bc86212e8afdf1a239d9e909914273169072daab",
+    "procedural/social.py": "c8b918ee27b3f91c317d0f6269520c47623464edbd54f7a6c0a94953709da402",
+    "procedural/knowledge.py": "2ddf90086eb0ff5c48a7d0ef41e93300e42f4218f6057552943029a57aa17c01",
+    "procedural/__init__.py": "c2d8da82fae769098f30b949ef4ca75840710dea36ad286da16d346a87bcd2dd",
+    "procedural/quests.py": "e7814a3b34e60f950ef31112b6dac75cfa1720b81ee609e3910c225b0046a971",
+    "procedural/society.py": "1c77724eb40e25815e7e6d499febb4abdfa82da6a7afb420b4723d116bdc6f89",
+    "procedural/violence_patterns.py": "78641e116b1c09ffbf418a59d93ba1e8bac7dcc8bc6414a7eced41f253312996",
+    "procedural/persistence.py": "acedc026cd3a1ddeb9b07aa32a967d6cb25da9d932e5de6ab70e23be9bebe5f4",
+    "procedural/aftermath.py": "95bec9ad9883c59b124b3787b35b3ab6deb806ad07e6cd0f0687d8f1486afa29",
+    "procedural/institutions.py": "9d58e4e952141f77ffaa773abe0c5da6ec33fa6295da922323a061c99125b089",
+    "procedural/action_pressure.py": "5aa96ed3fbe28cc143d85243f478a3981edde77d9dbbb4a8261eaf2d74e60b52",
+    "procedural/personal_actions.py": "eab1383b35234f955c4bdc89529f316e4bac26f81606191b359cdfb9be03be46",
+    "procedural/economy.py": "e3c217acf0ed36a15abe6e1b0876724be9de75cc89fac285d6a6ba48b26b0eb4",
+    "procedural/goals.py": "64277064c07ac048157001fd548ffc0da3f5e7a0dfee109f7d9b7d44c8444f5a",
+    "procedural/emotions.py": "0f6a06d6cf737e59887d831b15324d9fe811c8152286db13c120d1ca38b29319",
+    "procedural/validation.py": "204ce6e6cb1fed4ab3156cebbdfaacf3729be4a5e6a1ad34321ea98b50733138",
+    "procedural/lethality.py": "b221a6891ff1adddeda6876b9f84f51fce313473f79cd2b16573b8e6b68a4654",
+    "procedural/ui.py": "deed3a4e539cf4d969fc90e7588a4127c939b40908c6dfea608d24228b610539",
+    "procedural/collective_action.py": "6d45ffca51d6bd23c619ebf3ea01e4ec2063059da1cfeff06981c4b14033982f",
+    "procedural/items.py": "ce22ac933ebf3be264f6d827bfbcc41d1f1a004ce79f9c10f1f4a316a6fdedfd",
+    "procedural/migration.py": "845d8d2deaaf44c0886237c321d48437f7970637b8a9c4a6b4eba74a12f5285c",
+    "procedural/events.py": "3bbdaf83258ef0367dd22afc0491dcf3a84ef7c07025f16c70e6ef83effa71f6",
+    "procedural/investigation.py": "0e5145f8b913102f244fc1669684e84157051ad4738a490e3949ee784b614a3b",
+    "procedural/religious_health.py": "a6db9653d08a28e4ae7cebfa6ca0058c717d8f6829d4e74d7e742fec91297aa7",
+    "procedural/generation.py": "c808d2c2a3b84e88e7a45461c7d0d155e19c5653d5c10323598abe5a0e5626f5",
+    "procedural/rules.py": "198e5b39ba531fefcf28435569e97094c01c835d3752758bf2c41abbc1aecf98"
+  },
+  "previous_reports_sha256": {
+    "reports/fase_5_5/RELATORIO_TECNICO.md": "5c1428f1d5b4f476cceaaadea209cfb2985a194036e639be7b3c6b125a647e1c",
+    "reports/fase_5_5/HISTORIAS_REAIS.md": "41e0a177ed1f261740869ed27169699cce5c2207a024685e377382b9900d359a",
+    "reports/fase_5_5/MUNDO.md": "40ebdf75b746b334a5e803c366701cd4817a04dd4773a9f3dffa023287541b67"
+  },
+  "git_present_before": false,
+  "reference_commit": "c996d8c095f67479d36b43b9ddcbdf63420f4d39",
+  "history_note": "Histórico local iniciado antes da limpeza: fontes e Markdown, sem saves, caches ou dumps JSON.",
+  "cleanup": {
+    "removed_report_directories": [
+      "reports/analise_abastecimento",
+      "reports/auditoria_jogador_10000",
+      "reports/correcao_alimentar",
+      "reports/diagnostico_fome",
+      "reports/fase_2",
+      "reports/fase_3",
+      "reports/fase_3_2",
+      "reports/fase_3_2_diagnostico",
+      "reports/fase_4",
+      "reports/fase_4_1",
+      "reports/fase_4_5",
+      "reports/fase_4_6",
+      "reports/fase_5",
+      "reports/fase_5_1",
+      "reports/fase_5_2",
+      "reports/fase_5_2_1",
+      "reports/fase_5_4",
+      "reports/hardening",
+      "reports/jogador_dovha_10000",
+      "reports/jogador_dovha_10000_sobrevivencia",
+      "reports/lore_vespera47_5000h",
+      "reports/tres_perspectivas_20261007"
+    ],
+    "removed_report_files": [
+      "reports/VERIFICACAO_OBSERVADOR_LORE.txt",
+      "reports/diagnostico_fome_espectador.log",
+      "reports/diagnostico_fome_jogador.log",
+      "reports/diagnostico_fome_mundo.log",
+      "reports/lore_microchecks.json",
+      "reports/lore_vespera47_5000h.log"
+    ],
+    "removed_root_documents": [
+      "fase_5_1.md",
+      "RELATORIO_FASE_2.md",
+      "RELATORIO_ABASTECIMENTO_E_CONTINUIDADE.md",
+      "RELATORIO_FASE_5.md",
+      "fase_5_4.md",
+      "RELATORIO_FOME_E_MORTES.md",
+      "RELATORIO_FASE_4_5.md",
+      "COMPARATIVO_ESPECIFICACAO_MVP.md",
+      "fase_3_2.md",
+      "RELATORIO_FASE_4_1.md",
+      "fase_5_2_1.md",
+      "RELATORIO_FASE_4.md",
+      "RELATORIO_FASE_3_2_DIAGNOSTICO.md",
+      "correcao_alimentar.md",
+      "RELATORIO_FASE_5_1.md",
+      "fase_4_5.md",
+      "fase_5.md",
+      "fase_4.md",
+      "RELATORIO_CORRECAO_ALIMENTAR.md",
+      "RELATORIO_ESTADO_IMPLEMENTACAO.md",
+      "RELATORIO_FASE_4_6.md",
+      "RELATORIO_FASE_5_2.md",
+      "COMPARATIVO_DOCUMENTO_ORIGINAL_FASE_4_6.md",
+      "RELATORIO_PERSONALIDADE_MORTES_COMBATES.md",
+      "RELATORIO_5_4.md",
+      "fase_2.md",
+      "fase_4_6.md",
+      "VALIDACAO.md",
+      "fase_4_1.md",
+      "RELATORIO_FASE_3.md",
+      "RELATORIO_5_2_1.md",
+      "RELATORIO_LORES_VESPERA_47.md",
+      "fase_3.md",
+      "fase_5_2.md",
+      "MUNDO.md",
+      "RELATORIO_HARDENING.md",
+      "RELATORIO_FASE_3_2.md"
+    ],
+    "removed_experiment_count": 66,
+    "preserved_history_commit": "c996d8c095f67479d36b43b9ddcbdf63420f4d39"
+  },
+  "project_size_after_initial_cleanup": 4302339,
+  "interrupted_attempts": [
+    {
+      "campaign": {
+        "seed": "Neravon-Coesao55",
+        "rules": "mvp-12-fase5.5",
+        "generation": "mvp-5.4",
+        "code_sha256": "cbb836d29eddb49295b4108a6ba25595962598ef6f7a7177fd5cb2be60133a69",
+        "hours_requested": 300,
+        "initial_named": 1898,
+        "initial_abstract": 4693,
+        "restarts": 0,
+        "observer": "sys.setprofile externo, somente leituras; debug desativado; sem substituição de funções"
+      },
+      "failure": {
+        "hour": 26,
+        "seed": "Neravon-Coesao55",
+        "exception": "TypeError(\"'NoneType' object is not subscriptable\")",
+        "checks": [
+          {
+            "hour": 25,
+            "errors": []
+          }
+        ]
+      },
+      "cause": "Falha observacional no retorno; não houve edição do núcleo.",
+      "traceback": "{\"seed\": \"Neravon-Coesao55\", \"rules\": \"mvp-12-fase5.5\", \"generation\": \"mvp-5.4\", \"code_sha256\": \"cbb836d29eddb49295b4108a6ba25595962598ef6f7a7177fd5cb2be60133a69\", \"hours_requested\": 300, \"initial_named\": 1898, \"initial_abstract\": 4693, \"restarts\": 0, \"observer\": \"sys.setprofile externo, somente leituras; debug desativado; sem substitui\\u00e7\\u00e3o de fun\\u00e7\\u00f5es\"}\n{\"hour\": 25, \"alive\": 1898, \"groups\": 48, \"joins\": 159, \"decisions\": 0, \"seconds\": 171.6}\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/home/hugo/Área de trabalho/procedrual/experiments/cohesion_audit.py\", line 306, in <module>\n    if __name__=='__main__':main()\n                            ^^^^^^\n  File \"/home/hugo/Área de trabalho/procedrual/experiments/cohesion_audit.py\", line 287, in main\n    try:e.step()\n        ^^^^^^^^\n  File \"/home/hugo/Área de trabalho/procedrual/procedural/engine.py\", line 150, in step\n    self.goals.decide(character, elapsed)\n  File \"/home/hugo/Área de trabalho/procedrual/procedural/goals.py\", line 395, in decide\n    success, outcome = self.execute(character, current, max(1, elapsed))\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/hugo/Área de trabalho/procedrual/experiments/cohesion_audit.py\", line 160, in profile\n    if not arg[0]:self.action_failed[row['action']]+=1\n           ~~~^^^\nTypeError: 'NoneType' object is not subscriptable\n"
+    },
+    {
+      "campaign": {
+        "seed": "Neravon-Coesao55",
+        "rules": "mvp-12-fase5.5",
+        "generation": "mvp-5.4",
+        "code_sha256": "cbb836d29eddb49295b4108a6ba25595962598ef6f7a7177fd5cb2be60133a69",
+        "hours_requested": 300,
+        "initial_named": 1898,
+        "initial_abstract": 4693,
+        "restarts": 1,
+        "observer_sha256": "8723dd74d5918267a18db9b23d14fdda268e1a6c20540d5a82116ecfeea78477",
+        "observer": "sys.setprofile externo, somente leituras; debug desativado; sem substituição de funções"
+      },
+      "failure": {
+        "hour": 26,
+        "seed": "Neravon-Coesao55",
+        "exception": "TypeError(\"Geography.emit() got multiple values for argument 'kind'\")",
+        "checks": [
+          {
+            "hour": 25,
+            "errors": []
+          }
+        ]
+      },
+      "cause": "Crash original ao visitar POI; correção pontual autorizada pelo usuário.",
+      "traceback": "{\"seed\": \"Neravon-Coesao55\", \"rules\": \"mvp-12-fase5.5\", \"generation\": \"mvp-5.4\", \"code_sha256\": \"cbb836d29eddb49295b4108a6ba25595962598ef6f7a7177fd5cb2be60133a69\", \"hours_requested\": 300, \"initial_named\": 1898, \"initial_abstract\": 4693, \"restarts\": 1, \"observer_sha256\": \"8723dd74d5918267a18db9b23d14fdda268e1a6c20540d5a82116ecfeea78477\", \"observer\": \"sys.setprofile externo, somente leituras; debug desativado; sem substitui\\u00e7\\u00e3o de fun\\u00e7\\u00f5es\"}\n{\"hour\": 25, \"alive\": 1898, \"groups\": 48, \"joins\": 159, \"decisions\": 0, \"seconds\": 180.6}\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/home/hugo/Área de trabalho/procedrual/experiments/cohesion_audit.py\", line 321, in <module>\n    if __name__=='__main__':main()\n                            ^^^^^^\n  File \"/home/hugo/Área de trabalho/procedrual/experiments/cohesion_audit.py\", line 302, in main\n    try:e.step()\n        ^^^^^^^^\n  File \"/home/hugo/Área de trabalho/procedrual/procedural/engine.py\", line 150, in step\n    self.goals.decide(character, elapsed)\n  File \"/home/hugo/Área de trabalho/procedrual/procedural/goals.py\", line 395, in decide\n    success, outcome = self.execute(character, current, max(1, elapsed))\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/hugo/Área de trabalho/procedrual/procedural/goals.py\", line 441, in execute\n    result = self._execute(character,goal,hours)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/hugo/Área de trabalho/procedrual/procedural/goals.py\", line 480, in _execute\n    return self.interactions.geography.travel(character,goal.target_id,need.kind if need else 'individual')\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/hugo/Área de trabalho/procedrual/procedural/geography.py\", line 370, in travel\n    return self.step(p)\n           ^^^^^^^^^^^^\n  File \"/home/hugo/Área de trabalho/procedrual/procedural/geography.py\", line 348, in step\n    self.visit(p,b)\n  File \"/home/hugo/Área de trabalho/procedrual/procedural/geography.py\", line 361, in visit\n    self.emit('POIDiscovered',p,id,place_id=id,kind=point.kind)\nTypeError: Geography.emit() got multiple values for argument 'kind'\n"
+    }
+  ],
+  "authorized_exception": {
+    "user_authorized": true,
+    "file": "procedural/geography.py",
+    "change": "Renomeia somente parâmetro kind para event_kind em Geography.emit; mantém payload e regras.",
+    "before_sha256": "3836d0bddcdfd4f3589a04c2e7692057628e92d8355f4532128c8d0aef0a01e3",
+    "after_sha256": "299a51c8ffb35c5c5a5458d189fbe3f32c648650c36d1b64049b636b382b6603",
+    "reproduction_after_fix": "passed",
+    "commit": "0b7bb14bc9a9130fb2041b46596bfce91ce0c614"
+  },
+  "campaign": {
+    "seed": "Neravon-Coesao55",
+    "rules": "mvp-12-fase5.5",
+    "generation": "mvp-5.4",
+    "code_sha256": "c60349c54564a759147738b10d6c490c44440d53afb2e681b0a8aaa5c82d4a72",
+    "hours_requested": 300,
+    "initial_named": 1898,
+    "initial_abstract": 4693,
+    "restarts": 2,
+    "observer_sha256": "636206f7bf8722920f254a1222357539c24ccdb6108e1683d304f7e4c025ce04",
+    "observer": "sys.setprofile externo, somente leituras; debug desativado; sem substituição de funções",
+    "hours_completed": 300,
+    "runtime_seconds": 2005.77,
+    "route_errors": [],
+    "code_sha256_after": "c60349c54564a759147738b10d6c490c44440d53afb2e681b0a8aaa5c82d4a72"
+  },
+  "controlled_checks": {
+    "observer_control": {
+      "small_world_hours": 8,
+      "comparison_worlds": 2,
+      "same_seed": true,
+      "identical_world_and_rng": true,
+      "sha256": "1eb855856538efd9aa217f5e1d6648aefc88bca4e5d5097486aeb4167c6cf3c6",
+      "external_observer_only": true
+    },
+    "crash_reproduction": {
+      "original_crash": "Geography.emit() got multiple values for argument 'kind'",
+      "candidate_patch_tested_only_in_isolated_fixture": true,
+      "payload_kind_preserved": true,
+      "main_file_unchanged": true,
+      "extra_natural_hours": 0
+    },
+    "supply_reproduction": {
+      "seed_fixture": "Repro-Suprimento-55",
+      "hours_simulated": 0,
+      "setup": {
+        "faction_food": 1,
+        "faction_water": 0,
+        "hunger": 40,
+        "thirst": 80,
+        "at_headquarters": true,
+        "is_leader": true
+      },
+      "enumerated_supply": true,
+      "result": [
+        false,
+        "A organização não possui este recurso."
+      ],
+      "food_remaining": 1,
+      "water_remaining": 0,
+      "main_code_changed": false,
+      "natural_occurrence_not_inferred": true
+    },
+    "formalization_reproduction": {
+      "seed_fixture": "Repro-Formalizacao-55",
+      "natural_hours_simulated": 0,
+      "setup_age": 168,
+      "meetings": 4,
+      "group_members": 3,
+      "present_members": 2,
+      "contributions": 4,
+      "pressure_score": 55.0,
+      "required_pressure": 65,
+      "canonical_path_created_faction": false,
+      "legacy_candidate_offered": true,
+      "legacy_execution_result": [
+        true,
+        "Formalização custeada por membros presentes."
+      ],
+      "factions_created": 1,
+      "founder_count": 2,
+      "main_code_changed": false,
+      "natural_frequency_not_inferred": true
+    },
+    "preventive_reproduction": {
+      "seed_fixture": "Repro-Preparo-Agua-55",
+      "natural_hours_simulated": 0,
+      "failure_cooldown_until": 12,
+      "turn": 0,
+      "regular_evaluation_choices": 0,
+      "preventive_action": "fill_water",
+      "preventive_destination": {
+        "map_id": 3,
+        "x": 7,
+        "y": 13
+      },
+      "actual_execution_result": [
+        false,
+        "Não há água para levar nesta fonte."
+      ],
+      "town_water": 0,
+      "main_code_changed": false
+    },
+    "selected_tests": {
+      "passed": 28,
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tests python3 -m unittest test_phase55 test_phase54 test_phase521.Phase521Tests.test_01_finish_winner_executes_even_when_scores_are_close test_phase521.Phase521Tests.test_03_only_reliable_knowledge_of_target_death_resolves_decision test_feeding.FeedingTests.test_active_trip_does_not_block_immediate_consumption test_feeding.FeedingTests.test_critical_meal_beats_older_rest_need_by_risk",
+      "log": "............................\n----------------------------------------------------------------------\nRan 28 tests in 2.758s\n\nOK\n"
+    }
+  },
+  "source_integrity": {
+    "files_checked": 64,
+    "changed_only": [
+      "procedural/geography.py"
+    ],
+    "all_tests_unchanged": true,
+    "all_previous_reports_unchanged": true
+  },
+  "compact_evidence_consolidation": {
+    "destination": "manifesto.json: controlled_checks e interrupted_attempts",
+    "removed_files": [
+      "controle_observador.json",
+      "reproducao_crash.json",
+      "reproducao_suprimento.json",
+      "reproducao_formalizacao.json",
+      "reproducao_preparo.json",
+      "testes.log",
+      "falha_observador.json",
+      "falha_observador.log",
+      "falha_crash_poi.json",
+      "falha_crash_poi.log"
+    ]
+  },
+  "report_audit": {
+    "checks": {
+      "campaign_300h": true,
+      "all_12_structural_checks_passed": true,
+      "no_observer_or_route_errors": true,
+      "death_records_unique_and_balanced": true,
+      "death_causes_match_traces": true,
+      "group_join_ledger_matches_events": true,
+      "groups_and_proposals_match_creations": true,
+      "rejection_breakdown_complete": true,
+      "policy_budget_conserved": true,
+      "policy_effects_match_work": true,
+      "deprivation_last_need_balanced": true,
+      "prep_cases_deduplicated": true,
+      "all_required_categories_present": true,
+      "markdown_code_fences_balanced": true,
+      "baseline_hashes_unchanged": true,
+      "only_authorized_main_change": true
+    },
+    "report_sha256_before_save_removal": "0765ec6a6e17e1e17d96a29eb5eaf2573211088d70dcb7dcf6f91848700f60d0",
+    "report_lines": 1429,
+    "readability_review": "Funis, amostras, churn, gates, convites, propostas, políticas, mortalidade, comparação e categorias revisados contra métricas e fontes.",
+    "regenerated_without_save_byte_identical": true,
+    "report_sha256": "f8fd2c4a60468eb80182490ec70db3280e1ece8d2d57fa3f4b55eaf22f613f01",
+    "copy_review_after_regeneration": "Ajustados somente espaçamento, grafia e identificação das localidades por ID; nenhuma métrica alterada."
+  },
+  "retention": {
+    "deleted_save": "reports/diagnostico_coesao/save_temporario.json",
+    "bytes": 204986245,
+    "sha256": "2b08ee2b535aca09b17ca33f9c4d3167733032decba4fddd78e92ca165d98103",
+    "report_produced_and_audited_before_deletion": true,
+    "deletion_confirmed": true,
+    "compact_artifacts": {
+      "metrics.json": {
+        "bytes": 1313966,
+        "sha256": "ac0abcdd2efd38e4ea970160c8614c588768ebf3eac183c82b4790a95955f63c"
+      },
+      "traces.json": {
+        "bytes": 4753653,
+        "sha256": "2e2b01578a6a33757122b2a17494b104150adcab08fe942f938a69285ed5e5ce"
+      },
+      "analise.json": {
+        "bytes": 107377,
+        "sha256": "f36a7b43d3e5865d795497d39651c8e21a46e57f1a022dbdf6634c64fa9bf01f"
+      },
+      "RELATORIO_COESAO.md": {
+        "bytes": 161411,
+        "sha256": "f8fd2c4a60468eb80182490ec70db3280e1ece8d2d57fa3f4b55eaf22f613f01"
+      }
+    }
+  },
+  "final_tree": {
+    "measurement": "bytes lógicos de arquivos na árvore de trabalho; .git excluído para comparar com a árvore inicial, que não tinha Git",
+    "project_size_after": 7795222,
+    "file_count_after": 84,
+    "reports_size": 6391721,
+    "largest_remaining_directories": {
+      "reports": 6391721,
+      "procedural": 719658,
+      "tests": 265745,
+      "experiments": 160022
+    }
+  }
+}

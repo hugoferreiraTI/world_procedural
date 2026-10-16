@@ -1,0 +1,14 @@
+{"seed": "Neravon-Coesao55", "rules": "mvp-12-fase5.5", "generation": "mvp-5.4", "code_sha256": "c60349c54564a759147738b10d6c490c44440d53afb2e681b0a8aaa5c82d4a72", "hours_requested": 300, "initial_named": 1898, "initial_abstract": 4693, "restarts": 2, "observer_sha256": "636206f7bf8722920f254a1222357539c24ccdb6108e1683d304f7e4c025ce04", "observer": "sys.setprofile externo, somente leituras; debug desativado; sem substitui\u00e7\u00e3o de fun\u00e7\u00f5es"}
+{"hour": 25, "alive": 1898, "groups": 48, "joins": 159, "decisions": 0, "seconds": 79.5}
+{"hour": 50, "alive": 1898, "groups": 92, "joins": 622, "decisions": 0, "seconds": 214.6}
+{"hour": 75, "alive": 1898, "groups": 103, "joins": 718, "decisions": 0, "seconds": 330.2}
+{"hour": 100, "alive": 1897, "groups": 113, "joins": 833, "decisions": 2, "seconds": 459.1}
+{"hour": 125, "alive": 1889, "groups": 119, "joins": 926, "decisions": 2, "seconds": 609.6}
+{"hour": 150, "alive": 1870, "groups": 123, "joins": 979, "decisions": 2, "seconds": 793.6}
+{"hour": 175, "alive": 1829, "groups": 133, "joins": 999, "decisions": 2, "seconds": 987.7}
+{"hour": 200, "alive": 1791, "groups": 135, "joins": 1018, "decisions": 2, "seconds": 1187.0}
+{"hour": 225, "alive": 1758, "groups": 138, "joins": 1031, "decisions": 2, "seconds": 1387.5}
+{"hour": 250, "alive": 1710, "groups": 140, "joins": 1044, "decisions": 3, "seconds": 1589.7}
+{"hour": 275, "alive": 1650, "groups": 144, "joins": 1061, "decisions": 3, "seconds": 1785.0}
+{"hour": 300, "alive": 1600, "groups": 146, "joins": 1064, "decisions": 3, "seconds": 1981.7}
+{"complete": 300, "runtime": 2005.77, "code_unchanged": true}
