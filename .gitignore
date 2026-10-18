@@ -4,3 +4,4 @@ __pycache__/
 campanha*.json
 *.tmp
 *.prof
+!reports/fase_6_0/campanha.json

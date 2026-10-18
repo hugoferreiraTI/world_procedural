@@ -1,3 +1,4 @@
+from .navigation import distance
 """Organização local por encontros. Decisões continuam em Need/Solution/Goal."""
 from .organization_context import organization_id, bind_organization
 from dataclasses import asdict,replace
@@ -115,6 +116,17 @@ class SocietySystem:
         if known:
             return known[0] if self.e.institutions.join(p,known[0])[0] else None
         t=self.w.towns[p.town_id]
+        if hasattr(self.e,'audit'):
+            similar=[g for g in self.groups_here(p) if g.cause==cause and g.subject_id==subject]
+            if similar:
+                self.e.audit.count('duplicate_cause_creation_attempt')
+                self.e.audit.sample('fragmentation',{'actor':p.id,'turn':self.w.turn,'cause':cause,
+                    'known_existing_groups':[{'id':g.id,'score':self.e.institutions.group_compatibility(p,g,cause,subject).score,
+                    'reason':self.e.institutions.group_compatibility(p,g,cause,subject).reason,
+                    'distance':distance(p.position,self.w.towns[g.town_id].market),
+                    'capacity':len(g.member_ids),'relationship':self.e.graph.value(p.id,g.leader_id,'confiança',10)}
+                    for g in similar if g.id in p.known_groups],
+                    'knowledge_gap_count':sum(g.id not in p.known_groups for g in similar)},256)
         if len(self.groups_here(p))>=32 or len(p.group_ids)>=3 or any(g.cause==cause and g.subject_id==subject and p.id in g.member_ids for g in self.groups_here(p)):return None
         peers=[self.w.characters[f.actor_id] for f in self.shared_facts(p,cause,subject)
                if self.compatible(self.w.characters[f.actor_id],cause,subject) and self.affinity(p,self.w.characters[f.actor_id],cause)>=35 and len(self.w.characters[f.actor_id].group_ids)<3]
@@ -219,8 +231,10 @@ class SocietySystem:
         return choices
     def meeting(self,p,g):
         present=[q for q in self.living(g.member_ids) if q.position==p.position]
-        if p.id!=g.leader_id or len(present)<2:return False,'A reunião exige liderança e pelo menos dois membros presentes.'
+        if p.id not in self.e.tasks.representatives(g) or len(present)<2:return False,'A reunião exige liderança e pelo menos dois membros presentes.'
+        if g.last_meeting>=0 and self.w.turn-g.last_meeting<24:return False,'O encontro anterior ainda é recente.'
         g.last_meeting=self.w.turn;g.investment+=1
+        self.e.tasks.authorize(p,g)
         for q in present:
             for fact in q.knowledge.values():
                 if fact.kind in ('ProblemShared','PolicyDecided','DivineIntervention','SpiritualReport','WantedIssued'):
@@ -230,8 +244,10 @@ class SocietySystem:
         g.last_relevant=self.w.turn;g.pressure=min(100,sum(x[2] for x in relevant)/len(relevant)+g.failures*5)
         if not any(g.proposal_knowledge.get(i,{}).get('status') in ('draft','submitted','deferred') for i in g.proposal_ids):
             if self.propose(p,g):p.social_state['meaningful_social_actions']=p.social_state.get('meaningful_social_actions',0)+1
-        self.emit('GroupMeeting',p,g.id,members=[q.id for q in present],pressure=g.pressure,known_facts=list(g.knowledge)[-3:])
+        meeting_event=self.emit('GroupMeeting',p,g.id,members=[q.id for q in present],pressure=g.pressure,known_facts=list(g.knowledge)[-3:])
         self.e.institutions.formalization(p,g,present,True)
+        self.e.tasks.closed_by_event('hold_meeting',g.id,meeting_event,p)
+        if g.status=='active':self.e.tasks.issue(p,'group',g.id,'hold_meeting',g.id,self.w.towns[g.town_id].market,55,{'not_before':self.w.turn+24})
         return True,'Reunião e avaliação coletiva realizadas.'
     def propose(self,p,g):
         return self.e.institutions.propose(p,g)
@@ -341,6 +357,12 @@ class SocietySystem:
             return True,'Ordem local transmitida a militares presentes.'
         if a=='serve_office':
             if not t or t.mayor_id!=p.id or p.position!=t.market:return False,'Atendimento exige prefeito na administração.'
+            clerks=t.office.setdefault('clerks',[])
+            available=[q.id for q in self.local(t) if q.id!=p.id and q.position==p.position and q.profession in ('conselheiro','comerciante') and q.personality.diligence>=50]
+            for id in available[:2]:
+                if id not in clerks:
+                    clerks.append(id)
+                    self.emit('MunicipalDelegation',p,id,town_id=t.id,role='municipal_representative')
             if p.social_state.get('office_until',-1)<=self.w.turn:
                 p.social_state.update(last_office=self.w.turn,office_until=self.w.turn+4)
                 self.emit('OfficeAttended',p,t.id);self.count('office_attended')
@@ -468,6 +490,8 @@ class SocietySystem:
                     for key in ('known_proposals','decisions'):t.office[key]=[i for i in t.office.get(key,[]) if i in self.w.proposals]
                 for person in self.w.characters.values():
                     if g.id in person.group_ids:person.group_ids.remove(g.id)
+                for task in self.w.institutional_tasks.values():
+                    if task.institution_type=='group' and task.institution_id==g.id and task.status in ('pending','blocked'):task.status='cancelled'
                 self.w.groups.pop(g.id)
         for f in self.w.factions.values():
             alive=self.living(f.member_ids)

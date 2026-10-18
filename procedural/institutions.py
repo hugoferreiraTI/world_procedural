@@ -33,7 +33,8 @@ class Institutions:
     def know_group(self,p,g,source,source_fact=None):
         if g.id in p.known_groups:return
         self.remember(p.known_groups,g.id,{'source':source,'source_fact':source_fact,
-                      'learned_at':self.w.turn,'meeting':asdict(self.w.towns[g.town_id].market)})
+                      'learned_at':self.w.turn,'meeting':asdict(self.w.towns[g.town_id].market),
+                      'strategy':g.plan.get('strategy',g.cause if g.cause=='criminal_cooperation' else 'cooperation'),'dues':g.plan.get('dues',0)})
         self.emit('GroupKnown',p,g.id,group_id=g.id,source=source,source_fact=source_fact)
 
     def on_fact(self,p,fact):
@@ -99,20 +100,13 @@ class Institutions:
                     return 'criminal_cooperation',None,65
         return None
 
+    def group_compatibility(self,p,g,cause,subject):
+        from .organizational_compatibility import assess
+        return assess(self.e,p,g,cause,subject)
+
     def acceptable_group(self,p,g,cause,subject):
-        if g.status!='active' or g.cause!=cause or g.subject_id!=subject:return False,'different_objective'
-        if g.plan.get('closed'):return False,'closed'
-        if len(g.member_ids)>=64:return False,'capacity_reached'
-        if len(p.group_ids)>=3:return False,'too_many_commitments'
-        leader=self.w.characters.get(g.leader_id)
-        if not leader or not leader.alive:return False,'leader_unavailable'
-        trust=self.e.graph.value(p.id,leader.id,'confiança',10)
-        if trust<5:return False,'hostility_or_distrust'
-        if g.cause=='religious_interest' and g.subject_id not in p.beliefs:return False,'incompatible_belief'
-        if g.failures>=3 and p.personality.independence>=80 and p.personality.ambition>=85:return False,'known_failure_and_leadership_preference'
-        if p.position.map_id!=g.town_id and not self.e.geography.plan(p,g.town_id):return False,'route_unknown'
-        if self.e.society.affinity(p,leader,cause)<25:return False,'low_social_affinity'
-        return True,'shared_problem_and_access'
+        result=self.group_compatibility(p,g,cause,subject)
+        return result.acceptable,result.reason
 
     def search_groups(self,p,cause,subject,audit=True):
         if audit and self.w.turn-p.social_state.get('last_group_search',-1000)>=12:
@@ -122,19 +116,24 @@ class Institutions:
         for gid in p.known_groups:
             g=self.w.groups.get(gid)
             if not g or p.id in g.member_ids or g.town_id!=p.town_id:continue
-            ok,reason=self.acceptable_group(p,g,cause,subject)
+            compatibility=self.group_compatibility(p,g,cause,subject)
+            ok,reason=compatibility.acceptable,compatibility.reason
+            if audit and hasattr(self.e,'audit') and g.cause==cause:
+                self.e.audit.count('compatibility:'+str(int(compatibility.score//10)*10))
+                self.e.audit.sample('compatibility',{'actor':p.id,'group':g.id,'turn':self.w.turn,
+                    'score':compatibility.score,'reason':reason,'components':compatibility.components},256)
             if ok:result.append(g)
             elif audit and g.cause==cause and g.subject_id==subject:
                 key=f'group_rejected:{gid}'
                 if self.w.turn-p.social_state.get(key,-1000)>=24:
                     p.social_state[key]=self.w.turn
-                    self.emit('GroupJoinRejected',p,gid,reason=reason)
+                    self.emit('GroupJoinRejected',p,gid,reason=reason,compatibility=compatibility.score,components=compatibility.components)
         if result and audit:
             chosen=max(result,key=lambda g:(len(g.member_ids),-g.created_at))
             if p.social_state.get('last_group_found')!=chosen.id:
                 p.social_state['last_group_found']=chosen.id
                 self.emit('ExistingGroupFound',p,chosen.id,cause=cause,source=p.known_groups[chosen.id])
-        return sorted(result,key=lambda g:(-len(g.member_ids),g.created_at,g.id))
+        return sorted(result,key=lambda g:(-self.group_compatibility(p,g,cause,subject).score,-len(g.member_ids),g.created_at,g.id))
 
     def collective_candidates(self,p,n):
         cause=n.context['cause'];subject=n.context.get('subject')
@@ -173,6 +172,9 @@ class Institutions:
         for q in self.e.society.living(g.member_ids):self.know_group(q,g,'founder')
         parent=self.e.observability.index.reference('GroupFormed',g.id)
         self.emit('NewGroupCreated',p,g.id,group_id=g.id,cause=g.cause,members=g.member_ids,parent_event_ids=[parent] if parent else [])
+        if hasattr(self.e,'tasks'):
+            self.e.tasks.authorize(p,g)
+            self.e.tasks.issue(p,'group',g.id,'hold_meeting',g.id,self.w.towns[g.town_id].market,55,{'not_before':self.w.turn+24,'source_facts':[parent] if parent else []})
 
     def proposal_key(self,g):
         sector=SECTORS.get(g.cause,'EMPLOYMENT')
@@ -229,7 +231,11 @@ class Institutions:
         self.support(p,g,prop)
         parent=self.e.observability.index.reference('GroupFormed',g.id)
         self.emit('ProposalCreated',p,prop.id,proposal_id=prop.id,group_id=g.id,sector=sector,effect=effect,source_fact=g.originating_fact,parent_event_ids=[parent] if parent else [])
-        self.e.society.count('proposal_created');return prop
+        self.e.society.count('proposal_created')
+        if hasattr(self.e,'tasks'):
+            self.e.tasks.authorize(p,g)
+            self.e.tasks.issue(p,'group',g.id,'deliver_proposal',prop.id,t.market,55,{'source_facts':[self.e.observability.index.reference('ProposalCreated',prop.id)]})
+        return prop
 
     def faction_support(self,p,f,prop):
         if (p.id!=f.leader_id or f.status!='active' or prop.id not in p.known_proposals
@@ -249,7 +255,7 @@ class Institutions:
 
     def deliver_support(self,p,prop,g):
         t=self.w.towns[prop.town_id]
-        if p.position!=t.market or p.id!=g.leader_id or prop.id not in g.proposal_ids:return False,'Apoio precisa chegar à jurisdição.'
+        if p.position!=t.market or p.id not in self.e.tasks.representatives(g) or prop.id not in g.proposal_ids:return False,'Apoio precisa chegar à jurisdição.'
         prop.delivered_supporter_ids=sorted(set(prop.delivered_supporter_ids)|set(prop.support_by_group.get(g.id,[])))
         g.plan.pop('proposal_delivery_needed',None)
         self.pressure(prop,p)
@@ -258,8 +264,9 @@ class Institutions:
 
     def submit(self,p,prop):
         t=self.w.towns[prop.town_id];mayor=self.w.characters.get(t.mayor_id)
-        g=next((self.w.groups[i] for i in prop.supporting_group_ids if i in self.w.groups and self.w.groups[i].leader_id==p.id),None)
-        if not g or not mayor or mayor.id not in self.e.spatial.at(p.position) or p.position!=t.market or prop.status not in ('draft','submitted','deferred','ignored'):return False,'Representante e autoridade devem se encontrar.'
+        g=next((self.w.groups[i] for i in prop.supporting_group_ids if i in self.w.groups and p.id in self.e.tasks.representatives(self.w.groups[i])),None)
+        receivers=[q for q in self.e.society.living([t.mayor_id]+list(t.office.get('clerks',()))) if q.position==p.position]
+        if not g or not mayor or not receivers or p.position!=t.market or prop.status not in ('draft','submitted','deferred','ignored'):return False,'Representante e autoridade devem se encontrar.'
         prop.status='submitted';prop.target_id=mayor.id
         for key in ('public_proposals','known_proposals'):
             ids=t.office.setdefault(key,[])
@@ -267,7 +274,8 @@ class Institutions:
             del ids[:-24]
         self.deliver_support(p,prop,g)
         parent=self.e.observability.index.reference('ProposalCreated',prop.id)
-        self.emit('ProposalSubmitted',p,mayor.id,proposal_id=prop.id,group_id=g.id,supporter_ids=list(prop.delivered_supporter_ids),source_fact=prop.source_fact,parent_event_ids=[parent] if parent else [])
+        submitted=self.emit('ProposalSubmitted',p,receivers[0].id,receiver_id=receivers[0].id,authority_id=mayor.id,proposal_id=prop.id,group_id=g.id,supporter_ids=list(prop.delivered_supporter_ids),source_fact=prop.source_fact,parent_event_ids=[parent] if parent else [])
+        self.e.tasks.closed_by_event('deliver_proposal',prop.id,submitted,p)
         g.proposal_knowledge[prop.id]={'status':'submitted','confidence':100,'source_fact':prop.source_fact}
         return True,'Proposta e apoio recebidos presencialmente.'
 
@@ -312,6 +320,8 @@ class Institutions:
         parent=self.e.observability.index.reference('ProposalSubmitted',context={'proposal_id':prop.id})
         event=self.emit('PolicyCreated',p,policy.id,policy_id=policy.id,proposal_id=prop.id,sector=policy.sector,objective=policy.objective,budget=budget,source_fact=prop.source_fact,parent_event_ids=[parent] if parent else [])
         policy.history.append(event.id)
+        if hasattr(self.e,'tasks'):
+            self.e.tasks.issue(p,'town',t.id,'work_policy',policy.id,t.market,55,{'source_facts':[event.id]},['worker'])
         return policy
 
     def resolve(self,p,prop):
@@ -447,7 +457,8 @@ class Institutions:
         policy.history.append(ev.id);del policy.history[:-24]
         if policy.work_done>=policy.work_required:
             policy.status='completed';t.money+=policy.money;policy.refunded+=policy.money;policy.money=0
-            self.emit('PolicyCompleted',p,policy.id,policy_id=policy.id,proposal_id=policy.proposal_id,work_done=policy.work_done,effects=policy.effects,refunded=policy.refunded,parent_event_ids=[ev.id])
+            completed=self.emit('PolicyCompleted',p,policy.id,policy_id=policy.id,proposal_id=policy.proposal_id,work_done=policy.work_done,effects=policy.effects,refunded=policy.refunded,parent_event_ids=[ev.id])
+            self.e.tasks.closed_by_event('work_policy',policy.id,completed,p)
         return True,'Trabalho real e salário do orçamento reservado.'
 
     def invitation_info(self,p,f):
@@ -533,11 +544,26 @@ class Institutions:
                   and len(present)>=3 and sum(q.money>15 for q in present)>=2 and funds>=4 and score>=65
                   and not any(len(self.w.characters[i].organization_ids)>=3 for i in g.member_ids))
         ready=g.investment>=4 and age>=168 and len(g.member_ids)>=3 and sum(q.money>15 for q in present)>=2
-        return {'eligible':eligible,'ready':ready,'reason_code':None if eligible else 'FORMALIZATION_REQUIREMENTS',
+        gates=[]
+        if not p.alive or p.id!=g.leader_id:gates.append('NO_LEADER')
+        if age<168:gates.append('TOO_YOUNG')
+        if len(g.member_ids)<3:gates.append('TOO_FEW_MEMBERS')
+        if len(present)<3:gates.append('NO_PRESENT_MEMBERS')
+        if g.investment<4:gates.append('LOW_INVESTMENT')
+        if sum(q.money>15 for q in present)<2:gates.append('NO_CONTRIBUTIONS')
+        if funds<4:gates.append('INSUFFICIENT_FUNDS')
+        if score<65:gates.append('LOW_SCORE')
+        if len(self.w.factions)>=24:gates.append('WORLD_LIMIT')
+        if any(len(self.w.characters[i].organization_ids)>=3 for i in g.member_ids):gates.append('MEMBERSHIP_LIMIT')
+        if g.status!='active' or g.cause=='expedition':gates.append('INCOMPATIBLE')
+        return {'eligible':eligible,'ready':ready,'gates':gates,'reason_code':None if eligible else 'FORMALIZATION_REQUIREMENTS',
                 'present_ids':[q.id for q in present],'factors':factors}
 
     def formalization(self,p,g,present,execute=False):
         check=self.can_formalize(p,g,present)
+        if hasattr(self.e,'audit'):
+            self.e.audit.count('formalization:candidate')
+            for gate in check.get('gates',()):self.e.audit.count('formalization_gate:'+gate)
         if not check.get('ready'):return None
         g.plan['formalization_pressure']=check['factors']
         if self.w.turn-g.plan.get('last_formalization_audit',-1000)>=24:

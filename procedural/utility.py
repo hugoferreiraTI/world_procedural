@@ -3,7 +3,7 @@
 from .rules import UTILITY
 from .social import normalized
 
-BASE = {"eat": 200, "drink": 200, "drink_well": 100, "drink_stream": 80,
+BASE = {"perform_institutional_task":55,"eat": 200, "drink": 200, "drink_well": 100, "drink_stream": 80,
         "sleep": 100, "buy_food": 75, "forage": 35, "steal": 70,
         "ask_help": 25, "work": 50, "work_for_food": 45, "secure": 70,
         "check_relative": 55, "give_supplies": 55, "seek_company": 45,
@@ -12,7 +12,7 @@ BASE = {"eat": 200, "drink": 200, "drink_well": 100, "drink_stream": 80,
 BASE.update({"train":45,"temporary_service":45,"fill_water":100,
              "expand_farming":60,"publish_temporary_work":55,"open_training":50,
              "materialize_worker":45,"improve_utilization":55})
-WEIGHTS = {"buy_food": {"honesty": 20},
+WEIGHTS = {"perform_institutional_task":{"diligence":20,"persistence":20},"buy_food": {"honesty": 20},
            "forage": {"independence": 50, "hunter": 20},
            "steal": {"greed": 100 / 3, "honesty": -100, "courage": 10},
            "ask_help": {"compassion": 50, "trust": UTILITY.trust_weight,

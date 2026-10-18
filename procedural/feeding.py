@@ -25,6 +25,11 @@ class FeedingSystem:
         player = self.world.characters.get(self.world.player_id)
         active=(person.active_until>self.world.turn or person.combat.opponents or person.migration is not None
                 and person.migration.arrived_at is None)
+        # Responsabilidade já conhecida promove resolução somente enquanto
+        # a pressão é executável; nenhuma verdade remota é consultada.
+        urgent=any(n.kind in ('pursuit','institutional_task') and n.status in ('active','selected')
+                   and n.priority>=65 for n in person.needs.values())
+        if urgent:active=True
         if (active or person.health < RECOVERY.lod_hp or person.category == "lendário" or person.hunger >= FEEDING.high_hunger or
                 person.thirst >= 85 or player and player.alive and distance(person.position, player.position) <= 3):
             person.lod='active'

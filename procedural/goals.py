@@ -71,6 +71,7 @@ class GoalSystem:
                 choices=[Solution(a,0,d,t) for a,d,t in self.interactions.conflicts.candidates(character,need) if a!='attack']
                 return self._evaluate(character,need,choices)
         if self.interactions:
+            choices.extend(Solution.candidate(c) for c in self.interactions.tasks.candidates(character,need))
             choices.extend(Solution.candidate(c) for c in self.interactions.society.candidates(character,need))
             choices.extend(Solution(a,0,d,t) for a,d,t in self.interactions.faith.candidates(character,need))
             choices.extend(Solution(a,0,d,t) for a,d,t in self.interactions.access.candidates(character,need))
@@ -136,7 +137,9 @@ class GoalSystem:
             fresh = seen.get("town_id") == character.town_id and self.world.turn-seen.get("turn",-1000)<=24
             if character.training_target:
                 choices = [c for c in choices if c.action != "work"]
-                choices.append(Solution("train",0,character.known_places.get("market")))
+                detail=seen.get('training_details',{}).get(character.training_target,{})
+                destination=Location(**detail['location']) if detail.get('location') else character.known_places.get('market')
+                choices.append(Solution("train",0,destination))
             elif fresh:
                 if self.professions.saturated(character,seen):
                     choices = [c for c in choices if c.action != "work"]
@@ -147,7 +150,9 @@ class GoalSystem:
                     if offers.get('meal_distribution', {}).get('capacity', 0) and "market" in places:
                         choices.append(Solution("temporary_service",0,places["market"]))
                 if seen.get("training_offer") and character.category=="comum" and character.profession in (None,"agricultor","mineiro","lenhador","ferreiro","caçador","comerciante"):
-                    choices.append(Solution("train",0,places.get("market")))
+                    detail=seen.get('training_details',{}).get(seen['training_offer'],{})
+                    destination=Location(**detail['location']) if detail.get('location') else places.get('market')
+                    choices.append(Solution("train",0,destination))
             choices = [c for c in choices if c.action != 'work' or self.professions.compatible_workplace(character)]
         if self.interactions:
             existing={(c.action,c.destination,c.target_id) for c in choices}
@@ -192,6 +197,14 @@ class GoalSystem:
             if reason:
                 observer.blocked(need,choice,reason)
                 continue
+            if action=='work':
+                # Estoque verdadeiro só pode bloquear quem está na instalação.
+                # Uma oferta antiga/remota não vira radar de emprego.
+                if character.position==character.workplace:
+                    work_reason=self.professions.work_gate(character)
+                    if work_reason:
+                        observer.blocked(need,choice,work_reason)
+                        continue
             if self.interactions:
                 from .action_pressure import STRONG,FORWARD
                 if action in STRONG or action in FORWARD or action=='attack':
@@ -313,6 +326,7 @@ class GoalSystem:
                     lethal_audit=assessment,need_kind=need.kind)
                 character.agency_state['lethal_option']={'marker':marker,'turn':self.world.turn}
         if not active:
+            self.interactions.audit.selection(character,active,None)
             # Rotina sem pressão: retornar para casa. Não abandona o mundo parado.
             if character.combat.detention_until<=self.world.turn and character.combat.surrendered_until<=self.world.turn:
                 if character.position.map_id!=character.home.map_id and any(c.status=='waiting_for_information' for c in character.commitments.values()):
@@ -334,6 +348,7 @@ class GoalSystem:
                 self.needs.count("Blocked", need.kind, character)
                 need.context["blocked_recorded"] = True
         if selected is None:
+            self.interactions.audit.selection(character,active,None)
             for need in active:
                 if need.kind in PERSONAL_KINDS:
                     self.needs.explain(character,need,"NoViableSolution")
@@ -385,6 +400,7 @@ class GoalSystem:
                 reason = ("LostToHigherPriority" if selected.priority > need.priority else
                           "LostToTieBreak" if selected.priority == need.priority else "LostToGoalContinuation")
                 self.needs.explain(character,need,reason,selected.kind)
+        self.interactions.audit.selection(character,active,selected)
         if self.agency:self.agency.selected(character,active,selected,choice.action)
         if choice.destination:
             character.food_state['planned_trip'] = self.feeding.travel_assessment(character, choice.destination)
@@ -472,6 +488,7 @@ class GoalSystem:
         with observer.action(character,goal):
             result=self._execute_attempt(character,goal,hours)
             observer.outcome(result)
+            self.interactions.audit.outcome(character,goal,result[0])
             return result
 
     def _execute_attempt(self, character, goal, hours: int) -> tuple[bool, str]:
@@ -524,6 +541,7 @@ class GoalSystem:
             return False,'A detenção ou rendição restringe esta ação.'
         need = next((n for n in character.needs.values() if n.id == goal.need_id), None)
         if self.interactions:
+            if action=='perform_institutional_task':return self.interactions.tasks.execute(character,goal,need)
             from .geography import TRAVEL_ACTIONS
             from .institutions import ACTIONS as INSTITUTION_ACTIONS
             if action in INSTITUTION_ACTIONS:return self.interactions.institutions.execute(character,goal,need)

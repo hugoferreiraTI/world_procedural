@@ -171,11 +171,11 @@ class EngineTests(unittest.TestCase):
         npc.money, npc.hunger, npc.thirst, npc.fatigue = 0, 90, 0, 0
         npc.personality = Personality(honesty=100, diligence=100, independence=0, compassion=0)
         self.engine.goals.decide(npc)
-        self.assertEqual(npc.goal.action, "work")
-        self.assertEqual(npc.goal.status, "failed")
+        self.assertNotEqual(npc.goal.action, "work")
+        self.assertTrue(any(row['reason_code']=='NO_PAYER' for row in
+            self.world.observability.decisions[self.world.observability.last_decision_ids[npc.id]].blocked_actions))
         self.engine.goals.decide(npc)
         self.assertNotEqual(npc.goal.action, "work")
-        self.assertGreater(npc.failures["work"], self.world.turn)
 
 
 class KnowledgeAndQuestTests(unittest.TestCase):

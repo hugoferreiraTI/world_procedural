@@ -1,0 +1,12 @@
+======================================================================
+FAIL: test_no_payer_does_not_create_product_or_salary (test_phase32.Phase32Tests.test_no_payer_does_not_create_product_or_salary)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase32.py", line 291, in test_no_payer_does_not_create_product_or_salary
+    self.assertEqual(before, dumps(self.world))
+AssertionError: '{"fo[2072984 chars],100]]}]]},"counters":{"$dict":[["events",274][268116 chars]1}}}' != '{"fo[2072984 chars],100],["work_attempts",1],["work_outcome:no_pa[268225 chars]1}}}'
+
+----------------------------------------------------------------------
+Ran 362 tests in 208.221s
+
+FAILED (failures=1)

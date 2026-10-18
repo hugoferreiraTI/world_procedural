@@ -174,13 +174,13 @@ class CollectiveActionSystem:
         if goal.action=='relay_response':
             if not g or p.position!=self.w.towns[g.town_id].market:return False,'Resposta precisa retornar fisicamente ao grupo.'
             present=[self.w.characters[i] for i in g.member_ids if i in self.e.spatial.at(p.position)]
-            if len(present)<2 or g.leader_id not in [q.id for q in present]:return False,'Representante e outro membro precisam estar presentes.'
+            if len(present)<2 or p.id not in self.e.tasks.representatives(g):return False,'Representante e outro membro precisam estar presentes.'
             replies=self.responses(p,g)
             if not replies:return False,'Não há resposta nova recebida.'
             for fact in replies:
                 for q in present:
                     if q.id!=p.id:self.e.knowledge.learn(q,self.e.knowledge.transmitted(fact,p,q),False)
-                self.e.society.react(self.w.characters[g.leader_id],fact)
+                self.e.society.react(p,fact)
                 delivered=g.plan.setdefault('relayed_responses',[])
                 if fact.event_id not in delivered:delivered.append(fact.event_id)
                 del delivered[:-12]

@@ -40,6 +40,7 @@ class NeedSystem:
     def finish(self, owner, need, status="satisfied"):
         if need.status in FINISHED:
             return
+        if hasattr(self.recorder.observer,'causal'):self.recorder.observer.causal.end_episode(owner,need,status)
         need.status, need.priority, need.updated_at = status, 0, self.world.turn
         self.count("Satisfied" if status == "satisfied" else "Expired", need.kind, owner)
         if need.kind in ("family", "grief", "revenge", "protection", "status", "advancement"):
@@ -84,9 +85,11 @@ class NeedSystem:
 
     def physiology(self, character: Character) -> None:
         symbol = self.world.maps[character.position.map_id].rows[character.position.y][character.position.x]
+        before={kind:getattr(character,kind) for kind in ('hunger','thirst','fatigue')}
         character.hunger = min(100, character.hunger + 2)
         character.thirst = min(100, character.thirst + (4 if symbol == "D" else 2))
         character.fatigue = min(100, character.fatigue + 1.2)
+        if hasattr(self.recorder.observer,'causal'):self.recorder.observer.causal.physiology(character,before)
         if max(character.hunger, character.thirst) >= SURVIVAL.starvation:
             character.starvation_hours += 1
             damage = min(SURVIVAL.maximum_damage, SURVIVAL.starvation_damage +
@@ -156,7 +159,8 @@ class NeedSystem:
             character.financial_since, character.financial_setbacks = None, 0
         financial_age = self.world.turn - character.financial_since if character.financial_since is not None else 0
         money_target = 20 if financial_age >= 48 else 10
-        if character.money < money_target and (character.profession not in (None, "estudante") or character.training_target):
+        known_work=bool(character.market_observation.get('temporary_work') or character.market_observation.get('training_offer')) and self.world.turn-character.market_observation.get('turn',-1000)<=24
+        if character.money < money_target and (character.profession not in (None, "estudante") or character.training_target or known_work):
             need = self.ensure(character, "money", min(70, 30 + max(0, 10 - character.money) * 2 +
                                min(12, financial_age / 24) + character.financial_setbacks),
                                "economy", "Estabilizar renda baixa persistente" if financial_age >= 48
@@ -165,7 +169,7 @@ class NeedSystem:
         else:
             self.satisfy(character, "money")
         working = 8 <= self.world.turn % 24 < 18
-        if working and (character.profession not in (None, "estudante") or character.training_target):
+        if working and (character.profession not in (None, "estudante") or character.training_target or known_work):
             self.ensure(character, "work", 35, "profession", "Responsabilidade profissional")
         else:
             self.satisfy(character, "work")
@@ -201,6 +205,7 @@ class NeedSystem:
             self.interactions.terminal_combat.refresh(character)
             self.interactions.access.refresh(character)
             self.interactions.institutions.refresh(character)
+            self.interactions.tasks.refresh(character)
         active = []
         for need in character.needs.values():
             if need.status in FINISHED or need.status=="waiting_for_information":

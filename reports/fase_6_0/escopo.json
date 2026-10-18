@@ -1,0 +1,303 @@
+{
+  "request": "/home/hugo/.codex/attachments/63496083-6d2b-42ce-8dfe-2012cbc33296/Texto colado.txt",
+  "sha256": "2ee2b4b85575aa69872879290bad22e901e1b57536f5cbc6b6a5906fd3550841",
+  "requirements": [
+    {
+      "number": 1,
+      "title": "OBJETIVO DA FASE"
+    },
+    {
+      "number": 2,
+      "title": "FILOSOFIA DA FASE 6"
+    },
+    {
+      "number": 3,
+      "title": "QUESTÃO CENTRAL DO MOTOR DE DECISÃO"
+    },
+    {
+      "number": 4,
+      "title": "MEDIR “NEED STARVATION”"
+    },
+    {
+      "number": 5,
+      "title": "NÃO REDUZIR PRIORIDADE DE SOBREVIVÊNCIA POR DECRETO"
+    },
+    {
+      "number": 6,
+      "title": "RADIOGRAFIA DE SUSTENTABILIDADE POR LOCALIDADE"
+    },
+    {
+      "number": 7,
+      "title": "POTENCIAL ≠ PRODUÇÃO REAL"
+    },
+    {
+      "number": 8,
+      "title": "FUNIL DA SOBREVIVÊNCIA"
+    },
+    {
+      "number": 9,
+      "title": "RECURSO EXISTENTE NÃO SIGNIFICA RECURSO ACESSÍVEL"
+    },
+    {
+      "number": 10,
+      "title": "CAPITAIS"
+    },
+    {
+      "number": 11,
+      "title": "ESCASSEZ CONTINUA SENDO POSSÍVEL"
+    },
+    {
+      "number": 12,
+      "title": "AQUISIÇÃO CRÍTICA E CONSUMO"
+    },
+    {
+      "number": 13,
+      "title": "AUDITAR LOD"
+    },
+    {
+      "number": 14,
+      "title": "FISIOLOGIA VS INTERVALO DE DECISÃO"
+    },
+    {
+      "number": 15,
+      "title": "LOD NÃO DEVE ALTERAR A PERSONALIDADE DO MUNDO"
+    },
+    {
+      "number": 16,
+      "title": "PROMOÇÃO POR PRESSÃO"
+    },
+    {
+      "number": 17,
+      "title": "PRESERVAR ECONOMIA MATERIAL"
+    },
+    {
+      "number": 18,
+      "title": "FUNIL DE EMPREGO"
+    },
+    {
+      "number": 19,
+      "title": "CARREIRA ATUALMENTE É PARCIAL"
+    },
+    {
+      "number": 20,
+      "title": "GENERALIZAR TREINAMENTO COM CAUTELA"
+    },
+    {
+      "number": 21,
+      "title": "NÃO MATERIALIZAR TRABALHADOR SEM CAUSA"
+    },
+    {
+      "number": 22,
+      "title": "SOCIAL AFFINITY ≠ ORGANIZATIONAL COMPATIBILITY"
+    },
+    {
+      "number": 23,
+      "title": "SOCIAL AFFINITY"
+    },
+    {
+      "number": 24,
+      "title": "ORGANIZATIONAL COMPATIBILITY"
+    },
+    {
+      "number": 25,
+      "title": "JOIN ANTES DE CREATE"
+    },
+    {
+      "number": 26,
+      "title": "MÚLTIPLOS GRUPOS CONTINUAM POSSÍVEIS"
+    },
+    {
+      "number": 27,
+      "title": "MEDIR FRAGMENTAÇÃO"
+    },
+    {
+      "number": 28,
+      "title": "INSTITUIÇÃO NÃO É UMA PESSOA"
+    },
+    {
+      "number": 29,
+      "title": "TASK QUEUE INSTITUCIONAL"
+    },
+    {
+      "number": 30,
+      "title": "DELEGAÇÃO"
+    },
+    {
+      "number": 31,
+      "title": "TAREFA SOBREVIVE AO TITULAR"
+    },
+    {
+      "number": 32,
+      "title": "PREFEITURA"
+    },
+    {
+      "number": 33,
+      "title": "POLICY WORK"
+    },
+    {
+      "number": 34,
+      "title": "NÃO REDUZIR FORMALIZATION SCORE AINDA"
+    },
+    {
+      "number": 35,
+      "title": "CONTAR O GATE QUE MATOU CADA CANDIDATURA"
+    },
+    {
+      "number": 36,
+      "title": "REVISAR REQUISITOS SOMENTE DEPOIS"
+    },
+    {
+      "number": 37,
+      "title": "FUNIL COMPLETO"
+    },
+    {
+      "number": 38,
+      "title": "ZERO CAPTURA PRECISA TER EXPLICAÇÃO"
+    },
+    {
+      "number": 39,
+      "title": "CASO PODE SER RESPONSABILIDADE INSTITUCIONAL"
+    },
+    {
+      "number": 40,
+      "title": "SEM POLÍCIA TELEPÁTICA"
+    },
+    {
+      "number": 41,
+      "title": "CRIME E SOBREVIVÊNCIA ESTÃO LIGADOS"
+    },
+    {
+      "number": 42,
+      "title": "NÃO REESCREVER O SISTEMA LETAL"
+    },
+    {
+      "number": 43,
+      "title": "MEDIR COERÊNCIA DA VIOLÊNCIA"
+    },
+    {
+      "number": 44,
+      "title": "FREQUÊNCIA NÃO POSSUI META ARBITRÁRIA"
+    },
+    {
+      "number": 45,
+      "title": "PÓS-CONFLITO"
+    },
+    {
+      "number": 46,
+      "title": "FUNIL RELIGIOSO"
+    },
+    {
+      "number": 47,
+      "title": "RARIDADE ≠ SISTEMA INACESSÍVEL"
+    },
+    {
+      "number": 48,
+      "title": "AUDITAR DEUSES PELO QUE ELES SABEM"
+    },
+    {
+      "number": 49,
+      "title": "INTERVENÇÃO DEVE CONTINUAR RARA"
+    },
+    {
+      "number": 50,
+      "title": "USAR O SISTEMA NATIVO"
+    },
+    {
+      "number": 51,
+      "title": "APROFUNDAR GATES NOS SISTEMAS ALTERADOS"
+    },
+    {
+      "number": 52,
+      "title": "LINKS CAUSAIS SEM PAYLOAD"
+    },
+    {
+      "number": 53,
+      "title": "NÃO ALTERAR DEZ VARIÁVEIS AO MESMO TEMPO"
+    },
+    {
+      "number": 54,
+      "title": "BALANCEAMENTO CAUSAL"
+    },
+    {
+      "number": 55,
+      "title": "NÃO BALANCEAR PARA UMA SEED"
+    },
+    {
+      "number": 56,
+      "title": "ORDEM DAS INTERVENÇÕES"
+    },
+    {
+      "number": 57,
+      "title": "TESTES"
+    },
+    {
+      "number": 58,
+      "title": "REGRESSÕES 5.5.5"
+    },
+    {
+      "number": 59,
+      "title": "NEUTRALIDADE DA OBSERVABILIDADE"
+    },
+    {
+      "number": 60,
+      "title": "CONTROLLED RUNS"
+    },
+    {
+      "number": 61,
+      "title": "CAMPANHA NATURAL FINAL"
+    },
+    {
+      "number": 62,
+      "title": "MÉTRICAS OBRIGATÓRIAS DA CAMPANHA"
+    },
+    {
+      "number": 63,
+      "title": "NÃO DEFINIR QUOTAS DE HISTÓRIA"
+    },
+    {
+      "number": 64,
+      "title": "CRITÉRIO DE COERÊNCIA"
+    },
+    {
+      "number": 65,
+      "title": "NÃO OTIMIZAR SAVE AGORA"
+    },
+    {
+      "number": 66,
+      "title": "FORA DO ESCOPO DEMOGRÁFICO"
+    },
+    {
+      "number": 67,
+      "title": "RESULTADOS ESPERADOS DA FASE"
+    },
+    {
+      "number": 68,
+      "title": "RELATÓRIO FINAL"
+    },
+    {
+      "number": 69,
+      "title": "COERENCIA.md"
+    },
+    {
+      "number": 70,
+      "title": "DECISOES_6.md"
+    },
+    {
+      "number": 71,
+      "title": "BALANCEAMENTO.md"
+    },
+    {
+      "number": 72,
+      "title": "NÃO ESCONDER EFEITOS COLATERAIS"
+    },
+    {
+      "number": 73,
+      "title": "SUCESSO DA FASE 6.0"
+    }
+  ],
+  "base_commit": "d96aa5e654b3a3566961a8a99cc84290005d6503",
+  "campaign_seed_reserved": "Arvandor-Coerencia60",
+  "campaign_hours": 300,
+  "architecture": "first solvable Need; no global utility",
+  "provisional_controls_interrupted": "revisão de status conhecido de tarefas e continuidade do endereço de aprendizagem; nenhuma campanha natural iniciada/reiniciada"
+}

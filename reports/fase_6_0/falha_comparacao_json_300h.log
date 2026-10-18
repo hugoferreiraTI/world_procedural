@@ -1,0 +1,22 @@
+{"hour": 25, "alive": 1880, "deaths": 0, "money_residual": 0, "invariants": true, "tasks": 36}
+{"hour": 50, "alive": 1880, "deaths": 0, "money_residual": 0, "invariants": true, "tasks": 74}
+{"hour": 75, "alive": 1880, "deaths": 0, "money_residual": 0, "invariants": true, "tasks": 85}
+{"hour": 100, "alive": 1880, "deaths": 0, "money_residual": 0, "invariants": true, "tasks": 105}
+{"hour": 125, "alive": 1875, "deaths": 5, "money_residual": 0, "invariants": true, "tasks": 111}
+{"hour": 150, "alive": 1866, "deaths": 14, "money_residual": 0, "invariants": true, "tasks": 124}
+{"hour": 175, "alive": 1857, "deaths": 23, "money_residual": 0, "invariants": true, "tasks": 132}
+{"hour": 200, "alive": 1841, "deaths": 39, "money_residual": 0, "invariants": true, "tasks": 144}
+{"hour": 225, "alive": 1829, "deaths": 51, "money_residual": 0, "invariants": true, "tasks": 151}
+{"hour": 250, "alive": 1812, "deaths": 68, "money_residual": 0, "invariants": true, "tasks": 157}
+{"hour": 275, "alive": 1783, "deaths": 97, "money_residual": 0, "invariants": true, "tasks": 165}
+{"hour": 300, "alive": 1757, "deaths": 123, "money_residual": 0, "invariants": true, "tasks": 168}
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/hugo/Área de trabalho/procedrual/experiments/phase60_validation.py", line 203, in <module>
+    if args.stage=='controls':controls()
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hugo/Área de trabalho/procedrual/experiments/phase60_validation.py", line 173, in campaign
+    assert result[key]==expected[key],('Reprodução divergiu nas métricas',key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('Reprodução divergiu nas métricas', 'death_funnel')

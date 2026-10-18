@@ -1,4 +1,4 @@
-> Estado atual: Fase 5.5.5. Veja [FASE_5_5_5.md](FASE_5_5_5.md) para validação e contratos históricos V1.
+> Estado atual: Fase 6.0. Veja [FASE_6_0.md](FASE_6_0.md), [COERENCIA.md](COERENCIA.md), [DECISOES_6.md](DECISOES_6.md) e [BALANCEAMENTO.md](BALANCEAMENTO.md).
 
 # PROJECT — simulador procedural de mundo
 
@@ -7,8 +7,8 @@ Documentação do estado atual, sem reconstrução narrativa das fases anteriore
 | Campo | Valor |
 | --- | --- |
 | Objetivo | Mundo finito com NPCs persistentes, conhecimento subjetivo e consequências materiais |
-| Regras/save | `mvp-13-fase5.5.5` |
-| Geração | `mvp-5.4` |
+| Regras/save | `mvp-14-fase6.0` |
+| Geração | `mvp-6.0` |
 | Linguagem | Python 3.11+; somente biblioteca padrão |
 | Arquitetura | Dataclasses + serviços coordenados por Engine; Need → alternativas → Utility → Goal → ação |
 | Entrada | `procedural/__main__.py :: main` |
@@ -139,6 +139,7 @@ eventos e objetos de serviço são reconstruídos pelo Engine, não serializados
 | Faction | Organização persistente com patrimônio, membros, sede e funções. | `id`, `name`, `leader_id`, `headquarters_id`, `kind`, `member_ids`, `purpose`, `ranks`, `assignments`, `knowledge` … |
 | Group | Organização por causa compartilhada, membros, liderança e memória. | `id`, `name`, `town_id`, `cause`, `subject_id`, `leader_id`, `member_ids`, `created_at`, `originating_need`, `originating_fact` … |
 | Proposal | Demanda política e apoio por pessoas, grupos e facções. | `id`, `group_id`, `town_id`, `target_id`, `cause`, `objective`, `solution`, `urgency`, `support`, `created_at` … |
+| InstitutionalTask | Estrutura auxiliar persistente. | `id`, `issuer`, `institution_type`, `institution_id`, `kind`, `target`, `location`, `created`, `priority`, `requirements` … |
 | Policy | Orçamento reservado, setor, trabalho, efeito, barreira e conclusão. | `id`, `jurisdiction`, `proposal_id`, `sector`, `objective`, `intensity`, `budget`, `money`, `start_time`, `status` … |
 | Divinity | Deus objetivo; separado da crença em um mortal ou num nome. | `id`, `name`, `domain`, `values`, `power`, `origin`, `location`, `alive`, `known_followers`, `influence` … |
 | PointOfInterest | POI com mapa, estoque, posse e história. | `id`, `name`, `kind`, `position`, `depth`, `areas`, `danger`, `shelter`, `inventory`, `remains` … |
@@ -308,9 +309,11 @@ Fonte: `procedural/needs.py :: NeedSystem.physiology`.
 ```python
 def physiology(self, character: Character) -> None:
         symbol = self.world.maps[character.position.map_id].rows[character.position.y][character.position.x]
+        before={kind:getattr(character,kind) for kind in ('hunger','thirst','fatigue')}
         character.hunger = min(100, character.hunger + 2)
         character.thirst = min(100, character.thirst + (4 if symbol == "D" else 2))
         character.fatigue = min(100, character.fatigue + 1.2)
+        if hasattr(self.recorder.observer,'causal'):self.recorder.observer.causal.physiology(character,before)
         if max(character.hunger, character.thirst) >= SURVIVAL.starvation:
             character.starvation_hours += 1
             damage = min(SURVIVAL.maximum_damage, SURVIVAL.starvation_damage +
@@ -384,12 +387,12 @@ def recover_hp(self, person, hours=1, treatment=0):
 
 | Traço real | Efeito | Funções que o consultam diretamente |
 | --- | --- | --- |
-| honesty | Restrição moral, compra/roubo, resposta legal e decisão política. | `agency.py :: AgencySystem.adjust`; `faith.py :: FaithSystem.modifier`; `faith.py :: FaithSystem.apotheosis`; `lethal_decisions.py :: LethalDecisionSystem.evaluate`; `lethal_decisions.py :: LethalDecisionSystem.terminal`; `conflicts.py :: ConflictSystem.candidates`; `conflicts.py :: ConflictSystem.intent_scores`; +8 usos localizáveis |
+| honesty | Restrição moral, compra/roubo, resposta legal e decisão política. | `agency.py :: AgencySystem.adjust`; `faith.py :: FaithSystem.modifier`; `faith.py :: FaithSystem.apotheosis`; `lethal_decisions.py :: LethalDecisionSystem.evaluate`; `lethal_decisions.py :: LethalDecisionSystem.terminal`; `conflicts.py :: ConflictSystem.candidates`; `conflicts.py :: ConflictSystem.intent_scores`; +9 usos localizáveis |
 | compassion | Ajuda, moderação de agressão, afinidade social, aprovações e pertencimento. | `agency.py :: AgencySystem.aspirations`; `personal.py :: PersonalNeeds.priority_modifier`; `faith.py :: FaithSystem.apotheosis`; `lethal_decisions.py :: LethalDecisionSystem.evaluate`; `lethal_decisions.py :: LethalDecisionSystem._consider`; `lethal_decisions.py :: LethalDecisionSystem.on_fact`; `lethal_decisions.py :: LethalDecisionSystem.seeking`; +10 usos localizáveis |
 | courage | Disposição a conflito, fuga, risco e atividades organizacionais. | `agency.py :: AgencySystem.profile`; `access.py :: AccessActions.faction_fit`; `access.py :: AccessActions.expedition`; `access.py :: AccessActions.explore`; `access.py :: AccessActions.claim`; `personal.py :: PersonalNeeds.priority_modifier`; `needs.py :: NeedSystem.refresh`; +12 usos localizáveis |
-| independence | Autonomia, pedir ajuda, adesão/recusa e exploração. | `agency.py :: AgencySystem.profile`; `access.py :: AccessActions.refresh`; `access.py :: AccessActions.execute`; `faith.py :: FaithSystem.execute`; `society.py :: SocietySystem.tick`; `institutions.py :: Institutions.acceptable_group`; `institutions.py :: Institutions.decision_scores`; +3 usos localizáveis |
+| independence | Autonomia, pedir ajuda, adesão/recusa e exploração. | `agency.py :: AgencySystem.profile`; `access.py :: AccessActions.refresh`; `access.py :: AccessActions.execute`; `faith.py :: FaithSystem.execute`; `organizational_compatibility.py :: assess`; `society.py :: SocietySystem.tick`; `institutions.py :: Institutions.decision_scores`; +3 usos localizáveis |
 | greed | Obtenção de recursos, roubo, custo político e contribuição. | `agency.py :: AgencySystem.aspirations`; `lethal_decisions.py :: LethalDecisionSystem.cause`; `society.py :: SocietySystem.bootstrap`; `institutions.py :: Institutions.own_pressure`; `institutions.py :: Institutions.decision_scores`; `institutions.py :: Institutions.faction_candidates` |
-| diligence | Trabalho, recuperação de renda, atendimento e avaliações administrativas. | `agency.py :: AgencySystem.profile`; `agency.py :: AgencySystem.aspirations`; `needs.py :: NeedSystem.refresh`; `professions.py :: ProfessionSystem.train`; `social.py :: SocialSystem.interpret`; `society.py :: SocietySystem.hierarchy`; `society.py :: SocietySystem.bootstrap`; +3 usos localizáveis |
+| diligence | Trabalho, recuperação de renda, atendimento e avaliações administrativas. | `agency.py :: AgencySystem.profile`; `agency.py :: AgencySystem.aspirations`; `needs.py :: NeedSystem.refresh`; `professions.py :: ProfessionSystem.training_opportunities`; `professions.py :: ProfessionSystem.train_other`; `professions.py :: ProfessionSystem.train`; `institutional_tasks.py :: InstitutionalTasks.authorize`; +7 usos localizáveis |
 | family_loyalty | Necessidades e assistência a pessoas próximas. | `agency.py :: AgencySystem.profile`; `agency.py :: AgencySystem.aspirations`; `personal.py :: PersonalNeeds.priority_modifier` |
 | persistence | Continuidade, reuniões, busca e custo de abandono. | `agency.py :: AgencySystem.refresh`; `faith.py :: FaithSystem.apotheosis`; `lethal_decisions.py :: LethalDecisionSystem._consider`; `lethal_decisions.py :: LethalDecisionSystem.refresh`; `lethal_decisions.py :: LethalDecisionSystem.action_audit`; `social.py :: SocialSystem.interpret`; `society.py :: SocietySystem.form`; +6 usos localizáveis |
 | temperament | Humilhação/insulto/ameaça e protesto. | `agency.py :: AgencySystem.aspirations`; `personal.py :: PersonalNeeds.priority_modifier` |
@@ -494,19 +497,8 @@ Fonte: `procedural/institutions.py :: Institutions.acceptable_group`.
 
 ```python
 def acceptable_group(self,p,g,cause,subject):
-        if g.status!='active' or g.cause!=cause or g.subject_id!=subject:return False,'different_objective'
-        if g.plan.get('closed'):return False,'closed'
-        if len(g.member_ids)>=64:return False,'capacity_reached'
-        if len(p.group_ids)>=3:return False,'too_many_commitments'
-        leader=self.w.characters.get(g.leader_id)
-        if not leader or not leader.alive:return False,'leader_unavailable'
-        trust=self.e.graph.value(p.id,leader.id,'confiança',10)
-        if trust<5:return False,'hostility_or_distrust'
-        if g.cause=='religious_interest' and g.subject_id not in p.beliefs:return False,'incompatible_belief'
-        if g.failures>=3 and p.personality.independence>=80 and p.personality.ambition>=85:return False,'known_failure_and_leadership_preference'
-        if p.position.map_id!=g.town_id and not self.e.geography.plan(p,g.town_id):return False,'route_unknown'
-        if self.e.society.affinity(p,leader,cause)<25:return False,'low_social_affinity'
-        return True,'shared_problem_and_access'
+        result=self.group_compatibility(p,g,cause,subject)
+        return result.acceptable,result.reason
 ```
 
 A criação exige um problema compartilhado confiável, interlocutor presente e afinidade com pares. `Society.form` seleciona até sete pares e um líder por conexão/traços, não por sorteio de facção. Novos membros podem entrar por qualquer membro presente; o teto é 64. Um NPC pode ter até três grupos. Reunião exige líder e pelo menos dois presentes, atualiza investimento e pode propor demanda. O grupo não desaparece só porque uma proposta foi aprovada.
@@ -519,6 +511,17 @@ def form(self,p,cause,subject,source):
         if known:
             return known[0] if self.e.institutions.join(p,known[0])[0] else None
         t=self.w.towns[p.town_id]
+        if hasattr(self.e,'audit'):
+            similar=[g for g in self.groups_here(p) if g.cause==cause and g.subject_id==subject]
+            if similar:
+                self.e.audit.count('duplicate_cause_creation_attempt')
+                self.e.audit.sample('fragmentation',{'actor':p.id,'turn':self.w.turn,'cause':cause,
+                    'known_existing_groups':[{'id':g.id,'score':self.e.institutions.group_compatibility(p,g,cause,subject).score,
+                    'reason':self.e.institutions.group_compatibility(p,g,cause,subject).reason,
+                    'distance':distance(p.position,self.w.towns[g.town_id].market),
+                    'capacity':len(g.member_ids),'relationship':self.e.graph.value(p.id,g.leader_id,'confiança',10)}
+                    for g in similar if g.id in p.known_groups],
+                    'knowledge_gap_count':sum(g.id not in p.known_groups for g in similar)},256)
         if len(self.groups_here(p))>=32 or len(p.group_ids)>=3 or any(g.cause==cause and g.subject_id==subject and p.id in g.member_ids for g in self.groups_here(p)):return None
         peers=[self.w.characters[f.actor_id] for f in self.shared_facts(p,cause,subject)
                if self.compatible(self.w.characters[f.actor_id],cause,subject) and self.affinity(p,self.w.characters[f.actor_id],cause)>=35 and len(self.w.characters[f.actor_id].group_ids)<3]
@@ -640,7 +643,19 @@ def can_formalize(self,p,g,present):
                   and len(present)>=3 and sum(q.money>15 for q in present)>=2 and funds>=4 and score>=65
                   and not any(len(self.w.characters[i].organization_ids)>=3 for i in g.member_ids))
         ready=g.investment>=4 and age>=168 and len(g.member_ids)>=3 and sum(q.money>15 for q in present)>=2
-        return {'eligible':eligible,'ready':ready,'reason_code':None if eligible else 'FORMALIZATION_REQUIREMENTS',
+        gates=[]
+        if not p.alive or p.id!=g.leader_id:gates.append('NO_LEADER')
+        if age<168:gates.append('TOO_YOUNG')
+        if len(g.member_ids)<3:gates.append('TOO_FEW_MEMBERS')
+        if len(present)<3:gates.append('NO_PRESENT_MEMBERS')
+        if g.investment<4:gates.append('LOW_INVESTMENT')
+        if sum(q.money>15 for q in present)<2:gates.append('NO_CONTRIBUTIONS')
+        if funds<4:gates.append('INSUFFICIENT_FUNDS')
+        if score<65:gates.append('LOW_SCORE')
+        if len(self.w.factions)>=24:gates.append('WORLD_LIMIT')
+        if any(len(self.w.characters[i].organization_ids)>=3 for i in g.member_ids):gates.append('MEMBERSHIP_LIMIT')
+        if g.status!='active' or g.cause=='expedition':gates.append('INCOMPATIBLE')
+        return {'eligible':eligible,'ready':ready,'gates':gates,'reason_code':None if eligible else 'FORMALIZATION_REQUIREMENTS',
                 'present_ids':[q.id for q in present],'factors':factors}
 ```
 
@@ -844,9 +859,19 @@ Fonte: `procedural/access.py :: AccessActions.audience`.
 def audience(self,p,god,prayer):
         row=next((m for m in reversed(god.messages) if m['actor']==p.id and m['source_fact']==prayer.id),None)
         favor=self.e.divine_relations.affinity(god,p.id)
-        if not row or not god.alive or not self.e.divine_relations.present(god,p.position.map_id) or god.energy<45 or god.values['honor']<50 or p.devotion<80 or favor<30:
-            return False
-        if self.w.turn-god.essence.get('last_audience',-1000)<72:return False
+        gates=[]
+        if not row:gates.append('NO_DIVINE_KNOWLEDGE')
+        if not god.alive or not self.e.divine_relations.present(god,p.position.map_id):gates.append('INSUFFICIENT_ACCESS')
+        if god.energy<45:gates.append('DIVINE_ENERGY')
+        if god.values['honor']<50 or p.devotion<80 or favor<30:gates.append('INSUFFICIENT_ACCESS')
+        if self.w.turn-god.essence.get('last_audience',-1000)<72:gates.append('DIVINE_COOLDOWN')
+        if hasattr(self.e,'audit'):
+            self.e.audit.count('audience:candidate')
+            self.e.audit.sample('religion_gates',{'actor':p.id,'god':god.id,'turn':self.w.turn,
+                'gates':gates,'has_message':bool(row),'energy':god.energy,'affinity':favor,
+                'devotion':p.devotion,'honor':god.values['honor'],'regional_presence':self.e.divine_relations.present(god,p.position.map_id)})
+        for code in gates:self.e.observability.gate('divine_audience',code,god.id)
+        if gates:return False
         god.energy-=10;god.essence['last_audience']=self.w.turn
         event=self.e.recorder.emit('DivineAudience',f'{god.name} reconheceu a busca de {p.name}.',god.id,p.id,p.position,historical=True,
             context={'channel':'direct_sign','source_fact':prayer.id,'energy_cost':10,'physical_access':False})
@@ -998,7 +1023,7 @@ Event e Fact copiam profundamente seus payloads na construção, incluindo cole�
 aninhadas. Adesões futuras não alteram a fundação antiga. A avaliação após morte
 fica no evento PostKillAppraisal, ligado à morte por parent_event_ids.
 
-Formato atual: 2; regras mvp-13-fase5.5.5. generation_version e generation_config
+Formato atual: 2; regras mvp-14-fase6.0. generation_version e generation_config
 são persistidos. Não há migração de saves antigos. A observabilidade possui IDs
 privados, episódios de Need, DecisionTrace, ActionAttempt e LearningReceipt;
 seus índices são reconstruídos no load. Os controles e limites estão no relatório
@@ -1106,19 +1131,21 @@ A tabela é obtida da AST atual: símbolos e imports são do código existente. 
 | `procedural/action_pressure.py` | Causa, disposição e capacidade separadas; consultas não alteram o mundo. | ActionPressureSystem, clamp, band | models, needs, organization_context | collective_action, engine, goals |
 | `procedural/aftermath.py` | Avaliação do próprio matador e aprendizagem compacta, sem diagnóstico clínico. | AftermathSystem | lethal_decisions | engine |
 | `procedural/agency.py` | Intenção persistente: informa Need/Utility, nunca executa ações. | AgencySystem, clamp | models, navigation, needs, rules | engine |
+| `procedural/causal_audit.py` | Métricas V1.1 privadas. Não escolhe ações, consulta RNG ou publica Facts. | CausalAudit | navigation, needs | engine |
 | `procedural/collective_action.py` | Continuidade presencial de grupos e um conjunto pequeno de ações de facção. | CollectiveActionSystem | action_pressure, models, navigation, organization_context | engine, goals, society |
 | `procedural/conflicts.py` | Soluções e execução de interação. Decisão pertence a Need/Goal/Utility. | ConflictSystem | models, navigation, needs, rules | engine, goals |
 | `procedural/divine_relations.py` | Afinidade dirigida e canais divinos explícitos; presença não é conhecimento. | DivineRelations | faith, models, navigation | engine |
 | `procedural/economy.py` | Produção, consumo e dinheiro regionais; estoque nunca é infinito. | Economy | items, models | engine |
 | `procedural/emotions.py` | Estado dinâmico causal: modifica prioridades/utility, nunca escolhe ações. | EmotionSystem, clamp | models, needs, rules | engine |
-| `procedural/engine.py` | Coordenação do motor. Nenhum input, print ou acesso a arquivos de save. | CommandResult, Engine | access, action_pressure, aftermath, agency, collective_action, conflicts, divine_relations, economy, emotions, events, faith, feeding, geography, goals, institutions, investigation, items, justice, knowledge, lethal_decisions, lethality, migration, models, navigation, needs, personal, personal_actions, politics, population, professions, quests, recovery, relationships, religious_health, renown, social, society, terminal_combat, violence_patterns | __main__, generation, goals, ui |
+| `procedural/engine.py` | Coordenação do motor. Nenhum input, print ou acesso a arquivos de save. | CommandResult, Engine | access, action_pressure, aftermath, agency, causal_audit, collective_action, conflicts, divine_relations, economy, emotions, events, faith, feeding, geography, goals, institutional_tasks, institutions, investigation, items, justice, knowledge, lethal_decisions, lethality, migration, models, navigation, needs, personal, personal_actions, politics, population, professions, quests, recovery, relationships, religious_health, renown, social, society, terminal_combat, violence_patterns | __main__, generation, goals, ui |
 | `procedural/events.py` | Event Bus interno e registro limitado de eventos cotidianos. | EventBus, SpatialIndex, EventRecorder | models, observability | engine, generation |
 | `procedural/faith.py` | Verdade divina, crença subjetiva e ações religiosas são estados distintos. | FaithSystem | models, needs | divine_relations, engine, goals, religious_health |
 | `procedural/feeding.py` | Cobertura alimentar, prazo biológico e diagnóstico dentro de Need/Solution. | FeedingSystem | navigation, rules | engine, goals |
-| `procedural/generation.py` | Geração por etapas usando um único RNG e uma versão explícita das regras. | GenerationConfig, seed_number, make_local_grid, generate_world | engine, events, items, models, population, relationships | __main__, professions |
+| `procedural/generation.py` | Geração por etapas usando um único RNG e uma versão explícita das regras. | GenerationConfig, seed_number, make_local_grid, generate_world | engine, events, items, models, population, relationships, sustainability | __main__, professions |
 | `procedural/geography.py` | Rotas físicas e conhecimento individual, usando os mapas e o Event Bus existentes. | Geography | models, navigation | engine, goals |
 | `procedural/goals.py` | Alternativas avaliadas pela personalidade, seguidas de execução e reavaliação. | Solution, GoalSystem | access, action_pressure, collective_action, conflicts, engine, faith, feeding, geography, institutions, investigation, models, navigation, personal, rules, society, utility | engine |
-| `procedural/institutions.py` | Continuidade institucional sobre Sociedade, Need/Goal, itens, trabalho e eventos. | Institutions | models, organization_context | engine, goals |
+| `procedural/institutional_tasks.py` | Obrigações persistentes, executadas por pessoas informadas e autorizadas. | InstitutionalTasks | models, needs, organization_context | engine |
+| `procedural/institutions.py` | Continuidade institucional sobre Sociedade, Need/Goal, itens, trabalho e eventos. | Institutions | models, organization_context, organizational_compatibility | engine, goals |
 | `procedural/investigation.py` | Busca geral por informação conhecida; pistas são locais de busca, não GPS. | InvestigationSystem | models, navigation, rules | engine, goals |
 | `procedural/items.py` | Inventários referenciam itens únicos; transferências dividem pilhas. | ItemService | models | economy, engine, generation, professions, quests |
 | `procedural/justice.py` | Evidência conhecida por autoridades locais; não é um rastreador global. | JusticeSystem | models, needs, rules | engine |
@@ -1126,17 +1153,18 @@ A tabela é obtida da AST atual: símbolos e imports são do código existente. 
 | `procedural/lethal_decisions.py` | Decisão é persistente; avaliações e oportunidades são consultas sem efeitos. | LethalDecisionSystem, clamp | models, needs | aftermath, engine |
 | `procedural/lethality.py` | Pressão relacional auditável. Não modifica potência, dano ou aleatoriedade. | LethalPressure | rules | engine |
 | `procedural/migration.py` | Deslocamento individual por rotas conhecidas, visita e residência separadas. | MigrationSystem | models, navigation, needs | engine |
-| `procedural/models.py` | Dados persistentes; as regras pertencem aos serviços, não às entidades. | Location, Area, Grid, Personality, Need, Observation, Grievance, EmotionalState, ActionPressure, CombatState, LethalDecision, MigrationState, Route, RouteKnowledge, Journey, DivineContract, WantedRecord, Goal, MaterialCandidate, Fact, FactImpact, Memory, Reputation, Clue, Commitment, Aspiration, Character, Item, Town, Kingdom, Faction, Group, Proposal, Policy, Divinity, PointOfInterest, Relationship, Event, ActionAttempt, DecisionTrace, LearningReceipt, HistoricalObservability, Quest, WorldState | — | access, action_pressure, agency, collective_action, conflicts, divine_relations, economy, emotions, engine, events, faith, generation, geography, goals, institutions, investigation, items, justice, knowledge, lethal_decisions, migration, navigation, needs, observability, personal, professions, quests, relationships, religious_health, renown, society, violence_patterns |
-| `procedural/navigation.py` | Navegação cardinal em mapas independentes; muralhas são intransponíveis. | Navigation, distance, passable | models | agency, collective_action, conflicts, divine_relations, engine, feeding, geography, goals, investigation, migration, validation |
-| `procedural/needs.py` | Necessidade é pressão; prioridade e ação são decisões separadas. | NeedSystem | models, rules | action_pressure, agency, conflicts, emotions, engine, faith, justice, lethal_decisions, migration, personal, personal_actions, quests, society |
+| `procedural/models.py` | Dados persistentes; as regras pertencem aos serviços, não às entidades. | Location, Area, Grid, Personality, Need, Observation, Grievance, EmotionalState, ActionPressure, CombatState, LethalDecision, MigrationState, Route, RouteKnowledge, Journey, DivineContract, WantedRecord, Goal, MaterialCandidate, Fact, FactImpact, Memory, Reputation, Clue, Commitment, Aspiration, Character, Item, Town, Kingdom, Faction, Group, Proposal, InstitutionalTask, Policy, Divinity, PointOfInterest, Relationship, Event, ActionAttempt, DecisionTrace, LearningReceipt, HistoricalObservability, Quest, WorldState | — | access, action_pressure, agency, collective_action, conflicts, divine_relations, economy, emotions, engine, events, faith, generation, geography, goals, institutional_tasks, institutions, investigation, items, justice, knowledge, lethal_decisions, migration, navigation, needs, observability, personal, professions, quests, relationships, religious_health, renown, society, violence_patterns |
+| `procedural/navigation.py` | Navegação cardinal em mapas independentes; muralhas são intransponíveis. | Navigation, distance, passable | models | agency, causal_audit, collective_action, conflicts, divine_relations, engine, feeding, geography, goals, investigation, migration, society, validation |
+| `procedural/needs.py` | Necessidade é pressão; prioridade e ação são decisões separadas. | NeedSystem | models, rules | action_pressure, agency, causal_audit, conflicts, emotions, engine, faith, institutional_tasks, justice, lethal_decisions, migration, personal, personal_actions, quests, society |
 | `procedural/observability.py` | História nativa V1: dados privados, sem RNG, Facts ou regras de gameplay. | EventIndex, HistoricalObserver, fact_ids | models | events |
-| `procedural/organization_context.py` | Identidade institucional tipada; os aliases exclusivos mantêm consumidores antigos. | organization_id, bind_organization | — | access, action_pressure, collective_action, institutions, society |
+| `procedural/organization_context.py` | Identidade institucional tipada; os aliases exclusivos mantêm consumidores antigos. | organization_id, bind_organization | — | access, action_pressure, collective_action, institutional_tasks, institutions, society |
+| `procedural/organizational_compatibility.py` | Adequação organizacional percebida; afinidade pessoal é um componente. | OrganizationalCompatibility, assess | — | institutions |
 | `procedural/persistence.py` | Adaptador JSON versionado, com escrita atômica e sem execução de código. | WorldRepository, JsonRepository, encode, decode, dumps, loads | validation | __main__, ui |
 | `procedural/personal.py` | Pressões pessoais: percepção e ciclo de vida dentro do NeedSystem existente. | PersonalNeeds | models, needs | engine, goals, personal_actions |
 | `procedural/personal_actions.py` | Candidatos e execução pessoais chamados pelo GoalSystem existente. | PersonalActions | needs, personal | engine |
 | `procedural/politics.py` | Sucessão simples preserva o reino e seus habitantes após uma morte. | Politics | — | engine |
 | `procedural/population.py` | Contabilidade de residentes; posição física não altera o censo. | Population | — | engine, generation, professions |
-| `procedural/professions.py` | Trabalho concreto, preparo parcial e aprendizagem dentro das profissões. | WorkResult, ProfessionSystem | generation, items, models, population, relationships | engine |
+| `procedural/professions.py` | Trabalho concreto, preparo parcial e aprendizagem dentro das profissões. | TrainingOpportunity, WorkResult, ProfessionSystem | generation, items, models, population, relationships | engine |
 | `procedural/quests.py` | Quests representam necessidades reais nas quais o jogador se envolve. | QuestSystem | items, models, needs | engine |
 | `procedural/recovery.py` | Dano por origem e recuperação; sem recursos ou escolhas automáticas. | RecoverySystem | rules | engine |
 | `procedural/relationships.py` | Grafo dirigido: nomes nunca são usados como chaves. | RelationshipGraph | models | engine, generation, professions |
@@ -1144,7 +1172,8 @@ A tabela é obtida da AST atual: símbolos e imports são do código existente. 
 | `procedural/renown.py` | Fama deriva de fatos aprendidos. História objetiva de item não é crença. | RenownSystem | models | engine |
 | `procedural/rules.py` | Parâmetros pequenos, explícitos e comuns a todas as entidades. | SurvivalRules, UtilityRules, FeedingRules, RecoveryRules, InteractionRules, AgencyRules | — | agency, conflicts, emotions, feeding, goals, investigation, justice, knowledge, lethality, needs, recovery, social, terminal_combat, utility |
 | `procedural/social.py` | Considerações sociais e interpretação contextual, sem conhecimento global. | SocialSystem, normalized | rules | engine, utility |
-| `procedural/society.py` | Organização local por encontros. Decisões continuam em Need/Solution/Goal. | SocietySystem | collective_action, models, needs, organization_context | engine, goals |
+| `procedural/society.py` |  | SocietySystem | collective_action, models, navigation, needs, organization_context | engine, goals |
+| `procedural/sustainability.py` | Planejamento inicial, sem reposição adaptativa automática de recursos. | initial_water_infrastructure | — | generation |
 | `procedural/terminal_combat.py` | Incapacidade muda o contexto; não refaz a barreira de entrada da decisão. | TerminalCombat | rules | engine |
 | `procedural/ui.py` | Apresentação textual: encaminha ações ao motor sem implementar regras. | render, run_terminal | engine, persistence | __main__ |
 | `procedural/utility.py` | Pesos e considerações normalizadas; nenhuma regra de execução aqui. | evaluate | rules, social | goals |
@@ -1191,6 +1220,7 @@ A tabela é obtida da AST atual: símbolos e imports são do código existente. 
 | test_phase54.py | 10 | 01_place_without_route_and_save_roundtrip; 02_directions_enable_physical_trip_and_audit; 03_multihop_has_no_unknown_edge; 04_follow_and_escort_learn_after_walking | capacidade/regressão controlada |
 | test_phase55.py | 14 | 01_known_compatible_group_precedes_creation; 02_unknown_group_does_not_prevent_legitimate_creation; 03_known_hostile_leader_allows_separate_group; 04_compatible_proposal_is_reused | capacidade/regressão controlada |
 | test_phase555.py | 15 | Regressões causais da 5.5.5; cenários controlados não provam emergência. | capacidade/regressão controlada |
+| test_phase60.py | 25 | Controles causais da Fase 6: não constituem narrativa natural. | capacidade/regressão controlada |
 | test_simulation.py | 18 | Testes de invariantes, causalidade e continuação determinística. | capacidade/regressão controlada |
 
 Testes controlados preparam circunstâncias e comprovam capacidade/regressão. Emergência natural exige campanha sem manipulação de personagens/estoques/traits. `reports/diagnostico_coesao/RELATORIO_COESAO.md` faz essa distinção e compara o novo resultado com os três Markdown de Vaelora-55, sem inventar métricas históricas ausentes.
@@ -1238,3 +1268,103 @@ atualização da rota. Chegar não é mudar residência nem obter audiência div
 - Registros existentes não retêm todos os descartes de alternativas, ruídos de
   desempate e razões de cada movimento. A auditoria externa observa parte desses
   dados sem adicionar persistência ou instrumentação nova ao núcleo.
+
+## Fase 6.0 — aprofundamentos
+
+Capacidade hídrica inicial usa o censo final: N × 48/45 unidades/dia; mínimo80 quando há poços, capacidade por fonte acima disso e storage de dois dias. Estoque inicial não cresce. A geração mudou para mvp-6.0; não há rebalanceamento de dano/fome ou limiares raros.
+
+Fonte: `procedural/sustainability.py :: initial_water_infrastructure`.
+
+```python
+def initial_water_infrastructure(world,town):
+    wells=sum('Poço' in area.structures for area in world.maps[town.id].areas.values())
+    persistent=len(town.resident_ids)
+    # Uma unidade consumida reduz 45 de sede; fisiologia aumenta 2/h.
+    # Abstratos ainda não têm fisiologia de água: não se inventa consumo.
+    demand=persistent*24*2/45
+    per_well=math.ceil(max(80,demand)/max(1,wells)) if wells else 0
+    capacity=(80 if demand<=80 else per_well*wells) if wells else 0
+    return {'water_daily':capacity,'water_storage':2*capacity,'water_work':0,
+            'well_count':wells,'well_rated_daily':per_well,
+            'water_design_population':persistent,'water_design_demand':demand}
+```
+
+Fonte: `procedural/organizational_compatibility.py :: assess`.
+
+```python
+def assess(engine,p,g,cause,subject):
+    if g.cause!=cause or g.subject_id!=subject:return OrganizationalCompatibility(False,0,'different_objective')
+    if g.status!='active':return OrganizationalCompatibility(False,0,'inactive')
+    if g.plan.get('closed'):return OrganizationalCompatibility(False,0,'closed')
+    if len(g.member_ids)>=64:return OrganizationalCompatibility(False,0,'capacity_reached')
+    if len(p.group_ids)>=3:return OrganizationalCompatibility(False,0,'too_many_commitments')
+    leader=engine.world.characters.get(g.leader_id)
+    if not leader or not leader.alive:return OrganizationalCompatibility(False,0,'leader_unavailable')
+    known=p.known_groups.get(g.id,{})
+    trust=engine.graph.value(p.id,leader.id,'confiança',10)
+    hostility=engine.graph.value(p.id,leader.id,'inimizade')
+    if trust<5 or hostility>=50:return OrganizationalCompatibility(False,0,'hostility_or_distrust')
+    if cause=='religious_interest' and subject not in p.beliefs:return OrganizationalCompatibility(False,0,'incompatible_belief')
+    if p.position.map_id!=g.town_id and not engine.geography.plan(p,g.town_id):return OrganizationalCompatibility(False,0,'route_unknown')
+    strategy=known.get('strategy','cooperation')
+    illegal=strategy=='criminal_cooperation'
+    if illegal and p.personality.honesty>=60:return OrganizationalCompatibility(False,0,'strategy_conflict')
+    # Apenas fracassos comunicados a ESTE personagem entram no juízo.
+    evidence=[f for f in p.knowledge.values() if f.confidence>=60 and
+              (f.context.get('group_id')==g.id or g.id in f.context.get('supporting_groups',()))]
+    failures=sum(f.kind in ('PolicyBlocked','PolicyDecided') and
+                 (f.kind=='PolicyBlocked' or f.context.get('result',{}).get('decision')=='reject') for f in evidence[-24:])
+    successes=sum(f.kind in ('PolicyEffect','PolicyCompleted') for f in evidence[-24:])
+    affinity=engine.society.affinity(p,leader,cause)
+    components={'shared_cause':40,'objective_alignment':15,'known_strategy':10,
+        'locality':10 if p.position.map_id==g.town_id else 3,
+        'known_effectiveness':min(10,successes*3)-min(20,failures*4),
+        'social_affinity':min(15,max(0,affinity*.2)),
+        'dues':-max(0,known.get('dues',0))*3,
+        'autonomy_cost':-p.personality.independence*.1,
+        'legal_risk':-p.personality.honesty*.25 if illegal else 0,
+        'existing_membership':-len(p.group_ids)*4,'hostility':-max(0,hostility)*.2}
+    score=round(sum(components.values()),2)
+    if failures>=3 and p.personality.independence>=80 and p.personality.ambition>=85:
+        return OrganizationalCompatibility(False,score,'known_failure_and_leadership_preference',components)
+    return OrganizationalCompatibility(score>=50,score,'shared_problem_and_access' if score>=50 else 'cost_or_known_ineffectiveness',components)
+```
+
+Fonte: `procedural/institutional_tasks.py :: InstitutionalTasks.authorized`.
+
+```python
+def authorized(self,p,task):
+        if not p.alive:return False
+        if task.institution_type=='group':
+            g=self.w.groups.get(task.institution_id)
+            return bool(g and g.status=='active' and p.id in g.member_ids and p.id in self.representatives(g))
+        t=self.w.towns.get(task.institution_id)
+        if not t or p.town_id!=t.id:return False
+        if 'worker' in task.authorized_roles:
+            policy=self.w.institutional_policies.get(task.target)
+            return bool(policy and self.e.institutions.worker_eligible(p,policy))
+        return p.id==t.mayor_id or p.id in t.office.get('clerks',())
+```
+
+Fonte: `procedural/institutional_tasks.py :: InstitutionalTasks.candidates`.
+
+```python
+def candidates(self,p,n):
+        if n.kind=='institutional_task':tasks=[self.w.institutional_tasks.get(n.target_id)]
+        elif n.kind=='organizational_survival':
+            from .organization_context import organization_id
+            gid=organization_id(n.context,'group')
+            tasks=[self.w.institutional_tasks[i] for i in p.social_state.get('known_tasks',())
+                   if i in self.w.institutional_tasks and self.w.institutional_tasks[i].institution_type=='group'
+                   and self.w.institutional_tasks[i].institution_id==gid]
+        else:return []
+        tasks=[t for t in tasks if t and p.social_state.get('known_task_status',{}).get(t.id,'pending') in ('pending','blocked') and self.authorized(p,t)
+               and self.w.turn>=t.requirements.get('not_before',0)]
+        if not tasks:return []
+        task=min(tasks,key=lambda t:(-t.priority,t.created,t.id))
+        if task.location.map_id!=p.position.map_id:
+            return self.e.geography.candidates(p,task.location.map_id,'institutional_task',n)
+        return [('perform_institutional_task',task.location,task.id)]
+```
+
+CausalAudit conserva métricas privadas por Need episode, Town, LOD, trabalho, morte e funis. Solvabilidade não observada é UNKNOWN; callbacks não consomem RNG nem criam Facts. Tombstones retêm identidade temporal de emissões descartadas. Task status conhecido é individual: conclusão distante exige recebimento ou leitura física de comprovante. Formação geral preserva instrutor/endereço conhecido, mas revalida presença no encontro.

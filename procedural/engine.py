@@ -129,6 +129,12 @@ class Engine:
         self.institutions = Institutions(self)
         self.knowledge.listeners.append(self.institutions.on_fact)
         self.institutions.bootstrap()
+        from .causal_audit import CausalAudit
+        self.audit = CausalAudit(self)
+        self.observability.causal = self.audit
+        from .institutional_tasks import InstitutionalTasks
+        self.tasks = InstitutionalTasks(self)
+        self.knowledge.listeners.append(self.tasks.on_fact)
 
     @property
     def player(self):
@@ -170,9 +176,11 @@ class Engine:
         self.institutions.tick()
         self.faith.tick()
         self.quests.reconcile()
+        self.audit.hourly()
         self.world.rng_state = self.rng.getstate()
 
     def record_deprivation(self, person):
+        self.audit.death(person)
         self.feeding.death(person)
         sources = [p for key,p in person.known_places.items() if key.startswith("well") or key == "market"]
         cause = ("both" if person.hunger >= 100 and person.thirst >= 100 else

@@ -660,6 +660,27 @@ class Proposal:
 
 
 @dataclass
+class InstitutionalTask:
+    id: int
+    issuer: int
+    institution_type: str
+    institution_id: int
+    kind: str
+    target: int
+    location: Location
+    created: int
+    priority: float
+    requirements: dict = field(default_factory=dict)
+    authorized_roles: list[str] = field(default_factory=list)
+    status: str = 'pending'
+    attempts: int = 0
+    block_reason: str | None = None
+    event_id: int | None = None
+    executor_ids: list[int] = field(default_factory=list)
+    last_event_id: int | None = None
+
+
+@dataclass
 class Policy:
     id: int
     jurisdiction: int
@@ -802,6 +823,8 @@ class DecisionTrace:
     schema_version: int = 1
     related_event_ids: list[int] = field(default_factory=list)
 
+    need_options: list[dict] = field(default_factory=list)
+
 
 @dataclass
 class LearningReceipt:
@@ -826,6 +849,8 @@ class HistoricalObservability:
     recent_learning: list[LearningReceipt] = field(default_factory=list)
     event_archive: dict[int,Event] = field(default_factory=dict)
     counters: dict[str,int] = field(default_factory=dict)
+    causal: dict = field(default_factory=dict)
+    tombstones: dict[int, dict] = field(default_factory=dict)
     last_decision_ids: dict[int,str] = field(default_factory=dict)
 
 
@@ -878,6 +903,7 @@ class WorldState:
     divine_contracts: dict[int, DivineContract] = field(default_factory=dict)
     sacred_sites: dict[int, dict] = field(default_factory=dict)
     geography_initialized: bool = False
+    institutional_tasks: dict[int, InstitutionalTask] = field(default_factory=dict)
     institutional_policies: dict[int, Policy] = field(default_factory=dict)
     generation_version: str = ''
     generation_config: dict = field(default_factory=dict)

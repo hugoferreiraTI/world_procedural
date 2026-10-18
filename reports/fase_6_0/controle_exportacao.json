@@ -1,0 +1,719 @@
+{
+  "nested_location_and_set": true,
+  "cases": [
+    {
+      "event": {
+        "id": 1112,
+        "kind": "InstitutionalCaseFiled",
+        "turn": 3,
+        "description": "Tomas Valerius registrou evidência no serviço local.",
+        "actor_id": 156,
+        "target_id": 133,
+        "location": {
+          "map_id": 133,
+          "x": 5,
+          "y": 9
+        },
+        "witnesses": [
+          156
+        ],
+        "historical": true,
+        "context": {
+          "record_id": 1109,
+          "source_fact": 1108,
+          "available_at": 9
+        },
+        "schema_version": 1,
+        "parent_event_ids": [
+          1108
+        ],
+        "decision_id": "d132",
+        "action_attempt_id": "a133",
+        "related_decision_ids": []
+      },
+      "trace": {
+        "id": "d132",
+        "actor_id": 148,
+        "turn": 3,
+        "lod": 6,
+        "need_episode_id": "n1102:1",
+        "need_kind": "food_reserve",
+        "need_priority": 37.8,
+        "source_fact_ids": [],
+        "generated_actions": [
+          {
+            "need_episode_id": "n1102:1",
+            "action": "buy_food",
+            "target_id": null,
+            "resource_kind": null
+          },
+          {
+            "need_episode_id": "n1102:1",
+            "action": "steal",
+            "target_id": null,
+            "resource_kind": null
+          },
+          {
+            "need_episode_id": "n1102:1",
+            "action": "forage",
+            "target_id": null,
+            "resource_kind": null
+          },
+          {
+            "need_episode_id": "n1104:1",
+            "action": "work",
+            "target_id": null,
+            "resource_kind": null
+          },
+          {
+            "need_episode_id": "n1104:1",
+            "action": "steal_person",
+            "target_id": 154,
+            "resource_kind": null
+          }
+        ],
+        "blocked_actions": [],
+        "evaluated_scores": [
+          {
+            "need_episode_id": "n1102:1",
+            "action": "buy_food",
+            "target_id": null,
+            "resource_kind": null,
+            "score": 78.60000000000001
+          },
+          {
+            "need_episode_id": "n1102:1",
+            "action": "steal",
+            "target_id": null,
+            "resource_kind": null,
+            "score": 82.66666666666667
+          },
+          {
+            "need_episode_id": "n1102:1",
+            "action": "forage",
+            "target_id": null,
+            "resource_kind": null,
+            "score": 34.5
+          },
+          {
+            "need_episode_id": "n1104:1",
+            "action": "work",
+            "target_id": null,
+            "resource_kind": null,
+            "score": 51.5
+          },
+          {
+            "need_episode_id": "n1104:1",
+            "action": "steal_person",
+            "target_id": 154,
+            "resource_kind": null,
+            "score": 61.999999999999986
+          }
+        ],
+        "selected_action": "steal",
+        "selected_score": 82.66666666666667,
+        "selected_target_id": null,
+        "selected_resource_kind": null,
+        "goal_id": 1106,
+        "action_attempt_id": "a133",
+        "success": true,
+        "outcome": "Alimento roubado.",
+        "emitted_event_ids": [
+          1103,
+          1108,
+          1110,
+          1112
+        ],
+        "important": true,
+        "truncated": {},
+        "schema_version": 1,
+        "related_event_ids": [],
+        "need_options": [
+          {
+            "episode": "n1102:1",
+            "kind": "food_reserve",
+            "priority": 37.8,
+            "solvable": true,
+            "selected": true
+          },
+          {
+            "episode": "n1105:1",
+            "kind": "religious_interest",
+            "priority": 32.2134,
+            "solvable": null,
+            "selected": false
+          },
+          {
+            "episode": "n1104:1",
+            "kind": "advancement",
+            "priority": 19.2098,
+            "solvable": true,
+            "selected": false
+          }
+        ]
+      },
+      "attempt": {
+        "id": "a133",
+        "actor_id": 148,
+        "turn": 3,
+        "goal_id": 1106,
+        "action": "steal",
+        "target_id": null,
+        "success": true,
+        "outcome": "Alimento roubado.",
+        "emitted_event_ids": [
+          1108,
+          1110,
+          1112
+        ]
+      },
+      "receipts": [],
+      "parents": [
+        {
+          "id": 1108,
+          "kind": "ItemStolen",
+          "turn": 3,
+          "description": "Tomas Vale roubou comida no mercado de Silmir.",
+          "actor_id": 148,
+          "target_id": 133,
+          "location": {
+            "map_id": 133,
+            "x": 5,
+            "y": 9
+          },
+          "witnesses": [
+            139,
+            142,
+            148,
+            154,
+            156,
+            159
+          ],
+          "historical": false,
+          "context": {
+            "item_id": 149,
+            "item_kind": "food"
+          },
+          "schema_version": 1,
+          "parent_event_ids": [],
+          "decision_id": "d132",
+          "action_attempt_id": "a133",
+          "related_decision_ids": []
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": 1144,
+        "kind": "InstitutionalCaseFiled",
+        "turn": 3,
+        "description": "Iria Arven registrou evidência no serviço local.",
+        "actor_id": 268,
+        "target_id": 256,
+        "location": {
+          "map_id": 256,
+          "x": 3,
+          "y": 5
+        },
+        "witnesses": [
+          268
+        ],
+        "historical": true,
+        "context": {
+          "record_id": 1141,
+          "source_fact": 1140,
+          "available_at": 9
+        },
+        "schema_version": 1,
+        "parent_event_ids": [
+          1140
+        ],
+        "decision_id": "d142",
+        "action_attempt_id": "a143",
+        "related_decision_ids": []
+      },
+      "trace": {
+        "id": "d142",
+        "actor_id": 262,
+        "turn": 3,
+        "lod": 3,
+        "need_episode_id": "n1134:1",
+        "need_kind": "food_reserve",
+        "need_priority": 41.0,
+        "source_fact_ids": [],
+        "generated_actions": [
+          {
+            "need_episode_id": "n1134:1",
+            "action": "buy_food",
+            "target_id": null,
+            "resource_kind": null
+          },
+          {
+            "need_episode_id": "n1134:1",
+            "action": "steal",
+            "target_id": null,
+            "resource_kind": null
+          },
+          {
+            "need_episode_id": "n1134:1",
+            "action": "forage",
+            "target_id": null,
+            "resource_kind": null
+          }
+        ],
+        "blocked_actions": [],
+        "evaluated_scores": [
+          {
+            "need_episode_id": "n1134:1",
+            "action": "buy_food",
+            "target_id": null,
+            "resource_kind": null,
+            "score": 78.2
+          },
+          {
+            "need_episode_id": "n1134:1",
+            "action": "steal",
+            "target_id": null,
+            "resource_kind": null,
+            "score": 81.69999999999999
+          },
+          {
+            "need_episode_id": "n1134:1",
+            "action": "forage",
+            "target_id": null,
+            "resource_kind": null,
+            "score": 55.49999999999999
+          }
+        ],
+        "selected_action": "steal",
+        "selected_score": 81.69999999999999,
+        "selected_target_id": null,
+        "selected_resource_kind": null,
+        "goal_id": 1138,
+        "action_attempt_id": "a143",
+        "success": true,
+        "outcome": "Alimento roubado.",
+        "emitted_event_ids": [
+          1136,
+          1140,
+          1142,
+          1144
+        ],
+        "important": true,
+        "truncated": {},
+        "schema_version": 1,
+        "related_event_ids": [],
+        "need_options": [
+          {
+            "episode": "n1134:1",
+            "kind": "food_reserve",
+            "priority": 41.0,
+            "solvable": true,
+            "selected": true
+          },
+          {
+            "episode": "n1135:1",
+            "kind": "food",
+            "priority": 26.0,
+            "solvable": true,
+            "selected": false
+          },
+          {
+            "episode": "n1137:1",
+            "kind": "religious_interest",
+            "priority": 24.3514,
+            "solvable": null,
+            "selected": false
+          }
+        ]
+      },
+      "attempt": {
+        "id": "a143",
+        "actor_id": 262,
+        "turn": 3,
+        "goal_id": 1138,
+        "action": "steal",
+        "target_id": null,
+        "success": true,
+        "outcome": "Alimento roubado.",
+        "emitted_event_ids": [
+          1140,
+          1142,
+          1144
+        ]
+      },
+      "receipts": [],
+      "parents": [
+        {
+          "id": 1140,
+          "kind": "ItemStolen",
+          "turn": 3,
+          "description": "Darin Stone roubou comida no mercado de Arven.",
+          "actor_id": 262,
+          "target_id": 256,
+          "location": {
+            "map_id": 256,
+            "x": 3,
+            "y": 5
+          },
+          "witnesses": [
+            262,
+            265,
+            268
+          ],
+          "historical": false,
+          "context": {
+            "item_id": 263,
+            "item_kind": "food"
+          },
+          "schema_version": 1,
+          "parent_event_ids": [],
+          "decision_id": "d142",
+          "action_attempt_id": "a143",
+          "related_decision_ids": []
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": 1350,
+        "kind": "InstitutionalCaseFiled",
+        "turn": 6,
+        "description": "Tomas Valerius registrou evidência no serviço local.",
+        "actor_id": 156,
+        "target_id": 133,
+        "location": {
+          "map_id": 133,
+          "x": 5,
+          "y": 9
+        },
+        "witnesses": [
+          156
+        ],
+        "historical": true,
+        "context": {
+          "record_id": 1347,
+          "source_fact": 1344,
+          "available_at": 12
+        },
+        "schema_version": 1,
+        "parent_event_ids": [
+          1344
+        ],
+        "decision_id": "d256",
+        "action_attempt_id": "a257",
+        "related_decision_ids": []
+      },
+      "trace": {
+        "id": "d256",
+        "actor_id": 154,
+        "turn": 6,
+        "lod": 3,
+        "need_episode_id": "n1113:1",
+        "need_kind": "food_reserve",
+        "need_priority": 41.36,
+        "source_fact_ids": [],
+        "generated_actions": [
+          {
+            "need_episode_id": "n1113:1",
+            "action": "buy_food",
+            "target_id": null,
+            "resource_kind": null
+          },
+          {
+            "need_episode_id": "n1113:1",
+            "action": "steal",
+            "target_id": null,
+            "resource_kind": null
+          },
+          {
+            "need_episode_id": "n1113:1",
+            "action": "forage",
+            "target_id": null,
+            "resource_kind": null
+          }
+        ],
+        "blocked_actions": [],
+        "evaluated_scores": [
+          {
+            "need_episode_id": "n1113:1",
+            "action": "buy_food",
+            "target_id": null,
+            "resource_kind": null,
+            "score": 76.6
+          },
+          {
+            "need_episode_id": "n1113:1",
+            "action": "steal",
+            "target_id": null,
+            "resource_kind": null,
+            "score": 80.88996213605442
+          },
+          {
+            "need_episode_id": "n1113:1",
+            "action": "forage",
+            "target_id": null,
+            "resource_kind": null,
+            "score": 44.49999999999999
+          }
+        ],
+        "selected_action": "steal",
+        "selected_score": 80.88996213605442,
+        "selected_target_id": null,
+        "selected_resource_kind": null,
+        "goal_id": 1342,
+        "action_attempt_id": "a257",
+        "success": true,
+        "outcome": "Alimento roubado.",
+        "emitted_event_ids": [
+          1344,
+          1348,
+          1350
+        ],
+        "important": true,
+        "truncated": {},
+        "schema_version": 1,
+        "related_event_ids": [],
+        "need_options": [
+          {
+            "episode": "n1113:1",
+            "kind": "food_reserve",
+            "priority": 41.36,
+            "solvable": true,
+            "selected": true
+          },
+          {
+            "episode": "n1341:1",
+            "kind": "food",
+            "priority": 29.0,
+            "solvable": true,
+            "selected": false
+          },
+          {
+            "episode": "n1116:1",
+            "kind": "religious_interest",
+            "priority": 27.2756,
+            "solvable": null,
+            "selected": false
+          }
+        ]
+      },
+      "attempt": {
+        "id": "a257",
+        "actor_id": 154,
+        "turn": 6,
+        "goal_id": 1342,
+        "action": "steal",
+        "target_id": null,
+        "success": true,
+        "outcome": "Alimento roubado.",
+        "emitted_event_ids": [
+          1344,
+          1348,
+          1350
+        ]
+      },
+      "receipts": [],
+      "parents": [
+        {
+          "id": 1344,
+          "kind": "ItemStolen",
+          "turn": 6,
+          "description": "Iria Solaris roubou comida no mercado de Silmir.",
+          "actor_id": 154,
+          "target_id": 133,
+          "location": {
+            "map_id": 133,
+            "x": 5,
+            "y": 9
+          },
+          "witnesses": [
+            139,
+            142,
+            154,
+            156,
+            159
+          ],
+          "historical": false,
+          "context": {
+            "item_id": 155,
+            "item_kind": "food"
+          },
+          "schema_version": 1,
+          "parent_event_ids": [],
+          "decision_id": "d256",
+          "action_attempt_id": "a257",
+          "related_decision_ids": []
+        }
+      ]
+    },
+    {
+      "event": {
+        "id": 1419,
+        "kind": "InstitutionalCaseFiled",
+        "turn": 7,
+        "description": "Lyra Kars registrou evidência no serviço local.",
+        "actor_id": 91,
+        "target_id": 68,
+        "location": {
+          "map_id": 68,
+          "x": 5,
+          "y": 9
+        },
+        "witnesses": [
+          91
+        ],
+        "historical": true,
+        "context": {
+          "record_id": 1416,
+          "source_fact": 1413,
+          "available_at": 13
+        },
+        "schema_version": 1,
+        "parent_event_ids": [
+          1413
+        ],
+        "decision_id": "d299",
+        "action_attempt_id": "a300",
+        "related_decision_ids": []
+      },
+      "trace": {
+        "id": "d299",
+        "actor_id": 86,
+        "turn": 7,
+        "lod": 6,
+        "need_episode_id": "n880:1",
+        "need_kind": "advancement",
+        "need_priority": 55.871383588571426,
+        "source_fact_ids": [],
+        "generated_actions": [
+          {
+            "need_episode_id": "n880:1",
+            "action": "work",
+            "target_id": null,
+            "resource_kind": null
+          },
+          {
+            "need_episode_id": "n880:1",
+            "action": "steal_person",
+            "target_id": 89,
+            "resource_kind": null
+          }
+        ],
+        "blocked_actions": [],
+        "evaluated_scores": [
+          {
+            "need_episode_id": "n880:1",
+            "action": "work",
+            "target_id": null,
+            "resource_kind": null,
+            "score": 40.0
+          },
+          {
+            "need_episode_id": "n880:1",
+            "action": "steal_person",
+            "target_id": 89,
+            "resource_kind": null,
+            "score": 72.17558445832653
+          }
+        ],
+        "selected_action": "steal_person",
+        "selected_score": 72.17558445832653,
+        "selected_target_id": 89,
+        "selected_resource_kind": null,
+        "goal_id": 1411,
+        "action_attempt_id": "a300",
+        "success": true,
+        "outcome": "Provisão real roubada.",
+        "emitted_event_ids": [
+          1410,
+          1413,
+          1417,
+          1419
+        ],
+        "important": true,
+        "truncated": {},
+        "schema_version": 1,
+        "related_event_ids": [],
+        "need_options": [
+          {
+            "episode": "n880:1",
+            "kind": "advancement",
+            "priority": 55.871383588571426,
+            "solvable": true,
+            "selected": true
+          },
+          {
+            "episode": "n885:1",
+            "kind": "recognition",
+            "priority": 40.9,
+            "solvable": null,
+            "selected": false
+          },
+          {
+            "episode": "n1409:1",
+            "kind": "food_reserve",
+            "priority": 39.8,
+            "solvable": null,
+            "selected": false
+          },
+          {
+            "episode": "n884:1",
+            "kind": "religious_interest",
+            "priority": 34.2556,
+            "solvable": null,
+            "selected": false
+          }
+        ]
+      },
+      "attempt": {
+        "id": "a300",
+        "actor_id": 86,
+        "turn": 7,
+        "goal_id": 1411,
+        "action": "steal_person",
+        "target_id": 89,
+        "success": true,
+        "outcome": "Provisão real roubada.",
+        "emitted_event_ids": [
+          1413,
+          1417,
+          1419
+        ]
+      },
+      "receipts": [],
+      "parents": [
+        {
+          "id": 1413,
+          "kind": "ItemStolen",
+          "turn": 7,
+          "description": "Cael Corven roubou provisão de Cael Corven.",
+          "actor_id": 86,
+          "target_id": 89,
+          "location": {
+            "map_id": 68,
+            "x": 5,
+            "y": 9
+          },
+          "witnesses": [
+            74,
+            77,
+            86,
+            89,
+            91
+          ],
+          "historical": false,
+          "context": {
+            "item_id": 87,
+            "item_kind": "food"
+          },
+          "schema_version": 1,
+          "parent_event_ids": [],
+          "decision_id": "d299",
+          "action_attempt_id": "a300",
+          "related_decision_ids": []
+        }
+      ]
+    }
+  ]
+}

@@ -8,13 +8,18 @@ from .navigation import passable
 
 def validate_world(world) -> list[str]:
     errors = []
-    groups = (world.characters, world.towns, world.kingdoms, world.factions, world.points, world.items, world.groups, world.proposals, world.divinities, world.routes, world.divine_contracts, world.institutional_policies)
+    groups = (world.characters, world.towns, world.kingdoms, world.factions, world.points, world.items, world.groups, world.proposals, world.divinities, world.routes, world.divine_contracts, world.institutional_policies, world.institutional_tasks)
     entity_ids = {world.world_map_id}
     for group in groups:
         for key, entity in group.items():
             if key != entity.id or key in entity_ids:
                 errors.append(f"ID inválido ou duplicado: {key}")
             entity_ids.add(key)
+    for task in world.institutional_tasks.values():
+        institution=world.groups.get(task.institution_id) if task.institution_type=='group' else world.towns.get(task.institution_id)
+        if (not institution and task.status in ('pending','blocked')) or task.issuer not in world.characters or task.status not in ('pending','blocked','completed','cancelled') or task.attempts<0:
+            errors.append('Obrigação institucional inválida.')
+        if not passable(world,task.location):errors.append('Local de obrigação inacessível.')
     if world.world_map_id not in world.maps:
         errors.append("Mapa global ausente.")
     if world.player_id is not None and (world.player_id not in world.characters or
@@ -339,6 +344,9 @@ def validate_world(world) -> list[str]:
                 errors.append(f'Contexto institucional ambíguo: {need.id}')
             if kind and (kind not in ('group','faction') or ctx.get(kind+'_id')!=ctx.get('organization_id')):
                 errors.append(f'Identidade institucional inconsistente: {need.id}')
+    for id,row in world.observability.tombstones.items():
+        if id!=row.get('event_id') or not isinstance(id,int) or id<=0 or id>=world.next_id or any(not isinstance(parent,int) or parent<=0 or parent>=id for parent in row.get('parent_ids',())):
+            errors.append('Metadado histórico mínimo inválido.')
     data=world.observability
     if data.level not in ('OFF','NORMAL','AUDIT') or data.schema_version!=1 or data.next_id<1:
         errors.append('Observabilidade histórica incompatível.')

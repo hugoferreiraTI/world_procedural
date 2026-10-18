@@ -183,7 +183,9 @@ class AccessActions:
             return [('explore_poi',center,target)]
         if n.kind=='divine_contact':
             site=p.known_sacred_sites.get(n.target_id)
-            if not site:return []
+            if not site:
+                self.e.observability.gate('seek_divine_contact','NO_SACRED_SITE',n.target_id)
+                return []
             location=Location(**site['position'])
             if p.position.map_id!=location.map_id:return geo.candidates(p,location.map_id,'divine_contact',n)
             return [('seek_divine_contact',location,n.target_id)]
@@ -273,9 +275,19 @@ class AccessActions:
     def audience(self,p,god,prayer):
         row=next((m for m in reversed(god.messages) if m['actor']==p.id and m['source_fact']==prayer.id),None)
         favor=self.e.divine_relations.affinity(god,p.id)
-        if not row or not god.alive or not self.e.divine_relations.present(god,p.position.map_id) or god.energy<45 or god.values['honor']<50 or p.devotion<80 or favor<30:
-            return False
-        if self.w.turn-god.essence.get('last_audience',-1000)<72:return False
+        gates=[]
+        if not row:gates.append('NO_DIVINE_KNOWLEDGE')
+        if not god.alive or not self.e.divine_relations.present(god,p.position.map_id):gates.append('INSUFFICIENT_ACCESS')
+        if god.energy<45:gates.append('DIVINE_ENERGY')
+        if god.values['honor']<50 or p.devotion<80 or favor<30:gates.append('INSUFFICIENT_ACCESS')
+        if self.w.turn-god.essence.get('last_audience',-1000)<72:gates.append('DIVINE_COOLDOWN')
+        if hasattr(self.e,'audit'):
+            self.e.audit.count('audience:candidate')
+            self.e.audit.sample('religion_gates',{'actor':p.id,'god':god.id,'turn':self.w.turn,
+                'gates':gates,'has_message':bool(row),'energy':god.energy,'affinity':favor,
+                'devotion':p.devotion,'honor':god.values['honor'],'regional_presence':self.e.divine_relations.present(god,p.position.map_id)})
+        for code in gates:self.e.observability.gate('divine_audience',code,god.id)
+        if gates:return False
         god.energy-=10;god.essence['last_audience']=self.w.turn
         event=self.e.recorder.emit('DivineAudience',f'{god.name} reconheceu a busca de {p.name}.',god.id,p.id,p.position,historical=True,
             context={'channel':'direct_sign','source_fact':prayer.id,'energy_cost':10,'physical_access':False})

@@ -1,0 +1,96 @@
+======================================================================
+ERROR: test_consumption_timestamps_follow_oldest_acquisition (test_feeding.FeedingTests.test_consumption_timestamps_follow_oldest_acquisition)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_feeding.py", line 262, in test_consumption_timestamps_follow_oldest_acquisition
+    metric = self.world.metrics['Feeding:TimeFromAcquisitionToConsumption:sum']
+             ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'Feeding:TimeFromAcquisitionToConsumption:sum'
+
+======================================================================
+ERROR: test_world_stays_valid_and_memory_is_bounded_over_many_days (test_simulation.PersistenceAndStabilityTests.test_world_stays_valid_and_memory_is_bounded_over_many_days) (seed='Dovha')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_simulation.py", line 301, in test_world_stays_valid_and_memory_is_bounded_over_many_days
+    assert_valid(world)
+  File "/home/hugo/Área de trabalho/procedrual/procedural/validation.py", line 371, in assert_valid
+    raise ValueError("Estado do mundo inválido: " + "; ".join(errors[:12]))
+ValueError: Estado do mundo inválido: Obrigação institucional inválida.
+
+======================================================================
+ERROR: test_world_stays_valid_and_memory_is_bounded_over_many_days (test_simulation.PersistenceAndStabilityTests.test_world_stays_valid_and_memory_is_bounded_over_many_days) (seed='Mira')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_simulation.py", line 301, in test_world_stays_valid_and_memory_is_bounded_over_many_days
+    assert_valid(world)
+  File "/home/hugo/Área de trabalho/procedrual/procedural/validation.py", line 371, in assert_valid
+    raise ValueError("Estado do mundo inválido: " + "; ".join(errors[:12]))
+ValueError: Estado do mundo inválido: Obrigação institucional inválida.; Obrigação institucional inválida.
+
+======================================================================
+ERROR: test_world_stays_valid_and_memory_is_bounded_over_many_days (test_simulation.PersistenceAndStabilityTests.test_world_stays_valid_and_memory_is_bounded_over_many_days) (seed='Arven')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_simulation.py", line 301, in test_world_stays_valid_and_memory_is_bounded_over_many_days
+    assert_valid(world)
+  File "/home/hugo/Área de trabalho/procedrual/procedural/validation.py", line 371, in assert_valid
+    raise ValueError("Estado do mundo inválido: " + "; ".join(errors[:12]))
+ValueError: Estado do mundo inválido: Obrigação institucional inválida.
+
+======================================================================
+FAIL: test_invalid_public_meal_does_not_mutate_or_advance_time (test_feeding.FeedingTests.test_invalid_public_meal_does_not_mutate_or_advance_time)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_feeding.py", line 184, in test_invalid_public_meal_does_not_mutate_or_advance_time
+    self.assertEqual(dumps(self.world), before)
+AssertionError: '{"fo[2127803 chars],200],["attempt:buy_meal",1],["failure:buy_mea[316308 chars]1}}}' != '{"fo[2127803 chars],200]]}]]},"counters":{"$dict":[["events",270][316262 chars]1}}}'
+
+======================================================================
+FAIL: test_moderate_hunger_with_sufficient_reserve_does_not_search (test_feeding.FeedingTests.test_moderate_hunger_with_sufficient_reserve_does_not_search)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_feeding.py", line 51, in test_moderate_hunger_with_sufficient_reserve_does_not_search
+    self.assertNotIn(self.person.goal.action if self.person.goal else None, ('buy_food', 'forage', 'eat'))
+AssertionError: 'buy_food' unexpectedly found in ('buy_food', 'forage', 'eat')
+
+======================================================================
+FAIL: test_invalid_action_has_no_persistent_effect (test_phase2.Phase2BugTests.test_invalid_action_has_no_persistent_effect)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase2.py", line 57, in test_invalid_action_has_no_persistent_effect
+    self.assertEqual(dumps(self.world), before, command)
+AssertionError: '{"fo[2338893 chars]d",1],["attempt:forage",1],["failure:forage",1[340087 chars]1}}}' != '{"fo[2338893 chars]d",1]]}]]},"counters":{"$dict":[["events",312][340045 chars]1}}}' : coletar
+
+======================================================================
+FAIL: test_08_water_capacity_and_food_follow_material_work (test_phase55.InstitutionalTests.test_08_water_capacity_and_food_follow_material_work)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase55.py", line 138, in test_08_water_capacity_and_food_follow_material_work
+    self.assertEqual(100,self.t.infrastructure['water_daily']);self.assertEqual(stock,self.e.items.count(self.t.id,'water'))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 100 != 101
+
+======================================================================
+FAIL: test_09_policy_can_stall_without_material (test_phase55.InstitutionalTests.test_09_policy_can_stall_without_material)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_phase55.py", line 167, in test_09_policy_can_stall_without_material
+    self.assertEqual(80,self.t.infrastructure['water_daily']);self.assertEqual(money,self.total_money());self.assertEqual(stock,self.e.items.count(self.t.id,'water'))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 80 != 81
+
+======================================================================
+FAIL: test_unpaid_work_cannot_trap_hungry_npc_in_a_loop (test_simulation.EngineTests.test_unpaid_work_cannot_trap_hungry_npc_in_a_loop)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hugo/Área de trabalho/procedrual/tests/test_simulation.py", line 174, in test_unpaid_work_cannot_trap_hungry_npc_in_a_loop
+    self.assertEqual(npc.goal.action, "work")
+AssertionError: 'ask_help' != 'work'
+- ask_help
++ work
+
+
+----------------------------------------------------------------------
+Ran 341 tests in 176.195s
+
+FAILED (failures=6, errors=4)

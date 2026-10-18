@@ -1,0 +1,791 @@
+{
+  "task": "Fase 6.0",
+  "rules": "mvp-14-fase6.0",
+  "generation": "mvp-6.0",
+  "save_format": 2,
+  "base_commit": "d96aa5e654b3a3566961a8a99cc84290005d6503",
+  "specification_sha256": "2ee2b4b85575aa69872879290bad22e901e1b57536f5cbc6b6a5906fd3550841",
+  "requirements": [
+    {
+      "number": 1,
+      "title": "OBJETIVO DA FASE",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 2,
+      "title": "FILOSOFIA DA FASE 6",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 3,
+      "title": "QUESTÃO CENTRAL DO MOTOR DE DECISÃO",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 4,
+      "title": "MEDIR “NEED STARVATION”",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 5,
+      "title": "NÃO REDUZIR PRIORIDADE DE SOBREVIVÊNCIA POR DECRETO",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 6,
+      "title": "RADIOGRAFIA DE SUSTENTABILIDADE POR LOCALIDADE",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 7,
+      "title": "POTENCIAL ≠ PRODUÇÃO REAL",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 8,
+      "title": "FUNIL DA SOBREVIVÊNCIA",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 9,
+      "title": "RECURSO EXISTENTE NÃO SIGNIFICA RECURSO ACESSÍVEL",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 10,
+      "title": "CAPITAIS",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 11,
+      "title": "ESCASSEZ CONTINUA SENDO POSSÍVEL",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 12,
+      "title": "AQUISIÇÃO CRÍTICA E CONSUMO",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 13,
+      "title": "AUDITAR LOD",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 14,
+      "title": "FISIOLOGIA VS INTERVALO DE DECISÃO",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 15,
+      "title": "LOD NÃO DEVE ALTERAR A PERSONALIDADE DO MUNDO",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 16,
+      "title": "PROMOÇÃO POR PRESSÃO",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 17,
+      "title": "PRESERVAR ECONOMIA MATERIAL",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 18,
+      "title": "FUNIL DE EMPREGO",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 19,
+      "title": "CARREIRA ATUALMENTE É PARCIAL",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 20,
+      "title": "GENERALIZAR TREINAMENTO COM CAUTELA",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 21,
+      "title": "NÃO MATERIALIZAR TRABALHADOR SEM CAUSA",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 22,
+      "title": "SOCIAL AFFINITY ≠ ORGANIZATIONAL COMPATIBILITY",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 23,
+      "title": "SOCIAL AFFINITY",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 24,
+      "title": "ORGANIZATIONAL COMPATIBILITY",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 25,
+      "title": "JOIN ANTES DE CREATE",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 26,
+      "title": "MÚLTIPLOS GRUPOS CONTINUAM POSSÍVEIS",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 27,
+      "title": "MEDIR FRAGMENTAÇÃO",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 28,
+      "title": "INSTITUIÇÃO NÃO É UMA PESSOA",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 29,
+      "title": "TASK QUEUE INSTITUCIONAL",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 30,
+      "title": "DELEGAÇÃO",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 31,
+      "title": "TAREFA SOBREVIVE AO TITULAR",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 32,
+      "title": "PREFEITURA",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 33,
+      "title": "POLICY WORK",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 34,
+      "title": "NÃO REDUZIR FORMALIZATION SCORE AINDA",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 35,
+      "title": "CONTAR O GATE QUE MATOU CADA CANDIDATURA",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 36,
+      "title": "REVISAR REQUISITOS SOMENTE DEPOIS",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 37,
+      "title": "FUNIL COMPLETO",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 38,
+      "title": "ZERO CAPTURA PRECISA TER EXPLICAÇÃO",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 39,
+      "title": "CASO PODE SER RESPONSABILIDADE INSTITUCIONAL",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 40,
+      "title": "SEM POLÍCIA TELEPÁTICA",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 41,
+      "title": "CRIME E SOBREVIVÊNCIA ESTÃO LIGADOS",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 42,
+      "title": "NÃO REESCREVER O SISTEMA LETAL",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 43,
+      "title": "MEDIR COERÊNCIA DA VIOLÊNCIA",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 44,
+      "title": "FREQUÊNCIA NÃO POSSUI META ARBITRÁRIA",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 45,
+      "title": "PÓS-CONFLITO",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 46,
+      "title": "FUNIL RELIGIOSO",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 47,
+      "title": "RARIDADE ≠ SISTEMA INACESSÍVEL",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 48,
+      "title": "AUDITAR DEUSES PELO QUE ELES SABEM",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 49,
+      "title": "INTERVENÇÃO DEVE CONTINUAR RARA",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 50,
+      "title": "USAR O SISTEMA NATIVO",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 51,
+      "title": "APROFUNDAR GATES NOS SISTEMAS ALTERADOS",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 52,
+      "title": "LINKS CAUSAIS SEM PAYLOAD",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 53,
+      "title": "NÃO ALTERAR DEZ VARIÁVEIS AO MESMO TEMPO",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 54,
+      "title": "BALANCEAMENTO CAUSAL",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 55,
+      "title": "NÃO BALANCEAR PARA UMA SEED",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 56,
+      "title": "ORDEM DAS INTERVENÇÕES",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 57,
+      "title": "TESTES",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 58,
+      "title": "REGRESSÕES 5.5.5",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 59,
+      "title": "NEUTRALIDADE DA OBSERVABILIDADE",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 60,
+      "title": "CONTROLLED RUNS",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 61,
+      "title": "CAMPANHA NATURAL FINAL",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 62,
+      "title": "MÉTRICAS OBRIGATÓRIAS DA CAMPANHA",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 63,
+      "title": "NÃO DEFINIR QUOTAS DE HISTÓRIA",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 64,
+      "title": "CRITÉRIO DE COERÊNCIA",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 65,
+      "title": "NÃO OTIMIZAR SAVE AGORA",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 66,
+      "title": "FORA DO ESCOPO DEMOGRÁFICO",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 67,
+      "title": "RESULTADOS ESPERADOS DA FASE",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 68,
+      "title": "RELATÓRIO FINAL",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 69,
+      "title": "COERENCIA.md",
+      "report": "COERENCIA.md"
+    },
+    {
+      "number": 70,
+      "title": "DECISOES_6.md",
+      "report": "DECISOES_6.md"
+    },
+    {
+      "number": 71,
+      "title": "BALANCEAMENTO.md",
+      "report": "BALANCEAMENTO.md"
+    },
+    {
+      "number": 72,
+      "title": "NÃO ESCONDER EFEITOS COLATERAIS",
+      "report": "FASE_6_0.md"
+    },
+    {
+      "number": 73,
+      "title": "SUCESSO DA FASE 6.0",
+      "report": "FASE_6_0.md"
+    }
+  ],
+  "tests": {
+    "active": 366,
+    "passed": 366,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "new": 25,
+    "previous_retained": 341
+  },
+  "sources": {
+    "procedural/__init__.py": "e09c04ede208467a72ddc5d781eac57491bbe9dc307d41f554b0ccd3c13b5b15",
+    "procedural/__main__.py": "673ad82fb29873bd6569a4c78d9c45c32e1f68543401ec17ae2f49021a77b790",
+    "procedural/access.py": "b653cf0d8d148e0a9dbe0c7957a2e0bcbab79efbe1820134d6c21c0c771ca24d",
+    "procedural/action_pressure.py": "9132a476128d2e97caeac1a939c8dc2f2cdc6dd3cd6dde1847c23edb9fafde63",
+    "procedural/aftermath.py": "749f917c360b45b14188d9a690cf90a52900249a1f42be2af54c9d4da1b9c110",
+    "procedural/agency.py": "821cfca2ae983ec72bce2c84fde8d3c1981f28ccc54470e481ca5568771e7e55",
+    "procedural/causal_audit.py": "cde23d10cdf99dc5e991398d69c74316ba55519cf59ab53318a8c1baa40fb370",
+    "procedural/collective_action.py": "21acd5fb2d6d98acd783637a480b43a47fefa1a4f6e2e84a2e6bab4d656fca60",
+    "procedural/conflicts.py": "e9715324a1912824e3c795cea361ad627fb383b4997a967685e4171a1430323f",
+    "procedural/divine_relations.py": "f5c243f937b96c70749d09926cb7cdbac6dd42694b9176c22e1ba456ad5546d5",
+    "procedural/economy.py": "e463e8b50e6e8141c6c0072e0b439fa0fa24848284136a775d0bed9938bc6e24",
+    "procedural/emotions.py": "0f6a06d6cf737e59887d831b15324d9fe811c8152286db13c120d1ca38b29319",
+    "procedural/engine.py": "a2fc1eae8302ab6889387622ca92ed5d448833d89f355ddda94f5d349171df71",
+    "procedural/events.py": "13f5e2bb19e33753cf9d49e6a5a63b6e0c54feb88934c8a5114a4b56bbf01dc0",
+    "procedural/faith.py": "a4cf5f3633ed0e6949c32a17bb8c19779fe3a8b423387f8e945521e449b08a59",
+    "procedural/feeding.py": "0ca385c3164c8c2dc5abe3a3d7a8df5f96c2c3e15f17b818aa78c863c6e44a67",
+    "procedural/generation.py": "25d5b995e944955758f98edb0447e04da8412ca62970baf3142075b6c04c31d6",
+    "procedural/geography.py": "14089dbae17e83062db089a70189c7b0fac8a82c3ef9a61f125a2b54ea57d8c3",
+    "procedural/goals.py": "a1b0717328b5729b7c7108d4edc3ce264ce612dab1fccab735b1381be671d9d9",
+    "procedural/institutional_tasks.py": "e3b28b1e079f46188467c04f794ca78b52751ea4ea38e2ae8290833f89f28ebb",
+    "procedural/institutions.py": "7463fbd32a6f511ffd6c74afb74c23c10fda8395379b4856bfabbf32d4a562c4",
+    "procedural/investigation.py": "0e5145f8b913102f244fc1669684e84157051ad4738a490e3949ee784b614a3b",
+    "procedural/items.py": "ce22ac933ebf3be264f6d827bfbcc41d1f1a004ce79f9c10f1f4a316a6fdedfd",
+    "procedural/justice.py": "cc061a54a3c7f9b1c380b594808e9aec0eafbe5039449e96ed3fc4bd366365ab",
+    "procedural/knowledge.py": "bcfe210c035a3382e4b30fadeeaefebe4e691927e15eea17bbf07eaac4ccfd25",
+    "procedural/lethal_decisions.py": "3b69ff7c1a4c33db6074656905641f4a5c3fabfff42e70b13b3fc62f946edefd",
+    "procedural/lethality.py": "b221a6891ff1adddeda6876b9f84f51fce313473f79cd2b16573b8e6b68a4654",
+    "procedural/migration.py": "845d8d2deaaf44c0886237c321d48437f7970637b8a9c4a6b4eba74a12f5285c",
+    "procedural/models.py": "24d4b8c7e6bc30ce494255f15e67190cdefc0f58664d3a0ad4d36751a9344bab",
+    "procedural/navigation.py": "42e2ca4eba1b7b2a454253fc23b803356db7f876b085b4b5906e7e2a35574ba7",
+    "procedural/needs.py": "b4dd30426d5d0e02b2500e76a8c67abb2b721e09cc3cfc99a0bb35121220e402",
+    "procedural/observability.py": "fee925c35429fa1de6d1c81cc7bbe546f1461ee9d23659af03b8ce7462a19549",
+    "procedural/organization_context.py": "c4fcf756bc92c9b2f90f39fd45ee83ae1d9cc061a189ca2a9372f6d9e16d339e",
+    "procedural/organizational_compatibility.py": "8640e305fc5ec6fbf77583711c351e4d234d0dc662ba30839c59f500617c3cd8",
+    "procedural/persistence.py": "740a233224af5b1fc46d8c29f39f492c8847a46c292d1a47b5b690c4c9095ef4",
+    "procedural/personal.py": "b6f06658efc0f02dda431421bf1de84af55b53c44942fba0600f1ebf86e3a454",
+    "procedural/personal_actions.py": "eab1383b35234f955c4bdc89529f316e4bac26f81606191b359cdfb9be03be46",
+    "procedural/politics.py": "4de1ac419e8c55405affa92942d79fa72e95124ab7883b409f074ddd2fb9b648",
+    "procedural/population.py": "f0e4d1be92f89fed78840f51d7c62bcd3e965ca183db018607ce8727283be625",
+    "procedural/professions.py": "7102df184daf59b16653ad64c9d7dc5496ae0413c9fbeefb797073624a5a7bed",
+    "procedural/quests.py": "e7814a3b34e60f950ef31112b6dac75cfa1720b81ee609e3910c225b0046a971",
+    "procedural/recovery.py": "d3e21c794eaab71e2610fa833fdf9a7576dd2fc3c30df2e2f70d3141e30c9030",
+    "procedural/relationships.py": "55e599eb5b8d43b532dad878bc323cb5bfe63c0505823f14080ea372d8476055",
+    "procedural/religious_health.py": "a6db9653d08a28e4ae7cebfa6ca0058c717d8f6829d4e74d7e742fec91297aa7",
+    "procedural/renown.py": "939a3d73352d0a3ae608c807f5d39fd0b3ae7d99a1c9e4b7b196cc5ecf304f50",
+    "procedural/rules.py": "67859ba30a4d514c8b27a5e016221d7605858cdabfa56bf875e28011a8176c9e",
+    "procedural/social.py": "c8b918ee27b3f91c317d0f6269520c47623464edbd54f7a6c0a94953709da402",
+    "procedural/society.py": "2220a928886a87aa514c4e9b41e0e71bacbf7eae9bfe6913db5a5837c427e792",
+    "procedural/sustainability.py": "fdf5dd716477c6304de0525bbc1d4da15bc9c63553cc6163ca4fb945ab92b62a",
+    "procedural/terminal_combat.py": "a3c5da33b941cb83a8b5dcdc73f3c2f80d3d5338c098bdec4a281db5b16134f6",
+    "procedural/ui.py": "deed3a4e539cf4d969fc90e7588a4127c939b40908c6dfea608d24228b610539",
+    "procedural/utility.py": "4c57d3d62a78a9568fdd1d4f7fb1cf57cf9031c47d7f0cf7af42b71ce90d5f5b",
+    "procedural/validation.py": "970b3387cab2d63e32ed65a024c366f72f66968e7df0d4eb98f52dc00d7aa48a",
+    "procedural/violence_patterns.py": "78641e116b1c09ffbf418a59d93ba1e8bac7dcc8bc6414a7eced41f253312996",
+    "tests/test_feeding.py": "2adebce60c7d5c040a515d29f9bbecc7c482c90fdaf4e9ed062538cefdfe7cc6",
+    "tests/test_hardening.py": "6ac25c68098990f3142b15d71a3284b38c954cc28f5498eeab8928e268c72877",
+    "tests/test_phase2.py": "5aa852a2b34f24e647e09979cb33ff2eff6a257802e71eda53ee4b35506fa31a",
+    "tests/test_phase3.py": "cbbdd0670e1913f4abd24f2f9e3f9d9d9384cc0e315832dce883527b3228f74c",
+    "tests/test_phase32.py": "05a6fb3144f1b59110f63047d6e2f67a57b00437d47143d99e9b08192a59143d",
+    "tests/test_phase4.py": "55c064956facc5b08140cb43ca294bb6f6cf992207d15a58cc65cbefb3c99fcf",
+    "tests/test_phase41.py": "316fb2ee7d4aabecd2333acde14b79da8144bc223f2babee350ab5c25f7bbe4b",
+    "tests/test_phase45.py": "9206ec58d3c14b94046e9721f5f2dbfaea32cb76d38c3ec236a8c01558dd1987",
+    "tests/test_phase46.py": "8d352cc31f181669cafeba6166b48297de7711de1ea0a5492f368c4e94a682df",
+    "tests/test_phase5.py": "f61e78bcfbf6c3e6b7e7e691b3223265ba4d5acf4a79bffaa667afe1bf075726",
+    "tests/test_phase51.py": "6eeba3f0ed219e063cb290f7fa6ed3da696f48a39e24ed5a45ddd7f6d53b76a5",
+    "tests/test_phase52.py": "84de5e1698f85cddbd16e21d0a590d6440be80654a80158d6ff08422bdc8f0a8",
+    "tests/test_phase521.py": "ac6fbb4adb62f72dd0c1abb6b1f96e7d4e9b613526ebf1ee836dcb9d2906ef1c",
+    "tests/test_phase54.py": "5ab31ed5edd1e05b0bf4568f25482e1fe60dc078bf9b01ac11efd30675e1090b",
+    "tests/test_phase55.py": "75df94538a6eaaf96e68b85ee492d02b32d1de5bf6ce1314ac9a32c1ad0b83b2",
+    "tests/test_phase555.py": "26f4e04ebf533af590ec6a530a655020b319278574262d02b314b4a0e5419b56",
+    "tests/test_phase60.py": "3e23f2ee676085b4a49d0ebcd22c723950b2954fb0ab255b53cd030b3b71e6f9",
+    "tests/test_simulation.py": "e686fdfbb21991b2c98153d7a536d2494377f7a62dc0a7560bc85f4a5dbb50f5"
+  },
+  "controls": {
+    "neutrality": {
+      "levels": [
+        "OFF",
+        "NORMAL",
+        "AUDIT"
+      ],
+      "hours_each": 36,
+      "equal_all_gameplay_fields_and_rng": true,
+      "sha256": "dd015ed239d520dccca206a663a3bb00c0d78adad5ecf592e77bafa1c96f5024"
+    },
+    "continuity": {
+      "hours": 100,
+      "split": [
+        50,
+        50
+      ],
+      "all_fields_equal": true,
+      "sha256": "0936d147860789c2fe1af1a9009352a164d8d681dd03987ff937dda5aeb4dc27"
+    },
+    "water_ab_deaths": [
+      32,
+      13
+    ]
+  },
+  "campaign": {
+    "seed": "Arvandor-Coerencia60",
+    "hours_per_execution": 300,
+    "executions": 3,
+    "total_simulated_hours": 900,
+    "seed_shopping": false,
+    "source_changes_between_executions": false,
+    "checkpoints": [
+      {
+        "hour": 25,
+        "alive": 1880,
+        "deaths": 0,
+        "money_residual": 0,
+        "invariants": true,
+        "tasks": 36
+      },
+      {
+        "hour": 50,
+        "alive": 1880,
+        "deaths": 0,
+        "money_residual": 0,
+        "invariants": true,
+        "tasks": 74
+      },
+      {
+        "hour": 75,
+        "alive": 1880,
+        "deaths": 0,
+        "money_residual": 0,
+        "invariants": true,
+        "tasks": 85
+      },
+      {
+        "hour": 100,
+        "alive": 1880,
+        "deaths": 0,
+        "money_residual": 0,
+        "invariants": true,
+        "tasks": 105
+      },
+      {
+        "hour": 125,
+        "alive": 1875,
+        "deaths": 5,
+        "money_residual": 0,
+        "invariants": true,
+        "tasks": 111
+      },
+      {
+        "hour": 150,
+        "alive": 1866,
+        "deaths": 14,
+        "money_residual": 0,
+        "invariants": true,
+        "tasks": 124
+      },
+      {
+        "hour": 175,
+        "alive": 1857,
+        "deaths": 23,
+        "money_residual": 0,
+        "invariants": true,
+        "tasks": 132
+      },
+      {
+        "hour": 200,
+        "alive": 1841,
+        "deaths": 39,
+        "money_residual": 0,
+        "invariants": true,
+        "tasks": 144
+      },
+      {
+        "hour": 225,
+        "alive": 1829,
+        "deaths": 51,
+        "money_residual": 0,
+        "invariants": true,
+        "tasks": 151
+      },
+      {
+        "hour": 250,
+        "alive": 1812,
+        "deaths": 68,
+        "money_residual": 0,
+        "invariants": true,
+        "tasks": 157
+      },
+      {
+        "hour": 275,
+        "alive": 1783,
+        "deaths": 97,
+        "money_residual": 0,
+        "invariants": true,
+        "tasks": 165
+      },
+      {
+        "hour": 300,
+        "alive": 1757,
+        "deaths": 123,
+        "money_residual": 0,
+        "invariants": true,
+        "tasks": 168
+      }
+    ],
+    "recovery": {
+      "same_seed": true,
+      "same_gameplay_sources": true,
+      "all_final_metrics_and_checkpoints_equal": true,
+      "executions": 3,
+      "simulated_hours_total": 900,
+      "first_execution_completed_hours": 300,
+      "reason": "Location no exportador e comparação int/str de chaves JSON; nenhuma alteração do jogo",
+      "second_execution_serialized_metrics_equal": true,
+      "restored_checkpoint_without_simulating": false
+    },
+    "death_causes": {
+      "hunger": 116,
+      "both": 2,
+      "thirst": 3,
+      "combat": 2
+    }
+  },
+  "limitations": "UNKNOWN de solvabilidade/causa não equivale a impossibilidade; duas falhas do exportador preservadas; execução natural repetida somente para recuperação de artefatos",
+  "validation": {
+    "all_gameplay_sources_match": true,
+    "patch_reverse_check": true,
+    "temporary_save_removed": true,
+    "absolute_report_links": 17
+  },
+  "artifacts": {
+    "BALANCEAMENTO.md": {
+      "bytes": 5634,
+      "sha256": "56a11a493e13387a28a6d4f6cedcc52e122990936913a4a48d75d4edda9cd544"
+    },
+    "COERENCIA.md": {
+      "bytes": 4092,
+      "sha256": "58632ffe4e34accd94767bfce68c1f2b54f870525298b34b3356c983314f4572"
+    },
+    "DECISOES_6.md": {
+      "bytes": 27921,
+      "sha256": "353a0b00b2a3d4de9b34e972393380ef0990c783ffaacf73c08419084d037e44"
+    },
+    "FASE_6_0.md": {
+      "bytes": 32398,
+      "sha256": "1f0641106fb7236ba417d46b73336b336c6d4cceccdd907cde490d6c5cda68fc"
+    },
+    "PROJECT.md": {
+      "bytes": 108598,
+      "sha256": "6eea079fa9942599f4a6acfbc72ffa2100190e0ded7eef4ee8913d6f4922cb3f"
+    },
+    "README.md": {
+      "bytes": 2371,
+      "sha256": "cd9596126ec620b40fd9f561043e944095870b2739fe21bf41fe1d8a84a1ae05"
+    },
+    "reports/fase_6_0/ESPECIFICACAO.md": {
+      "bytes": 26332,
+      "sha256": "2ee2b4b85575aa69872879290bad22e901e1b57536f5cbc6b6a5906fd3550841"
+    },
+    "reports/fase_6_0/alimentacao_regressao.log": {
+      "bytes": 98,
+      "sha256": "48647c4f03a98133fe87cbf57e98626c797eabfb3dc97ab6e7a0e0adfd827d31"
+    },
+    "reports/fase_6_0/analise_nativa.json": {
+      "bytes": 1471,
+      "sha256": "9db927d1468a80c34b069d4117c1933871473bf9489070258480d2c2552f859e"
+    },
+    "reports/fase_6_0/analise_nativa.log": {
+      "bytes": 1224,
+      "sha256": "bd4b67dc76cc0a845995644686aa123eeaf3874207e3b915c8623476bd149914"
+    },
+    "reports/fase_6_0/base_fontes.json": {
+      "bytes": 4875,
+      "sha256": "74554bf930a654764cf86fb376e0dfda76ff9d43ff50f82413b95702c4a040f6"
+    },
+    "reports/fase_6_0/campanha.json": {
+      "bytes": 713221,
+      "sha256": "343c20e86ace89226a874b918febecddf8fd4677a639c82a887672db6dcbfd69"
+    },
+    "reports/fase_6_0/campanha.log": {
+      "bytes": 1275,
+      "sha256": "45e65497f7e4b5fbf89da2c3f9d7084288f8d667e50b6f6778375ffed9b68424"
+    },
+    "reports/fase_6_0/capacidade_base.json": {
+      "bytes": 9735,
+      "sha256": "b259412fc35b40cd7ab2c13a5a8411ca186b3e8d6633ec90a0dd503d98e12649"
+    },
+    "reports/fase_6_0/casos_reais.json": {
+      "bytes": 224400,
+      "sha256": "ee03dff7f896bf42faf3a22befee4c3128fdd4296bb2a0d48c07f394694805ef"
+    },
+    "reports/fase_6_0/comparacao_execucoes.json": {
+      "bytes": 845,
+      "sha256": "094e20f9ff16b0023bb0af7dfa147f5b2ab958784852a74105b4bda4e46b4618"
+    },
+    "reports/fase_6_0/contrafactuais_agua.json": {
+      "bytes": 29261,
+      "sha256": "8b13ddd1f577edb5d62b915ae84f6f92be647a8fbfa78f8cb074170386a28db3"
+    },
+    "reports/fase_6_0/controle_base_72h.json": {
+      "bytes": 17914,
+      "sha256": "89346f76a7d4d5673d78f4cafeb421163e7bc3d76976e081e675a19a31743831"
+    },
+    "reports/fase_6_0/controle_carreira_pipeline.json": {
+      "bytes": 2413,
+      "sha256": "a46c930ceea489956f24ca4ad5d04d4736bb1f1394dcdc2899d537a3c7088cab"
+    },
+    "reports/fase_6_0/controle_exportacao.json": {
+      "bytes": 18208,
+      "sha256": "7f961f0dd6c7a179a0fdb88454d611170238edad242131cf455117154a18bdf5"
+    },
+    "reports/fase_6_0/controles.json": {
+      "bytes": 860610,
+      "sha256": "c16a0c6b14b255252d9d5cf6046e1b13d0fe5d434c0e9be26458a9bef24f0a61"
+    },
+    "reports/fase_6_0/controles.log": {
+      "bytes": 106,
+      "sha256": "d423b8890a4c7ead05508ea6d3991813578847fdbb8cf6edfb0a22499fd53fe9"
+    },
+    "reports/fase_6_0/detalhes_nativos.json": {
+      "bytes": 60015665,
+      "sha256": "988e5fa887cd09d15f0ceb2ddaef326d03e04ded63215ed7931d5d034814626d"
+    },
+    "reports/fase_6_0/documentacao.log": {
+      "bytes": 38,
+      "sha256": "fccd86dc27645604a8fe6ad3f5851a235ea2c7de21715822032650d5d65bcb17"
+    },
+    "reports/fase_6_0/escopo.json": {
+      "bytes": 6270,
+      "sha256": "26610801a9cc03d0f24de088b337ad1384f8b33e873a5b50328fb09183fb2cb0"
+    },
+    "reports/fase_6_0/falha_comparacao_json_300h.json": {
+      "bytes": 712812,
+      "sha256": "9bc751ae76e2a3d5873bd421965b452b9c2ca08e55a7099ff3d9e4bbd6de5797"
+    },
+    "reports/fase_6_0/falha_comparacao_json_300h.log": {
+      "bytes": 1793,
+      "sha256": "f28462394aa3066e946d7b455490f9a5234d443adba8cb2f7dd223d7610306bb"
+    },
+    "reports/fase_6_0/falha_exportacao_300h.json": {
+      "bytes": 714094,
+      "sha256": "2e4f6516fe566f66673edca8c4d5cc8d794d08c3f798bf014b3381d04f3fb9f6"
+    },
+    "reports/fase_6_0/falha_exportacao_300h.log": {
+      "bytes": 3025,
+      "sha256": "ee78af1c4e259fdc2172247f2fb50345432375a541982fe28bcaa262b3edebf0"
+    },
+    "reports/fase_6_0/finalizacao.log": {
+      "bytes": 103,
+      "sha256": "be9b7d6433a3b5c758cb2a463977a20a99e90ddf3e85a9773f9f437abcde4c41"
+    },
+    "reports/fase_6_0/geracao_relatorios.log": {
+      "bytes": 118,
+      "sha256": "0e2019f14edaec46e0accf683e081ce270311c06c7b7c1d9310eff384c4544a0"
+    },
+    "reports/fase_6_0/historico_nativo.json.gz": {
+      "bytes": 9419703,
+      "sha256": "23c39d40f60fb515bef5e87fb261088436e2dc1cb6e04b4394bc25dc205f97c3"
+    },
+    "reports/fase_6_0/implementacao.patch": {
+      "bytes": 182188,
+      "sha256": "3675737f8499a3bcbb1aa5e6899cb328840a019f69a080b86fa6ba0fe3adf7ff"
+    },
+    "reports/fase_6_0/interrompido_revisao2_controles.log": {
+      "bytes": 63,
+      "sha256": "f04f4ceab22d8456ad71f4946b8879fcba69567472d61bf189c6d709d4ea0c46"
+    },
+    "reports/fase_6_0/interrompido_revisao2_suite_atual.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "reports/fase_6_0/interrompido_revisao_controles.log": {
+      "bytes": 63,
+      "sha256": "f04f4ceab22d8456ad71f4946b8879fcba69567472d61bf189c6d709d4ea0c46"
+    },
+    "reports/fase_6_0/interrompido_revisao_suite_atual.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "reports/fase_6_0/regressao_555_inicial.log": {
+      "bytes": 98,
+      "sha256": "7dd18095804d9bb3c68574344fc468432c5ab888e34a74e772663d6a175b83c5"
+    },
+    "reports/fase_6_0/suite_fontes.json": {
+      "bytes": 7255,
+      "sha256": "3c87424304ba0ea74fd4ff3acdc93ad372aa426802edf3455103892c196c9bc6"
+    },
+    "reports/fase_6_0/suite_integracao.log": {
+      "bytes": 7196,
+      "sha256": "debbc23ce376f8037b0382102024dcf346961674cc75e5e35c2334bb9b615f73"
+    },
+    "reports/fase_6_0/suite_integracao_2.log": {
+      "bytes": 798,
+      "sha256": "ae0d4a3843a1a7823c519866a2462319400eb2d23f046cf109de89d51d454f73"
+    },
+    "reports/fase_6_0/suite_integracao_3.log": {
+      "bytes": 101,
+      "sha256": "a6987211876115e363fa7ee871977310e77ee3442a28da1c481f9cd54831f164"
+    },
+    "reports/fase_6_0/testes_causais.log": {
+      "bytes": 98,
+      "sha256": "fa4eb71a0e848182eb193cedadf5f1e42b4a932b30c9aa04bba348d79559fe93"
+    },
+    "reports/fase_6_0/testes_final.log": {
+      "bytes": 101,
+      "sha256": "6c6f98b768f1814b3dda4c4a49ffb6b961105facd7768e206064a61b8901040e"
+    }
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "natural": false,
+  "scenario": "Demanda publicada, cozinha disponível, reserva e aspiração de competência; ciclo Need→Goal→train sem chamar train diretamente",
+  "actor": 9,
+  "teacher_institution": 3,
+  "steps": [
+    {
+      "hour": 60,
+      "need": "advancement",
+      "action": "train",
+      "progress": 1,
+      "profession": null
+    },
+    {
+      "hour": 61,
+      "need": "advancement",
+      "action": "train",
+      "progress": 2,
+      "profession": null
+    },
+    {
+      "hour": 62,
+      "need": "advancement",
+      "action": "train",
+      "progress": 3,
+      "profession": null
+    },
+    {
+      "hour": 63,
+      "need": "advancement",
+      "action": "train",
+      "progress": 4,
+      "profession": null
+    },
+    {
+      "hour": 64,
+      "need": "advancement",
+      "action": "train",
+      "progress": 5,
+      "profession": null
+    },
+    {
+      "hour": 65,
+      "need": "advancement",
+      "action": "train",
+      "progress": 6,
+      "profession": null
+    },
+    {
+      "hour": 66,
+      "need": "advancement",
+      "action": "train",
+      "progress": 7,
+      "profession": null
+    },
+    {
+      "hour": 67,
+      "need": "advancement",
+      "action": "train",
+      "progress": 8,
+      "profession": null
+    },
+    {
+      "hour": 68,
+      "need": "advancement",
+      "action": "train",
+      "progress": 9,
+      "profession": null
+    },
+    {
+      "hour": 69,
+      "need": "advancement",
+      "action": "train",
+      "progress": 10,
+      "profession": null
+    },
+    {
+      "hour": 70,
+      "need": "advancement",
+      "action": "train",
+      "progress": 11,
+      "profession": null
+    },
+    {
+      "hour": 71,
+      "need": "advancement",
+      "action": "train",
+      "progress": 12,
+      "profession": null
+    },
+    {
+      "hour": 72,
+      "need": "advancement",
+      "action": "train",
+      "progress": 13,
+      "profession": null
+    },
+    {
+      "hour": 73,
+      "need": "advancement",
+      "action": "train",
+      "progress": 14,
+      "profession": null
+    },
+    {
+      "hour": 74,
+      "need": "advancement",
+      "action": "train",
+      "progress": 15,
+      "profession": null
+    },
+    {
+      "hour": 75,
+      "need": "advancement",
+      "action": "train",
+      "progress": 16,
+      "profession": "cozinheiro"
+    }
+  ],
+  "profession_changed": true,
+  "hours": 16,
+  "training_started": 1
+}

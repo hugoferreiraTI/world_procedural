@@ -19,11 +19,11 @@ DivineAudience DivineIntervention DivinityKilled Apotheosis DivineContractAccept
 POIExplored POIClaimed FactionHQChanged JourneyStarted JourneyArrived MigrationStarted MigrationArrived ResidentMoved WorkerMaterialized
 KingdomFounded SuccessionChanged DivineManifestation DivineContractOffered DivineContractRefused
 DivineContractAbandoned DivineContractFulfilled
-PostKillAppraisal WantedIssued CharacterCaptured'''.split())
+PostKillAppraisal WantedIssued CharacterCaptured InstitutionalTaskIssued InstitutionalTaskCompleted InstitutionalTaskProgress InstitutionalDelegation MunicipalDelegation ProfessionChanged TrainingStarted'''.split())
 REASON_CODES = frozenset('''NO_KNOWN_ROUTE NO_KNOWN_TARGET INSUFFICIENT_MONEY NO_STOCK
 ACTION_COOLDOWN LOW_SOCIAL_AFFINITY NO_AUTHORITY TARGET_NOT_PRESENT NO_CAPABILITY
 NO_INPUT NO_WORKER NO_GENERATED_ACTION SURVIVAL_NOT_VIABLE EXCESS_RESERVE
-TERMINAL_UNAVAILABLE FORMALIZATION_REQUIREMENTS'''.split())
+TERMINAL_UNAVAILABLE FORMALIZATION_REQUIREMENTS NO_PAYER SATURATED INCOMPATIBLE NO_KNOWN_JOB NOT_ARRIVED PRIORITY_LOST NO_TEACHER NO_DEMAND NO_SACRED_SITE INSUFFICIENT_ACCESS DIVINE_COOLDOWN DIVINE_ENERGY NO_DIVINE_KNOWLEDGE'''.split())
 FACT_KEYS=('source_fact','source_event','originating_fact','death_fact','belief_source','attack_fact')
 FACT_LIST_KEYS=('source_facts','known_facts','deed_sources','contract_sources','faith_change_sources')
 
@@ -227,14 +227,22 @@ class HistoricalObserver:
                 if row:
                     row.important=True;row.related_event_ids.append(event.id)
         self.index.add(event,event.historical)
+        if self.data.level!='OFF' and event.id not in self.index.permanent:
+            # Metadados mínimos de TODA emissão: um pai pode ser referenciado
+            # horas depois de deixar o buffer. Nunca reconstruir verdade de Fact.
+            self.data.tombstones[event.id]={'event_id':event.id,'kind':event.kind,'turn':event.turn,
+                'actor':event.actor_id,'target':event.target_id,'location':event.location,
+                'parent_ids':list(event.parent_event_ids)}
         if event.kind in IMPORTANT and self.data.level!='OFF':
             self.retain_event(event)
             for id in event.parent_event_ids:
                 parent=self.index.events.get(id)
                 if parent:self.retain_event(parent)
+        if hasattr(self,'causal'):self.causal.event(event)
         self.count('events')
 
     def retain_event(self,event):
+        self.data.tombstones.pop(event.id,None)
         if event.id not in self.index.permanent:
             self.data.event_archive[event.id]=event
             self.index.permanent.add(event.id)
@@ -243,6 +251,9 @@ class HistoricalObserver:
 
     def learned(self,person,fact,previous,firsthand):
         if self.data.level=='OFF':return
+        if hasattr(self,'causal') and person.profession=='guarda' and fact.confidence>=60 and (previous is None or previous.confidence<60):
+            if fact.kind in ('ItemStolen','CharacterAttacked','CharacterKilled','WantedIssued'):
+                self.causal.count('authority_learned:'+fact.kind)
         receipt=LearningReceipt(person.id,fact.event_id,self.world.turn,
             'direct' if firsthand else fact.source_kind,fact.source_id,
             previous.confidence if previous else 0,fact.confidence)
@@ -257,12 +268,15 @@ class HistoricalObserver:
     def event_details(self,event_id):
         """QUERY: verdade, rastros privados e recebimentos em coleções distintas."""
         event=self.index.events.get(event_id)
-        if not event:return None
+        if not event:
+            tombstone=self.data.tombstones.get(event_id)
+            return {'event':None,'tombstone':tombstone} if tombstone else None
         trace=self.data.decisions.get(event.decision_id)
         return {'event':event,'actor':self.world.characters.get(event.actor_id),
                 'target':self.world.characters.get(event.target_id),'location':event.location,'turn':event.turn,
                 'parents':tuple(self.index.events.get(i) for i in event.parent_event_ids),
-                'parent_event_ids':tuple(event.parent_event_ids),'decision':trace,
+                'parent_event_ids':tuple(event.parent_event_ids),
+                'parent_tombstones':tuple(self.data.tombstones.get(i) for i in event.parent_event_ids if i not in self.index.events),'decision':trace,
                 'attempt':self.data.attempts.get(event.action_attempt_id),
                 'related_decisions':tuple(self.data.decisions.get(i) for i in event.related_decision_ids),
                 'related_fact_ids':tuple(sorted(set(event.parent_event_ids)|set(trace.source_fact_ids if trace else ()))),

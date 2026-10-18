@@ -130,7 +130,7 @@ class Economy:
     def food_diagnosis(self, town):
         """Relatório administrativo local; não é conhecimento automático de NPC."""
         people = [self.world.characters[i] for i in town.resident_ids]
-        local = [c for c in people if c.alive and c.position.map_id == town.id]
+        local = [c for c in self.world.characters.values() if c.alive and c.position.map_id == town.id]
         stock = {k:self.items.count(town.id,k) for k in ('food','grain','water','iron','wood')}
         abstract = town.abstract_population or 0
         demand = (math.ceil(abstract/120) if abstract else 0) + 1.2 * len(local)
@@ -202,6 +202,16 @@ class Economy:
         elif old.get('town_id')==town.id:
             for key in ('price','price_turn','training_offer'):
                 if key in old: observation[key]=old[key]
+        from dataclasses import asdict
+        opportunities=self.professions.training_opportunities(person,town)
+        if hasattr(self.goals.interactions,'audit'):self.goals.interactions.audit.count('training_opportunities_observed',len(opportunities))
+        observation['training_details']={o.profession:asdict(o) for o in opportunities}
+        # Aprendiz preserva o endereço/instrutor já aprendido quando ele sai
+        # de vista. Disponibilidade só é revalidada no encontro real.
+        if person.training_target and person.training_target not in observation['training_details']:
+            previous=old.get('training_details',{}).get(person.training_target)
+            if previous:observation['training_details'][person.training_target]=previous
+        if opportunities:observation['training_offer']=opportunities[0].profession
         person.market_observation=observation
 
     def known_unaffordable(self, person, target=1):
@@ -225,7 +235,9 @@ class Economy:
             town.production_previous, town.production_today = town.production_today, {}
             town.wild_food = min(30,town.wild_food+15)
             water = min(town.infrastructure.get('water_daily',80),max(0,town.infrastructure.get('water_storage',160)-self.items.count(town.id,'water')))
-            if water: self.items.create(town.id,'water',water,origin=f'Poço de {town.name}')
+            if water:
+                self.items.create(town.id,'water',water,origin=f'Poço de {town.name}')
+                self.professions.record_production(town,'water',water)
             for kind in town.demand: town.demand[kind]=max(0,town.demand[kind]-8)
             population = town.abstract_population or 0
             required = max(0,(math.ceil(population/120) if population else 0)-town.meals_served_today)
@@ -234,6 +246,7 @@ class Economy:
             bought = min(required,self.items.count(town.id,'food'),town.abstract_money//price)
             if bought:
                 self.items.consume(town.id,'food',bought)
+                if hasattr(self.goals.interactions,'audit'):self.goals.interactions.audit.count(f'abstract_consumption:{town.id}:food',bought)
                 town.abstract_money-=bought*price; town.money+=bought*price
             income=population//100
             town.abstract_money+=income
@@ -254,6 +267,14 @@ class Economy:
                     self.world.metrics['VacancyHours']=self.world.metrics.get('VacancyHours',0)+self.world.turn-previous['since']
                 town.professional_demand.pop('cozinheiro',None)
                 self.needs.satisfy(town,'professional')
+            local=[self.world.characters[i] for i in town.resident_ids if self.world.characters[i].alive and self.world.characters[i].position.map_id==town.id]
+            raw_demand=max(0,report['expected_demand']-report['hunting_capacity'])*2/3
+            required_farmers=math.ceil(raw_demand/20)
+            farmers=sum(p.profession=='agricultor' for p in local)
+            if required_farmers>farmers and self.items.count(town.id,'grain')<math.ceil(raw_demand):
+                previous_farm=town.professional_demand.get('agricultor',{})
+                town.professional_demand['agricultor']={'deficit':required_farmers-farmers,'since':previous_farm.get('since',self.world.turn)}
+            else:town.professional_demand.pop('agricultor',None)
             pressure = required>bought or bool(report['bottlenecks'])
             if pressure:
                 current=town.needs.get('food')

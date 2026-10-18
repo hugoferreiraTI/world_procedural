@@ -1,0 +1,1271 @@
+{
+  "natural": false,
+  "same_initial_world": true,
+  "seed": "Controle-Capacidade60",
+  "hours": 144,
+  "transitions": {
+    "thirst -> not_dead_by_deprivation": 19,
+    "hunger -> hunger": 8,
+    "not_dead_by_deprivation -> hunger": 3,
+    "thirst -> hunger": 1,
+    "both -> not_dead_by_deprivation": 3,
+    "hunger -> not_dead_by_deprivation": 1,
+    "not_dead_by_deprivation -> thirst": 1
+  },
+  "cases": [
+    {
+      "actor": "18",
+      "before": "thirst",
+      "after": "not_dead_by_deprivation",
+      "before_record": {
+        "actor": 18,
+        "turn": 144,
+        "lod": "active",
+        "factors": [
+          "LOCAL_SHORTAGE",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "water": {
+            "world_market": 5259,
+            "world_material_stock": 6077,
+            "local_market": 0,
+            "owned": 0
+          }
+        },
+        "last_decision": "d164150",
+        "goal": "drink_well",
+        "last_update": 144,
+        "hunger": 82,
+        "thirst": 100,
+        "health": 0
+      },
+      "after_record": null
+    },
+    {
+      "actor": "390",
+      "before": "hunger",
+      "after": "hunger",
+      "before_record": {
+        "actor": 390,
+        "turn": 133,
+        "lod": "active",
+        "factors": [
+          "NO_MONEY",
+          "PRIORITY_COMPETITION",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 3008,
+            "world_material_stock": 3655,
+            "local_market": 34,
+            "owned": 0
+          }
+        },
+        "last_decision": "d148377",
+        "goal": "work",
+        "last_update": 133,
+        "hunger": 100,
+        "thirst": 41,
+        "health": 0
+      },
+      "after_record": {
+        "actor": 390,
+        "turn": 133,
+        "lod": "active",
+        "factors": [
+          "NO_MONEY",
+          "PRIORITY_COMPETITION",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 3014,
+            "world_material_stock": 3647,
+            "local_market": 30,
+            "owned": 0
+          }
+        },
+        "last_decision": "d145267",
+        "goal": "work",
+        "last_update": 133,
+        "hunger": 100,
+        "thirst": 41,
+        "health": 0
+      }
+    },
+    {
+      "actor": "583",
+      "before": "thirst",
+      "after": "not_dead_by_deprivation",
+      "before_record": {
+        "actor": 583,
+        "turn": 121,
+        "lod": "active",
+        "factors": [
+          "OTHER_UNKNOWN"
+        ],
+        "stock": {
+          "water": {
+            "world_market": 6984,
+            "world_material_stock": 7877,
+            "local_market": 54,
+            "owned": 0
+          }
+        },
+        "last_decision": "d131961",
+        "goal": "ask_meal",
+        "last_update": 121,
+        "hunger": 92,
+        "thirst": 100,
+        "health": 0
+      },
+      "after_record": null
+    },
+    {
+      "actor": "586",
+      "before": "thirst",
+      "after": "not_dead_by_deprivation",
+      "before_record": {
+        "actor": 586,
+        "turn": 135,
+        "lod": "active",
+        "factors": [
+          "LOCAL_SHORTAGE"
+        ],
+        "stock": {
+          "water": {
+            "world_market": 5926,
+            "world_material_stock": 6551,
+            "local_market": 0,
+            "owned": 0
+          }
+        },
+        "last_decision": "d151215",
+        "goal": "person_meal",
+        "last_update": 135,
+        "hunger": 26,
+        "thirst": 100,
+        "health": 0
+      },
+      "after_record": null
+    },
+    {
+      "actor": "1017",
+      "before": "not_dead_by_deprivation",
+      "after": "hunger",
+      "before_record": null,
+      "after_record": {
+        "actor": 1017,
+        "turn": 141,
+        "lod": "active",
+        "factors": [
+          "LOCAL_SHORTAGE",
+          "PRIORITY_COMPETITION",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 2847,
+            "world_material_stock": 3516,
+            "local_market": 0,
+            "owned": 0
+          }
+        },
+        "last_decision": "d156731",
+        "goal": "work",
+        "last_update": 141,
+        "hunger": 100,
+        "thirst": 26,
+        "health": 0
+      }
+    },
+    {
+      "actor": "1099",
+      "before": "thirst",
+      "after": "not_dead_by_deprivation",
+      "before_record": {
+        "actor": 1099,
+        "turn": 134,
+        "lod": "active",
+        "factors": [
+          "LOCAL_SHORTAGE",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "water": {
+            "world_market": 5939,
+            "world_material_stock": 6569,
+            "local_market": 0,
+            "owned": 0
+          }
+        },
+        "last_decision": "d149884",
+        "goal": "sleep",
+        "last_update": 134,
+        "hunger": 32,
+        "thirst": 100,
+        "health": 0
+      },
+      "after_record": null
+    },
+    {
+      "actor": "1105",
+      "before": "thirst",
+      "after": "not_dead_by_deprivation",
+      "before_record": {
+        "actor": 1105,
+        "turn": 142,
+        "lod": "active",
+        "factors": [
+          "LOCAL_SHORTAGE",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "water": {
+            "world_market": 5488,
+            "world_material_stock": 6235,
+            "local_market": 0,
+            "owned": 0
+          }
+        },
+        "last_decision": "d161335",
+        "goal": "sleep",
+        "last_update": 142,
+        "hunger": 32,
+        "thirst": 100,
+        "health": 0
+      },
+      "after_record": null
+    },
+    {
+      "actor": "1174",
+      "before": "thirst",
+      "after": "hunger",
+      "before_record": {
+        "actor": 1174,
+        "turn": 113,
+        "lod": "active",
+        "factors": [
+          "FAILED_ACQUISITION",
+          "LOCAL_SHORTAGE"
+        ],
+        "stock": {
+          "water": {
+            "world_market": 5665,
+            "world_material_stock": 6381,
+            "local_market": 0,
+            "owned": 0
+          }
+        },
+        "last_decision": "d121111",
+        "goal": "drink_well",
+        "last_update": 113,
+        "hunger": 64,
+        "thirst": 100,
+        "health": 0
+      },
+      "after_record": {
+        "actor": 1174,
+        "turn": 113,
+        "lod": "active",
+        "factors": [
+          "AFFORDABILITY"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 3616,
+            "world_material_stock": 4339,
+            "local_market": 4,
+            "owned": 0
+          }
+        },
+        "last_decision": "d119032",
+        "goal": "sleep",
+        "last_update": 113,
+        "hunger": 100,
+        "thirst": 28,
+        "health": 0
+      }
+    },
+    {
+      "actor": "1197",
+      "before": "thirst",
+      "after": "not_dead_by_deprivation",
+      "before_record": {
+        "actor": 1197,
+        "turn": 122,
+        "lod": "active",
+        "factors": [
+          "OTHER_UNKNOWN"
+        ],
+        "stock": {
+          "water": {
+            "world_market": 6819,
+            "world_material_stock": 7756,
+            "local_market": 46,
+            "owned": 0
+          }
+        },
+        "last_decision": "d133563",
+        "goal": "steal_meal",
+        "last_update": 122,
+        "hunger": 2,
+        "thirst": 100,
+        "health": 0
+      },
+      "after_record": null
+    },
+    {
+      "actor": "1237",
+      "before": "thirst",
+      "after": "not_dead_by_deprivation",
+      "before_record": {
+        "actor": 1237,
+        "turn": 142,
+        "lod": "active",
+        "factors": [
+          "LOCAL_SHORTAGE",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "water": {
+            "world_market": 5488,
+            "world_material_stock": 6235,
+            "local_market": 0,
+            "owned": 0
+          }
+        },
+        "last_decision": "d161371",
+        "goal": "sleep",
+        "last_update": 142,
+        "hunger": 78,
+        "thirst": 100,
+        "health": 0
+      },
+      "after_record": null
+    },
+    {
+      "actor": "1252",
+      "before": "thirst",
+      "after": "not_dead_by_deprivation",
+      "before_record": {
+        "actor": 1252,
+        "turn": 106,
+        "lod": "active",
+        "factors": [
+          "LOCAL_SHORTAGE"
+        ],
+        "stock": {
+          "water": {
+            "world_market": 5857,
+            "world_material_stock": 6710,
+            "local_market": 0,
+            "owned": 0
+          }
+        },
+        "last_decision": "d112361",
+        "goal": "drink_well",
+        "last_update": 106,
+        "hunger": 96,
+        "thirst": 100,
+        "health": 0
+      },
+      "after_record": null
+    },
+    {
+      "actor": "1269",
+      "before": "thirst",
+      "after": "not_dead_by_deprivation",
+      "before_record": {
+        "actor": 1269,
+        "turn": 144,
+        "lod": "active",
+        "factors": [
+          "LOCAL_SHORTAGE",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "water": {
+            "world_market": 5259,
+            "world_material_stock": 6077,
+            "local_market": 0,
+            "owned": 0
+          }
+        },
+        "last_decision": "d164391",
+        "goal": "sleep",
+        "last_update": 144,
+        "hunger": 82,
+        "thirst": 100,
+        "health": 0
+      },
+      "after_record": null
+    },
+    {
+      "actor": "1315",
+      "before": "both",
+      "after": "not_dead_by_deprivation",
+      "before_record": {
+        "actor": 1315,
+        "turn": 144,
+        "lod": "active",
+        "factors": [
+          "LOCAL_SHORTAGE"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 2807,
+            "world_material_stock": 3437,
+            "local_market": 0,
+            "owned": 0
+          },
+          "water": {
+            "world_market": 5259,
+            "world_material_stock": 6077,
+            "local_market": 0,
+            "owned": 0
+          }
+        },
+        "last_decision": "d164407",
+        "goal": "person_meal",
+        "last_update": 144,
+        "hunger": 100,
+        "thirst": 100,
+        "health": 0
+      },
+      "after_record": null
+    },
+    {
+      "actor": "1338",
+      "before": "thirst",
+      "after": "not_dead_by_deprivation",
+      "before_record": {
+        "actor": 1338,
+        "turn": 137,
+        "lod": "active",
+        "factors": [
+          "LOCAL_SHORTAGE"
+        ],
+        "stock": {
+          "water": {
+            "world_market": 5895,
+            "world_material_stock": 6510,
+            "local_market": 0,
+            "owned": 0
+          }
+        },
+        "last_decision": "d154204",
+        "goal": "work_for_meal",
+        "last_update": 137,
+        "hunger": 62,
+        "thirst": 100,
+        "health": 0
+      },
+      "after_record": null
+    },
+    {
+      "actor": "2279",
+      "before": "not_dead_by_deprivation",
+      "after": "hunger",
+      "before_record": null,
+      "after_record": {
+        "actor": 2279,
+        "turn": 139,
+        "lod": "active",
+        "factors": [
+          "NO_MONEY",
+          "PRIORITY_COMPETITION",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 2862,
+            "world_material_stock": 3514,
+            "local_market": 4,
+            "owned": 0
+          }
+        },
+        "last_decision": "d154157",
+        "goal": "work",
+        "last_update": 139,
+        "hunger": 100,
+        "thirst": 53,
+        "health": 0
+      }
+    },
+    {
+      "actor": "2290",
+      "before": "both",
+      "after": "not_dead_by_deprivation",
+      "before_record": {
+        "actor": 2290,
+        "turn": 140,
+        "lod": "active",
+        "factors": [
+          "AFFORDABILITY",
+          "LOCAL_SHORTAGE",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 2865,
+            "world_material_stock": 3529,
+            "local_market": 1,
+            "owned": 0
+          },
+          "water": {
+            "world_market": 5655,
+            "world_material_stock": 6353,
+            "local_market": 0,
+            "owned": 0
+          }
+        },
+        "last_decision": "d158748",
+        "goal": "sleep",
+        "last_update": 140,
+        "hunger": 100,
+        "thirst": 100,
+        "health": 0
+      },
+      "after_record": null
+    },
+    {
+      "actor": "2302",
+      "before": "not_dead_by_deprivation",
+      "after": "hunger",
+      "before_record": null,
+      "after_record": {
+        "actor": 2302,
+        "turn": 123,
+        "lod": "active",
+        "factors": [
+          "LOCAL_SHORTAGE",
+          "PRIORITY_COMPETITION",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 3306,
+            "world_material_stock": 4040,
+            "local_market": 0,
+            "owned": 0
+          }
+        },
+        "last_decision": "d132819",
+        "goal": "work",
+        "last_update": 123,
+        "hunger": 100,
+        "thirst": 21,
+        "health": 0
+      }
+    },
+    {
+      "actor": "2311",
+      "before": "hunger",
+      "after": "not_dead_by_deprivation",
+      "before_record": {
+        "actor": 2311,
+        "turn": 126,
+        "lod": "active",
+        "factors": [
+          "OTHER_UNKNOWN"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 3222,
+            "world_material_stock": 3866,
+            "local_market": 3,
+            "owned": 0
+          }
+        },
+        "last_decision": "d139560",
+        "goal": "fill_water",
+        "last_update": 126,
+        "hunger": 100,
+        "thirst": 59,
+        "health": 0
+      },
+      "after_record": null
+    },
+    {
+      "actor": "2368",
+      "before": "both",
+      "after": "not_dead_by_deprivation",
+      "before_record": {
+        "actor": 2368,
+        "turn": 142,
+        "lod": "active",
+        "factors": [
+          "LOCAL_SHORTAGE",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 2845,
+            "world_material_stock": 3485,
+            "local_market": 0,
+            "owned": 0
+          },
+          "water": {
+            "world_market": 5488,
+            "world_material_stock": 6235,
+            "local_market": 0,
+            "owned": 0
+          }
+        },
+        "last_decision": "d161687",
+        "goal": "sleep",
+        "last_update": 142,
+        "hunger": 100,
+        "thirst": 100,
+        "health": 0
+      },
+      "after_record": null
+    },
+    {
+      "actor": "2791",
+      "before": "hunger",
+      "after": "hunger",
+      "before_record": {
+        "actor": 2791,
+        "turn": 127,
+        "lod": "active",
+        "factors": [
+          "NO_MONEY",
+          "PRIORITY_COMPETITION",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 3199,
+            "world_material_stock": 3824,
+            "local_market": 50,
+            "owned": 0
+          }
+        },
+        "last_decision": "d141069",
+        "goal": "work",
+        "last_update": 127,
+        "hunger": 100,
+        "thirst": 26,
+        "health": 0
+      },
+      "after_record": {
+        "actor": 2791,
+        "turn": 127,
+        "lod": "active",
+        "factors": [
+          "NO_MONEY",
+          "PRIORITY_COMPETITION",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 3145,
+            "world_material_stock": 3788,
+            "local_market": 42,
+            "owned": 0
+          }
+        },
+        "last_decision": "d138307",
+        "goal": "work",
+        "last_update": 127,
+        "hunger": 100,
+        "thirst": 26,
+        "health": 0
+      }
+    },
+    {
+      "actor": "3349",
+      "before": "hunger",
+      "after": "hunger",
+      "before_record": {
+        "actor": 3349,
+        "turn": 143,
+        "lod": "active",
+        "factors": [
+          "NO_MONEY",
+          "PRIORITY_COMPETITION",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 2840,
+            "world_material_stock": 3465,
+            "local_market": 6,
+            "owned": 0
+          }
+        },
+        "last_decision": "d163487",
+        "goal": "work",
+        "last_update": 143,
+        "hunger": 100,
+        "thirst": 61,
+        "health": 0
+      },
+      "after_record": {
+        "actor": 3349,
+        "turn": 143,
+        "lod": "active",
+        "factors": [
+          "NO_MONEY",
+          "PRIORITY_COMPETITION",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 2815,
+            "world_material_stock": 3447,
+            "local_market": 7,
+            "owned": 0
+          }
+        },
+        "last_decision": "d160375",
+        "goal": "work",
+        "last_update": 143,
+        "hunger": 100,
+        "thirst": 61,
+        "health": 0
+      }
+    },
+    {
+      "actor": "3585",
+      "before": "thirst",
+      "after": "not_dead_by_deprivation",
+      "before_record": {
+        "actor": 3585,
+        "turn": 137,
+        "lod": "active",
+        "factors": [
+          "LOCAL_SHORTAGE",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "water": {
+            "world_market": 5895,
+            "world_material_stock": 6510,
+            "local_market": 0,
+            "owned": 0
+          }
+        },
+        "last_decision": "d154788",
+        "goal": "sleep",
+        "last_update": 137,
+        "hunger": 36,
+        "thirst": 100,
+        "health": 0
+      },
+      "after_record": null
+    },
+    {
+      "actor": "3605",
+      "before": "thirst",
+      "after": "not_dead_by_deprivation",
+      "before_record": {
+        "actor": 3605,
+        "turn": 121,
+        "lod": "active",
+        "factors": [
+          "OTHER_UNKNOWN"
+        ],
+        "stock": {
+          "water": {
+            "world_market": 6984,
+            "world_material_stock": 7877,
+            "local_market": 54,
+            "owned": 0
+          }
+        },
+        "last_decision": "d132729",
+        "goal": "buy_meal",
+        "last_update": 121,
+        "hunger": 2,
+        "thirst": 100,
+        "health": 0
+      },
+      "after_record": null
+    },
+    {
+      "actor": "3625",
+      "before": "thirst",
+      "after": "not_dead_by_deprivation",
+      "before_record": {
+        "actor": 3625,
+        "turn": 139,
+        "lod": "active",
+        "factors": [
+          "LOCAL_SHORTAGE",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "water": {
+            "world_market": 5741,
+            "world_material_stock": 6410,
+            "local_market": 0,
+            "owned": 0
+          }
+        },
+        "last_decision": "d157633",
+        "goal": "sleep",
+        "last_update": 139,
+        "hunger": 86,
+        "thirst": 100,
+        "health": 0
+      },
+      "after_record": null
+    },
+    {
+      "actor": "4192",
+      "before": "hunger",
+      "after": "hunger",
+      "before_record": {
+        "actor": 4192,
+        "turn": 123,
+        "lod": "active",
+        "factors": [
+          "AFFORDABILITY"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 3340,
+            "world_material_stock": 4038,
+            "local_market": 29,
+            "owned": 0
+          }
+        },
+        "last_decision": "d135815",
+        "goal": "sleep",
+        "last_update": 123,
+        "hunger": 100,
+        "thirst": 63,
+        "health": 0
+      },
+      "after_record": {
+        "actor": 4192,
+        "turn": 123,
+        "lod": "active",
+        "factors": [
+          "AFFORDABILITY"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 3306,
+            "world_material_stock": 4040,
+            "local_market": 28,
+            "owned": 0
+          }
+        },
+        "last_decision": "d133318",
+        "goal": "sleep",
+        "last_update": 123,
+        "hunger": 100,
+        "thirst": 63,
+        "health": 0
+      }
+    },
+    {
+      "actor": "4359",
+      "before": "hunger",
+      "after": "hunger",
+      "before_record": {
+        "actor": 4359,
+        "turn": 121,
+        "lod": "active",
+        "factors": [
+          "AFFORDABILITY"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 3365,
+            "world_material_stock": 4111,
+            "local_market": 89,
+            "owned": 0
+          }
+        },
+        "last_decision": "d132953",
+        "goal": "sleep",
+        "last_update": 121,
+        "hunger": 100,
+        "thirst": 62,
+        "health": 0
+      },
+      "after_record": {
+        "actor": 4359,
+        "turn": 121,
+        "lod": "active",
+        "factors": [
+          "AFFORDABILITY"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 3355,
+            "world_material_stock": 4122,
+            "local_market": 92,
+            "owned": 0
+          }
+        },
+        "last_decision": "d130579",
+        "goal": "sleep",
+        "last_update": 121,
+        "hunger": 100,
+        "thirst": 62,
+        "health": 0
+      }
+    },
+    {
+      "actor": "4497",
+      "before": "hunger",
+      "after": "hunger",
+      "before_record": {
+        "actor": 4497,
+        "turn": 132,
+        "lod": "active",
+        "factors": [
+          "AFFORDABILITY"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 3062,
+            "world_material_stock": 3705,
+            "local_market": 88,
+            "owned": 0
+          }
+        },
+        "last_decision": "d147985",
+        "goal": "sleep",
+        "last_update": 132,
+        "hunger": 100,
+        "thirst": 63,
+        "health": 0
+      },
+      "after_record": {
+        "actor": 4497,
+        "turn": 132,
+        "lod": "active",
+        "factors": [
+          "AFFORDABILITY"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 3056,
+            "world_material_stock": 3686,
+            "local_market": 91,
+            "owned": 0
+          }
+        },
+        "last_decision": "d144878",
+        "goal": "sleep",
+        "last_update": 132,
+        "hunger": 100,
+        "thirst": 63,
+        "health": 0
+      }
+    },
+    {
+      "actor": "4586",
+      "before": "thirst",
+      "after": "not_dead_by_deprivation",
+      "before_record": {
+        "actor": 4586,
+        "turn": 143,
+        "lod": "active",
+        "factors": [
+          "LOCAL_SHORTAGE",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "water": {
+            "world_market": 5403,
+            "world_material_stock": 6163,
+            "local_market": 0,
+            "owned": 0
+          }
+        },
+        "last_decision": "d163826",
+        "goal": "sleep",
+        "last_update": 143,
+        "hunger": 36,
+        "thirst": 100,
+        "health": 0
+      },
+      "after_record": null
+    },
+    {
+      "actor": "4644",
+      "before": "thirst",
+      "after": "not_dead_by_deprivation",
+      "before_record": {
+        "actor": 4644,
+        "turn": 137,
+        "lod": "active",
+        "factors": [
+          "LOCAL_SHORTAGE",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "water": {
+            "world_market": 5895,
+            "world_material_stock": 6510,
+            "local_market": 0,
+            "owned": 0
+          }
+        },
+        "last_decision": "d155062",
+        "goal": "sleep",
+        "last_update": 137,
+        "hunger": 28,
+        "thirst": 100,
+        "health": 0
+      },
+      "after_record": null
+    },
+    {
+      "actor": "4669",
+      "before": "thirst",
+      "after": "not_dead_by_deprivation",
+      "before_record": {
+        "actor": 4669,
+        "turn": 136,
+        "lod": "active",
+        "factors": [
+          "LOCAL_SHORTAGE"
+        ],
+        "stock": {
+          "water": {
+            "world_market": 5912,
+            "world_material_stock": 6534,
+            "local_market": 0,
+            "owned": 0
+          }
+        },
+        "last_decision": "d153693",
+        "goal": "steal_meal",
+        "last_update": 136,
+        "hunger": 22,
+        "thirst": 100,
+        "health": 0
+      },
+      "after_record": null
+    },
+    {
+      "actor": "4675",
+      "before": "thirst",
+      "after": "not_dead_by_deprivation",
+      "before_record": {
+        "actor": 4675,
+        "turn": 141,
+        "lod": "active",
+        "factors": [
+          "LOCAL_SHORTAGE",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "water": {
+            "world_market": 5578,
+            "world_material_stock": 6302,
+            "local_market": 0,
+            "owned": 0
+          }
+        },
+        "last_decision": "d160832",
+        "goal": "sleep",
+        "last_update": 141,
+        "hunger": 34,
+        "thirst": 100,
+        "health": 0
+      },
+      "after_record": null
+    },
+    {
+      "actor": "4707",
+      "before": "thirst",
+      "after": "not_dead_by_deprivation",
+      "before_record": {
+        "actor": 4707,
+        "turn": 141,
+        "lod": "active",
+        "factors": [
+          "LOCAL_SHORTAGE",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "water": {
+            "world_market": 5578,
+            "world_material_stock": 6302,
+            "local_market": 0,
+            "owned": 0
+          }
+        },
+        "last_decision": "d160844",
+        "goal": "sleep",
+        "last_update": 141,
+        "hunger": 34,
+        "thirst": 100,
+        "health": 0
+      },
+      "after_record": null
+    },
+    {
+      "actor": "4747",
+      "before": "not_dead_by_deprivation",
+      "after": "thirst",
+      "before_record": null,
+      "after_record": {
+        "actor": 4747,
+        "turn": 137,
+        "lod": "active",
+        "factors": [
+          "RESOURCE_OWNED_AT_DEATH"
+        ],
+        "stock": {
+          "water": {
+            "world_market": 6100,
+            "world_material_stock": 6857,
+            "local_market": 59,
+            "owned": 1
+          }
+        },
+        "last_decision": "d151982",
+        "goal": "work_for_meal",
+        "last_update": 137,
+        "hunger": 62,
+        "thirst": 100,
+        "health": 0
+      }
+    },
+    {
+      "actor": "4805",
+      "before": "thirst",
+      "after": "not_dead_by_deprivation",
+      "before_record": {
+        "actor": 4805,
+        "turn": 139,
+        "lod": "active",
+        "factors": [
+          "LOCAL_SHORTAGE",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "water": {
+            "world_market": 5741,
+            "world_material_stock": 6410,
+            "local_market": 0,
+            "owned": 0
+          }
+        },
+        "last_decision": "d157987",
+        "goal": "sleep",
+        "last_update": 139,
+        "hunger": 28,
+        "thirst": 100,
+        "health": 0
+      },
+      "after_record": null
+    },
+    {
+      "actor": "4989",
+      "before": "hunger",
+      "after": "hunger",
+      "before_record": {
+        "actor": 4989,
+        "turn": 129,
+        "lod": "active",
+        "factors": [
+          "LOCAL_SHORTAGE",
+          "PRIORITY_COMPETITION",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 3169,
+            "world_material_stock": 3779,
+            "local_market": 0,
+            "owned": 0
+          }
+        },
+        "last_decision": "d144220",
+        "goal": "work",
+        "last_update": 129,
+        "hunger": 100,
+        "thirst": 33,
+        "health": 0
+      },
+      "after_record": {
+        "actor": 4989,
+        "turn": 129,
+        "lod": "active",
+        "factors": [
+          "NO_MONEY",
+          "PRIORITY_COMPETITION",
+          "TRAVEL_TIME"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 3114,
+            "world_material_stock": 3742,
+            "local_market": 2,
+            "owned": 0
+          }
+        },
+        "last_decision": "d141277",
+        "goal": "work",
+        "last_update": 129,
+        "hunger": 100,
+        "thirst": 33,
+        "health": 0
+      }
+    },
+    {
+      "actor": "5219",
+      "before": "hunger",
+      "after": "hunger",
+      "before_record": {
+        "actor": 5219,
+        "turn": 129,
+        "lod": "active",
+        "factors": [
+          "AFFORDABILITY"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 3169,
+            "world_material_stock": 3779,
+            "local_market": 53,
+            "owned": 0
+          }
+        },
+        "last_decision": "d144272",
+        "goal": "sleep",
+        "last_update": 129,
+        "hunger": 100,
+        "thirst": 63,
+        "health": 0
+      },
+      "after_record": {
+        "actor": 5219,
+        "turn": 129,
+        "lod": "active",
+        "factors": [
+          "AFFORDABILITY"
+        ],
+        "stock": {
+          "food": {
+            "world_market": 3114,
+            "world_material_stock": 3742,
+            "local_market": 57,
+            "owned": 0
+          }
+        },
+        "last_decision": "d141323",
+        "goal": "sleep",
+        "last_update": 129,
+        "hunger": 100,
+        "thirst": 63,
+        "health": 0
+      }
+    }
+  ],
+  "scope": "Morte por privação; nos dois braços não houve mortes por outras causas. IDs iniciais iguais."
+}

@@ -1,0 +1,492 @@
+[
+  {
+    "id": 3,
+    "kind": "capital",
+    "persistent": 103,
+    "abstract": 218,
+    "water_daily": 80,
+    "water_needed_persistent": 109.87,
+    "food_potential": 300,
+    "food_demand": 125.6
+  },
+  {
+    "id": 32,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 50,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 68,
+    "kind": "cidade",
+    "persistent": 60,
+    "abstract": 150,
+    "water_daily": 80,
+    "water_needed_persistent": 64.0,
+    "food_potential": 200,
+    "food_demand": 74.0
+  },
+  {
+    "id": 97,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 115,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 133,
+    "kind": "cidade",
+    "persistent": 60,
+    "abstract": 150,
+    "water_daily": 80,
+    "water_needed_persistent": 64.0,
+    "food_potential": 200,
+    "food_demand": 74.0
+  },
+  {
+    "id": 162,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 180,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 198,
+    "kind": "cidade",
+    "persistent": 60,
+    "abstract": 150,
+    "water_daily": 80,
+    "water_needed_persistent": 64.0,
+    "food_potential": 200,
+    "food_demand": 74.0
+  },
+  {
+    "id": 227,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 245,
+    "kind": "cidade",
+    "persistent": 60,
+    "abstract": 150,
+    "water_daily": 80,
+    "water_needed_persistent": 64.0,
+    "food_potential": 200,
+    "food_demand": 74.0
+  },
+  {
+    "id": 274,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 302,
+    "kind": "capital",
+    "persistent": 103,
+    "abstract": 218,
+    "water_daily": 80,
+    "water_needed_persistent": 109.87,
+    "food_potential": 330,
+    "food_demand": 125.6
+  },
+  {
+    "id": 331,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 349,
+    "kind": "cidade",
+    "persistent": 60,
+    "abstract": 150,
+    "water_daily": 80,
+    "water_needed_persistent": 64.0,
+    "food_potential": 200,
+    "food_demand": 74.0
+  },
+  {
+    "id": 378,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 396,
+    "kind": "cidade",
+    "persistent": 60,
+    "abstract": 150,
+    "water_daily": 80,
+    "water_needed_persistent": 64.0,
+    "food_potential": 200,
+    "food_demand": 74.0
+  },
+  {
+    "id": 425,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 443,
+    "kind": "cidade",
+    "persistent": 60,
+    "abstract": 150,
+    "water_daily": 80,
+    "water_needed_persistent": 64.0,
+    "food_potential": 200,
+    "food_demand": 74.0
+  },
+  {
+    "id": 472,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 490,
+    "kind": "cidade",
+    "persistent": 60,
+    "abstract": 150,
+    "water_daily": 80,
+    "water_needed_persistent": 64.0,
+    "food_potential": 200,
+    "food_demand": 74.0
+  },
+  {
+    "id": 519,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 537,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 565,
+    "kind": "capital",
+    "persistent": 104,
+    "abstract": 218,
+    "water_daily": 80,
+    "water_needed_persistent": 110.93,
+    "food_potential": 300,
+    "food_demand": 126.8
+  },
+  {
+    "id": 594,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 612,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 630,
+    "kind": "cidade",
+    "persistent": 60,
+    "abstract": 150,
+    "water_daily": 80,
+    "water_needed_persistent": 64.0,
+    "food_potential": 200,
+    "food_demand": 74.0
+  },
+  {
+    "id": 659,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 677,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 695,
+    "kind": "cidade",
+    "persistent": 60,
+    "abstract": 150,
+    "water_daily": 80,
+    "water_needed_persistent": 64.0,
+    "food_potential": 200,
+    "food_demand": 74.0
+  },
+  {
+    "id": 724,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 742,
+    "kind": "cidade",
+    "persistent": 60,
+    "abstract": 150,
+    "water_daily": 80,
+    "water_needed_persistent": 64.0,
+    "food_potential": 200,
+    "food_demand": 74.0
+  },
+  {
+    "id": 771,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 789,
+    "kind": "cidade",
+    "persistent": 60,
+    "abstract": 150,
+    "water_daily": 80,
+    "water_needed_persistent": 64.0,
+    "food_potential": 200,
+    "food_demand": 74.0
+  },
+  {
+    "id": 818,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 846,
+    "kind": "capital",
+    "persistent": 104,
+    "abstract": 218,
+    "water_daily": 80,
+    "water_needed_persistent": 110.93,
+    "food_potential": 300,
+    "food_demand": 126.8
+  },
+  {
+    "id": 875,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 893,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 911,
+    "kind": "cidade",
+    "persistent": 60,
+    "abstract": 150,
+    "water_daily": 80,
+    "water_needed_persistent": 64.0,
+    "food_potential": 200,
+    "food_demand": 74.0
+  },
+  {
+    "id": 940,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 958,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 976,
+    "kind": "cidade",
+    "persistent": 60,
+    "abstract": 150,
+    "water_daily": 80,
+    "water_needed_persistent": 64.0,
+    "food_potential": 200,
+    "food_demand": 74.0
+  },
+  {
+    "id": 1005,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 1023,
+    "kind": "cidade",
+    "persistent": 60,
+    "abstract": 150,
+    "water_daily": 80,
+    "water_needed_persistent": 64.0,
+    "food_potential": 200,
+    "food_demand": 74.0
+  },
+  {
+    "id": 1052,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 1070,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  },
+  {
+    "id": 1088,
+    "kind": "cidade",
+    "persistent": 60,
+    "abstract": 150,
+    "water_daily": 80,
+    "water_needed_persistent": 64.0,
+    "food_potential": 200,
+    "food_demand": 74.0
+  },
+  {
+    "id": 1117,
+    "kind": "vila",
+    "persistent": 18,
+    "abstract": 49,
+    "water_daily": 80,
+    "water_needed_persistent": 19.2,
+    "food_potential": 100,
+    "food_demand": 22.6
+  }
+]

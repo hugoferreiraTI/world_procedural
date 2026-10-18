@@ -313,6 +313,11 @@ def generate_world(seed: str = "Dovha", player_name: str = "Viajante",
             town.abstract_population=round(persistent*ratio)
             town.population=persistent+town.abstract_population
             town.abstract_money=town.abstract_population*10
+    # Planejamento inicial de infraestrutura usa o censo persistente FINAL.
+    # Poços são fontes passivas já existentes; capacidade não cria estoque.
+    from .sustainability import initial_water_infrastructure
+    for town in world.towns.values():
+        town.infrastructure.update(initial_water_infrastructure(world,town))
     world.rng_state = rng.getstate()
     # Importação tardia mantém a geração independente da apresentação.
     from .engine import Engine

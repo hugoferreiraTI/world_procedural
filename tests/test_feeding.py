@@ -14,6 +14,8 @@ class FeedingTests(unittest.TestCase):
     def setUp(self):
         self.world = small_world('Alimentacao', with_player=True)
         self.engine = Engine(self.world)
+        # Isola o mecanismo alimentar; parentes gerados não começam em crise.
+        for other in self.world.characters.values():other.hunger=other.thirst=0
         self.person = next(c for c in self.world.characters.values() if c.profession == 'agricultor')
         self.town = self.world.towns[self.person.town_id]
         self.engine.navigation.relocate(self.person, self.town.market)

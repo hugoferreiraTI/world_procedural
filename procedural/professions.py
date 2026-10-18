@@ -11,6 +11,17 @@ TRAINABLE = {None, 'agricultor', 'mineiro', 'lenhador', 'ferreiro', 'caçador', 
 
 
 @dataclass(frozen=True)
+class TrainingOpportunity:
+    profession: str
+    teacher: int | None
+    institution: int | None
+    required_progress: int
+    cost: int
+    input: str | None
+    location: Location
+
+
+@dataclass(frozen=True)
 class WorkResult:
     status: str
     message: str
@@ -119,7 +130,30 @@ class ProfessionSystem:
         self.recorder.emit('ItemCreated',f'{character.name} produziu {produced} rações.',character.id,town.id,character.position)
         return True, 'Trabalho realizado com pagamento do produto ou proporcional.'
 
+    def work_gate(self, person):
+        """QUERY de capacidade física; o caller limita observação a local/fresca."""
+        town=self.world.towns.get(person.town_id)
+        if not self.compatible_workplace(person):return 'INCOMPATIBLE'
+        if town.money<=0:return 'NO_PAYER'
+        kind={'agricultor':'grain','mineiro':'iron','lenhador':'wood','caçador':'food','cozinheiro':'food','ferreiro':'weapon'}.get(person.profession)
+        if kind and self.items.count(town.id,kind)>=(8 if kind=='weapon' else 240 if kind in ('grain','food') else 120):return 'SATURATED'
+        if person.profession=='cozinheiro' and self.items.count(town.id,'grain')*3+town.grain_credit<2:return 'NO_INPUT'
+        if person.profession=='ferreiro' and (self.items.count(town.id,'iron')<2 or not self.items.count(town.id,'wood')):return 'NO_INPUT'
+        return None
+
     def work(self, character, hours=1):
+        result=self._work(character,hours)
+        audit=getattr(self.recorder.observer,'causal',None)
+        if audit and self.recorder.observer.current is not None and (not character.is_player or result.success):
+            audit.count('work_attempts');audit.count('work_outcome:'+result.status)
+            audit.count('work_produced',result.produced);audit.count('work_paid',result.paid)
+            audit.count('work_credit_sixths',result.credit_added)
+            if result.success:audit.sample('work_cases',{'actor':character.id,'turn':self.world.turn,
+                'profession':character.profession,'produced':result.produced,'paid':result.paid,
+                'status':result.status,'location':vars(character.position)},64)
+        return result
+
+    def _work(self, character, hours=1):
         town = self.world.towns[character.town_id]
         if not self.compatible_workplace(character):
             return WorkResult('incompatible_local', 'Esta instalação não participa da economia produtiva exigida.')
@@ -169,9 +203,60 @@ class ProfessionSystem:
                 (person.money<20 or person.personality.ambition>=60 or
                  self.saturated(person,{'stock':{k:self.items.count(town.id,k) for k in ('food','grain','iron','wood')}})))
 
+    def training_opportunities(self,person,town):
+        """QUERY local: demanda publicada e instrutor visto, ou cozinha habilitada."""
+        result=[]
+        for profession,vacancy in town.professional_demand.items():
+            if (not vacancy.get('projected_deficit',vacancy.get('deficit')) or
+                    self.world.turn-vacancy.get('since',self.world.turn)<48):continue
+            if profession=='cozinheiro':
+                if self.economy.has_kitchen(town):
+                    result.append(TrainingOpportunity(profession,None,town.id,
+                        max(12,36-person.personality.diligence//5-(8 if person.profession=='agricultor' else 0)),0,'grain',town.market))
+            elif profession in ('agricultor','mineiro','lenhador','caçador','ferreiro'):
+                teacher=next((q for q in self.world.characters.values() if q.alive and q.id!=person.id and
+                    q.profession==profession and q.position==person.position and q.position==q.workplace),None)
+                if teacher:result.append(TrainingOpportunity(profession,teacher.id,None,
+                    max(12,36-person.personality.diligence//5),0,'iron' if profession=='ferreiro' else None,teacher.workplace))
+        return result
+
+    def train_other(self,person,target,hours):
+        town=self.world.towns[person.town_id]
+        info=person.market_observation.get('training_details',{}).get(target,{})
+        teacher=self.world.characters.get(info.get('teacher'))
+        vacancy=town.professional_demand.get(target,{})
+        if not teacher or not teacher.alive or teacher.profession!=target or teacher.position!=person.position or person.position!=teacher.workplace:
+            return False,'NO_TEACHER: instrutor e instalação não estão presentes.'
+        if not person.training_target and not vacancy.get('deficit'):return False,'NO_DEMAND: não há déficit publicado.'
+        kind={'agricultor':'grain','mineiro':'iron','lenhador':'wood','caçador':'food','ferreiro':'weapon'}.get(target)
+        if kind is None or person.profession not in TRAINABLE or town.money<=0:return False,'Treinamento produtivo incompatível ou sem pagador.'
+        room=max(0,(8 if kind=='weapon' else 240 if kind in ('food','grain') else 120)-self.items.count(town.id,kind))
+        if not room:return False,'SATURATED: não há espaço para produção.'
+        if target=='ferreiro':
+            if self.items.count(town.id,'iron')<2 or not self.items.count(town.id,'wood'):return False,'NO_INPUT: faltam insumos da prática.'
+            self.items.consume(town.id,'iron',2);self.items.consume(town.id,'wood')
+        amount=min(1 if target=='ferreiro' else hours,room)
+        if not person.training_target:
+            person.training_target=target;person.training_started=self.world.turn;person.training_progress=0
+            person.training_required=max(12,36-person.personality.diligence//5)
+            self.recorder.emit('TrainingStarted',f'{person.name} iniciou aprendizagem de {target}.',person.id,town.id,person.position,
+                context={'previous':person.profession,'target':target,'teacher':teacher.id,'required':person.training_required})
+        self.items.create(town.id,kind,amount,creator_id=person.id,origin='Prática supervisionada')
+        self.record_production(town,kind,amount);paid=self.economy.wage(person,2*amount,sixths=True)
+        person.training_progress+=amount;person.training_last_practice=self.world.turn
+        self.recorder.emit('TrainingProgress',f'{person.name} praticou {target}.',person.id,town.id,person.position,
+            context={'target':target,'teacher':teacher.id,'produced':amount,'paid':paid,'progress':person.training_progress,'required':person.training_required})
+        if person.training_progress>=person.training_required:
+            old=person.profession;person.profession=target;person.workplace=teacher.workplace
+            person.known_places['work']=person.workplace;person.training_target=None
+            self.recorder.emit('ProfessionChanged',f'{person.name} tornou-se {target}.',person.id,town.id,person.position,
+                context={'previous':old,'profession':target,'teacher':teacher.id})
+        return True,'Prática supervisionada produziu e remunerou com recursos locais.'
+
     def train(self, person, hours=1):
         town = self.world.towns[person.town_id]
         target = person.training_target or person.market_observation.get('training_offer')
+        if target and target!='cozinheiro':return self.train_other(person,target,hours)
         if target != 'cozinheiro' or person.position != town.market:
             return False, 'Treinamento disponível somente na taverna conhecida.'
         if not person.training_target:
@@ -218,7 +303,9 @@ class ProfessionSystem:
             return False
         people = [self.world.characters[i] for i in town.resident_ids]
         projected = sum(c.training_target=='cozinheiro' for c in people if c.alive)
-        if projected>=vacancy['deficit'] or any(self.suitable_candidate(c,town) for c in people):
+        compatible_remote=any(c.alive and c.profession=='cozinheiro' and c.position.map_id!=town.id
+            and self.economy.goals.interactions.geography.plan(c,town.id) for c in people)
+        if projected>=vacancy['deficit'] or any(self.suitable_candidate(c,town) for c in people) or compatible_remote:
             return False
         cooks = sum(c.alive and c.profession=='cozinheiro' and c.position.map_id==town.id for c in people)
         if cooks+projected>=town.cooking_slots:

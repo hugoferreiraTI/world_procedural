@@ -90,9 +90,7 @@ class JusticeSystem:
                 context={'record_id':record.id,'suspect_id':suspect.id,'source_fact':fact.event_id,
                          'severity':record.severity,'confidence':fact.confidence,
                          'last_known_location':vars(fact.location)})
-        if record.institutional_fact is None or CRIMES[fact.kind]>CRIMES.get(record.institutional_fact.kind,0):
-            record.institutional_fact=replace(fact,context=dict(fact.context))
-            record.institutional_available_at=self.world.turn+AGENCY.institutional_latency
+        self.file_case(person,record,fact)
         if person.id not in record.assignments and len(record.assignments)<min(AGENCY.maximum_case_guards,1+record.severity//2):
             record.assignments[person.id]=('search','watch','inquire')[len(record.assignments)]
         self.by_guard[person.id].add(record.id)
@@ -255,9 +253,25 @@ class JusticeSystem:
                 guard.id,record.jurisdiction,guard.position,witnesses=[guard.id],historical=True,
                 context={'record_id':record.id,'source_fact':fact.event_id,'available_at':record.clue_available_at})
 
+    def file_case(self,guard,record,fact):
+        if guard.position!=self.world.towns[record.jurisdiction].market or fact.kind not in CRIMES:return False
+        if record.institutional_fact is not None and CRIMES[fact.kind]<=CRIMES.get(record.institutional_fact.kind,0):return False
+        record.institutional_fact=replace(fact,context=dict(fact.context))
+        record.institutional_available_at=self.world.turn+AGENCY.institutional_latency
+        self.engine.recorder.emit('InstitutionalCaseFiled',f'{guard.name} registrou evidência no serviço local.',
+            guard.id,record.jurisdiction,guard.position,witnesses=[guard.id],historical=True,
+            context={'record_id':record.id,'source_fact':fact.event_id,'available_at':record.institutional_available_at})
+        return True
+
     def communicate(self):
         """Canal de serviço local: latência, presença e até três tarefas por caso."""
         for record in self.world.wanted_records.values():
+            town=self.world.towns[record.jurisdiction]
+            for id in self.engine.spatial.at(town.market):
+                guard=self.world.characters[id]
+                if guard.profession!='guarda' or guard.id not in record.known_by:continue
+                fact=guard.knowledge.get(record.known_facts.get(guard.id))
+                if fact:self.file_case(guard,record,fact)
             if (record.institutional_fact is None or record.institutional_available_at>self.world.turn
                     or self.world.turn>record.created_at+self.duration(record)):
                 continue
